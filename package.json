@@ -1,0 +1,16 @@
+{
+  "name": "merng-social-network",
+  "version": "0.0.1",
+  "description": "social network prototype using the MERNG stack.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tverderesi",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.11.1",
+    "graphql": "^16.6.0",
+    "mongoose": "^6.8.2"
+  }
+}
