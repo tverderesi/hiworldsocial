@@ -1,4 +1,4 @@
-const Post = require('../../modules/Post');
+const Post = require('../../models/Post');
 
 module.exports = {
   Query: {
