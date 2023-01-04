@@ -17,10 +17,12 @@ module.exports.validateRegisterInput = (
       errors.email = 'Email must be a valid email address.';
     }
   }
-  if (password.trim() === '') {
+  if (password === '') {
     errors.password = 'Password must not be empty or contain spaces!';
   } else {
-    const pwRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d])[\w\d]{8,}$/;
+    const pwRegEx =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
     if (!password.match(pwRegEx)) {
       errors.password =
         'Password must contain at least one uppercase case, one lowercase letter, one number and one symbol.';
