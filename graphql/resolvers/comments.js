@@ -21,6 +21,7 @@ module.exports = {
       // Retrieve the authenticated user's credentials
       const { username } = checkAuth(context);
 
+      post = await Post.findById(postId);
       // Check for different conditions and throw appropriate errors if necessary
       switch (true) {
         case body.trim() === '':
