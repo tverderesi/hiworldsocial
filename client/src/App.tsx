@@ -5,11 +5,14 @@ import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import MenuBar from './components/MenuBar';
+import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
 
 function App() {
   return (
-    <>
+    <Container>
       <Router>
+        <MenuBar />
         <Routes>
           <Route
             path='/'
@@ -25,7 +28,7 @@ function App() {
           />
         </Routes>
       </Router>
-    </>
+    </Container>
   );
 }
 

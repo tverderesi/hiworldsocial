@@ -1,10 +1,7 @@
-import MenuBar from '../components/MenuBar';
-
 function Home() {
+  const pathname = window.location.pathname;
   return (
     <>
-      <MenuBar />
-
       <div>hOIIIII</div>
     </>
   );
