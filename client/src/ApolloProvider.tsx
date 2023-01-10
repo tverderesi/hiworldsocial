@@ -1,6 +1,17 @@
 import App from './App';
+import {
+  InMemoryCache,
+  createHttpLink,
+  ApolloProvider,
+  ApolloClient,
+} from '@apollo/client';
 
-import ApolloClient from '@apollo/client';
-import { InMemoryCache } from '@apollo/client';
+const httpLink = createHttpLink({ uri: 'http://localhost:5000' });
 
-export default '';
+const client = new ApolloClient({ link: httpLink, cache: new InMemoryCache() });
+
+export default (
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>
+);
