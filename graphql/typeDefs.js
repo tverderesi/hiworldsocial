@@ -24,6 +24,7 @@ const gql = require('graphql-tag');
  * @typedef {Object} Like
  * @property {ID!} id - The unique identifier for the like.
  * @property {String!} createdAt - The date and time at which the like was created.
+ * @property {String!} username - the username which liked the post.
  */
 
 /**
@@ -83,6 +84,7 @@ const typeDefs = gql`
   type Like {
     id: ID!
     createdAt: String!
+    username: String!
   }
 
   input RegisterInput {
