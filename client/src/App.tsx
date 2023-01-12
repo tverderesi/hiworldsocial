@@ -7,28 +7,31 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MenuBar from './components/MenuBar';
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
+import { AuthProvider } from './context/auth';
 
 function App() {
   return (
-    <Container>
-      <Router>
-        <MenuBar />
-        <Routes>
-          <Route
-            path='/'
-            element={<Home />}
-          />
-          <Route
-            path='/login'
-            element={<Login />}
-          />
-          <Route
-            path='/register'
-            element={<Register />}
-          />
-        </Routes>
-      </Router>
-    </Container>
+    <AuthProvider>
+      <Container>
+        <Router>
+          <MenuBar />
+          <Routes>
+            <Route
+              path='/'
+              element={<Home />}
+            />
+            <Route
+              path='/login'
+              element={<Login />}
+            />
+            <Route
+              path='/register'
+              element={<Register />}
+            />
+          </Routes>
+        </Router>
+      </Container>
+    </AuthProvider>
   );
 }
 
