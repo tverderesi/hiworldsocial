@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
+    "client": "npm start --prefix ./client/",
+    "dev": "concurrently \"npm run serve\" \"npm run client\"",
     "serve": "node index.js"
   },
   "author": "tverderesi",
@@ -13,9 +14,11 @@
   "dependencies": {
     "apollo-server": "^3.11.1",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.8.2"
   },
   "devDependencies": {
