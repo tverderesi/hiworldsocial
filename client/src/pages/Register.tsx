@@ -52,7 +52,7 @@ function Register() {
       </h1>
       <Form
         onSubmit={onSubmit}
-        noValidade
+        noValidate
         style={{ width: '50%' }}
         className={loading ? 'loading' : ''}
       >

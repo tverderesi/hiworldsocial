@@ -1,5 +1,10 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 import Home from './pages/Home';
@@ -7,9 +12,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MenuBar from './components/MenuBar';
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
-import { AuthProvider } from './context/auth';
-
+import { AuthContext, AuthProvider } from './context/auth';
+import { useContext } from 'react';
+import AuthRoute from './util/AuthRoute';
 function App() {
+  const { user } = useContext(AuthContext);
+  console.log(user);
+
   return (
     <AuthProvider>
       <Container>
@@ -22,12 +31,20 @@ function App() {
             />
             <Route
               path='/login'
-              element={<Login />}
-            />
+              element={
+                <AuthRoute>
+                  <Login />
+                </AuthRoute>
+              }
+            ></Route>
             <Route
               path='/register'
-              element={<Register />}
-            />
+              element={
+                <AuthRoute>
+                  <Register />
+                </AuthRoute>
+              }
+            ></Route>
           </Routes>
         </Router>
       </Container>
