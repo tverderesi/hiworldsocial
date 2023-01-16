@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export const useForm = (
   callback: { (): void; (): void; (): void },
-  initialState = {}
+  initialState: any = {}
 ) => {
   const [values, setValues] = useState(initialState);
 
