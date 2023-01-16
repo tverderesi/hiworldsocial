@@ -12,6 +12,7 @@
   "author": "tverderesi",
   "license": "ISC",
   "dependencies": {
+    "apollo-link-context": "^1.0.20",
     "apollo-server": "^3.11.1",
     "bcryptjs": "^2.4.3",
     "concurrently": "^7.6.0",
