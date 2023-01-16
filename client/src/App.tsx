@@ -1,10 +1,5 @@
 import './App.css';
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 import Home from './pages/Home';
@@ -17,37 +12,34 @@ import { useContext } from 'react';
 import AuthRoute from './util/AuthRoute';
 function App() {
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   return (
     <AuthProvider>
-      <Container>
-        <Router>
-          <MenuBar />
-          <Routes>
-            <Route
-              path='/'
-              element={<Home />}
-            />
-            <Route
-              path='/login'
-              element={
-                <AuthRoute>
-                  <Login />
-                </AuthRoute>
-              }
-            ></Route>
-            <Route
-              path='/register'
-              element={
-                <AuthRoute>
-                  <Register />
-                </AuthRoute>
-              }
-            ></Route>
-          </Routes>
-        </Router>
-      </Container>
+      <Router>
+        <MenuBar />
+        <Routes>
+          <Route
+            path='/'
+            element={<Home />}
+          />
+          <Route
+            path='/login'
+            element={
+              <AuthRoute>
+                <Login />
+              </AuthRoute>
+            }
+          ></Route>
+          <Route
+            path='/register'
+            element={
+              <AuthRoute>
+                <Register />
+              </AuthRoute>
+            }
+          ></Route>
+        </Routes>
+      </Router>
     </AuthProvider>
   );
 }

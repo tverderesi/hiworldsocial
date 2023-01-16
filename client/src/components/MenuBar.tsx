@@ -8,13 +8,26 @@ export default function MenuBar() {
   const { user, logout } = useContext(AuthContext);
 
   const pathname = window.location.pathname;
+
   const path = '/' ? 'home' : pathname.substring(1);
+
   const [state, setState] = useState({ activeItem: path });
   const { activeItem } = state;
+
   const handleItemClick = (
     e: React.SyntheticEvent<any, any>,
     { name }: MenuItemProps
   ) => (name ? setState({ activeItem: name }) : '');
+
+  const style: React.CSSProperties = {
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    justifySelf: 'center',
+    position: 'absolute',
+    left: '45vw',
+    width: '130px',
+    textAlign: 'center',
+  };
 
   return user ? (
     <Menu
@@ -27,19 +40,20 @@ export default function MenuBar() {
         //@ts-ignore
         name={user.username}
         //@ts-ignore
-        active={activeItem === user.username}
+        active
         onClick={handleItemClick}
         as={Link}
         to='/'
       />
+      <div style={style}>Hi World! 🌎</div>
 
       <Menu.Menu position='right'>
         <Menu.Item
           name='logout'
-          active={activeItem === 'logout'}
           onClick={logout}
           as={Link}
           to='/login'
+          style={{ fontWeight: 'bold' }}
         />
       </Menu.Menu>
     </Menu>
@@ -57,7 +71,7 @@ export default function MenuBar() {
         as={Link}
         to='/'
       />
-
+      <div style={style}>Hi World! 🌎</div>
       <Menu.Menu position='right'>
         <Menu.Item
           name='login'
@@ -65,6 +79,7 @@ export default function MenuBar() {
           onClick={handleItemClick}
           as={Link}
           to='/login'
+          style={{ fontWeight: 'bold' }}
         />
         <Menu.Item
           name='register'
@@ -72,6 +87,7 @@ export default function MenuBar() {
           onClick={handleItemClick}
           as={Link}
           to='/register'
+          style={{ fontWeight: 'bold' }}
         />
       </Menu.Menu>
     </Menu>
