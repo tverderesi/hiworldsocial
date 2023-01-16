@@ -4,7 +4,6 @@ import {
   createHttpLink,
   ApolloProvider,
   ApolloClient,
-  ApolloLink,
 } from '@apollo/client';
 import { setContext } from 'apollo-link-context';
 
@@ -22,7 +21,7 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
-console.log(client);
+
 export default (
   <ApolloProvider client={client}>
     <App />
