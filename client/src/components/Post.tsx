@@ -12,12 +12,24 @@ export default function Post({
   };
   return (
     <>
-      <Card fluid>
+      <Card
+        fluid
+        style={{ height: '100%' }}
+      >
         <Card.Content color='black'>
           <Image
             floated='right'
             size='mini'
             src='https://react.semantic-ui.com/images/avatar/large/molly.png'
+            style={{
+              borderRadius: '50%',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              right: '8px',
+              top: '8px',
+              zIndex: '1',
+            }}
           />
           <Card.Header>{username}</Card.Header>
           <Card.Meta
