@@ -1,22 +1,26 @@
-import { Card, Icon, Label, Image, Button } from 'semantic-ui-react';
+import { Card, Image } from 'semantic-ui-react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth';
+import { LikeButton } from '../atoms/LikeButton';
+import { DeletePost } from '../atoms/DeletePost';
+import { CommentButton } from '../atoms/CommentButton';
+
 export default function Post({
-  post: { body, createdAt, username, likeCount, commentCount, likes, id },
+  post: { body, createdAt, username, likeCount, commentCount, id, likes },
 }: {
   post: any;
 }) {
-  const likePost = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-  };
+  const { user } = useContext(AuthContext) as any;
+
   return (
     <>
       <Card
         fluid
         style={{ height: '100%' }}
       >
-        <Card.Content color='black'>
+        <Card.Content>
           <Image
             floated='right'
             size='mini'
@@ -40,28 +44,30 @@ export default function Post({
           </Card.Meta>
           <Card.Description>{body}</Card.Description>
         </Card.Content>
-        <Card.Content extra>
-          <Button
-            basic={!commentCount ? true : false}
-            color='blue'
-            icon='comment alternate'
-            label={{
-              basic: true,
-              color: 'blue',
-              content: commentCount,
-            }}
-          />
+        <Card.Content
+          extra
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+          }}
+        >
+          <div style={{ width: 'calc(100% - 40px)' }}>
+            <CommentButton
+              id={id}
+              commentCount={commentCount}
+            />
 
-          <Button
-            basic={!likeCount ? true : false}
-            color='red'
-            icon='heart'
-            label={{
-              basic: true,
-              color: 'red',
-              content: likeCount,
-            }}
-            onClick={likePost}
+            <LikeButton
+              post={{ id, likeCount, likes }}
+              user={user}
+              showLabel={true}
+            />
+          </div>
+
+          <DeletePost
+            user={user}
+            username={username}
           />
         </Card.Content>
       </Card>

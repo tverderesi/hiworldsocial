@@ -13,3 +13,33 @@
     width: 100%;
 }
 
+.ui.red.button:focus, ui.red.button .button:focus{
+    background-color: #d73c3c;
+}
+
+.ui.card .avatar img, .ui.card img.avatar, .ui.cards > .card .avatar img, .ui.cards > .card img.avatar {
+    width: 2em;
+    height: 2em;
+    border-radius: 500rem;
+  }
+
+.BigPicture {
+    margin: 0;
+    height: 70px !important;
+    width: 70px !important;
+}
+
+.ui.header.title {
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    line-height: 1.28571429em;
+    font-size: 1.28571429rem;
+
+    margin-bottom: 0vw !important;
+    font-weight: 700;
+    padding: 0;
+}
+
+a.logo:visited {
+    color: black
+
+}

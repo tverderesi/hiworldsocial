@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Menu, MenuItemProps } from 'semantic-ui-react';
 import { AuthContext } from '../context/auth';
+import { Logo } from '../atoms/Logo';
 
 export default function MenuBar() {
   const { user, logout } = useContext(AuthContext);
@@ -18,16 +19,6 @@ export default function MenuBar() {
     e: React.SyntheticEvent<any, any>,
     { name }: MenuItemProps
   ) => (name ? setState({ activeItem: name }) : '');
-
-  const style: React.CSSProperties = {
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    justifySelf: 'center',
-    position: 'absolute',
-    left: '45vw',
-    width: '130px',
-    textAlign: 'center',
-  };
 
   return user ? (
     <Menu
@@ -45,7 +36,7 @@ export default function MenuBar() {
         as={Link}
         to='/'
       />
-      <div style={style}>Hi World! 🌎</div>
+      <Logo />
 
       <Menu.Menu position='right'>
         <Menu.Item
@@ -71,7 +62,7 @@ export default function MenuBar() {
         as={Link}
         to='/'
       />
-      <div style={style}>Hi World! 🌎</div>
+      <Logo />
       <Menu.Menu position='right'>
         <Menu.Item
           name='login'

@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/react-hooks';
 import { useContext } from 'react';
-import { Container, Grid } from 'semantic-ui-react';
+import { Container, Grid, Transition } from 'semantic-ui-react';
 import Ad from '../components/Ad';
 import NewPost from '../components/NewPost';
 import Post from '../components/Post';
@@ -29,12 +29,14 @@ function Home() {
           ) : (
             posts &&
             posts.map((post: any) => (
-              <Grid.Column
-                key={post.id}
-                style={{ marginTop: '2rem ' }}
-              >
-                <Post post={post} />
-              </Grid.Column>
+              <Transition.Group key={post.id}>
+                <Grid.Column
+                  style={{ marginTop: '2rem ' }}
+                  key={post.id}
+                >
+                  <Post post={post} />
+                </Grid.Column>
+              </Transition.Group>
             ))
           )}
         </Grid.Row>

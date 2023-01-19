@@ -6,38 +6,23 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import MenuBar from './components/MenuBar';
-import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
-import { AuthContext, AuthProvider } from './context/auth';
-import { useContext } from 'react';
+import { AuthProvider } from './context/auth';
 import AuthRoute from './util/AuthRoute';
+import SinglePost from './pages/SinglePost';
 function App() {
-  const { user } = useContext(AuthContext);
-
   return (
     <AuthProvider>
       <Router>
         <MenuBar />
         <Routes>
-          <Route
-            path='/'
-            element={<Home />}
-          />
-          <Route
-            path='/login'
-            element={
-              <AuthRoute>
-                <Login />
-              </AuthRoute>
-            }
-          ></Route>
-          <Route
-            path='/register'
-            element={
-              <AuthRoute>
-                <Register />
-              </AuthRoute>
-            }
-          ></Route>
+          {/* prettier-ignore */}
+          <Route path='/' element={<Home />} />
+          {/* prettier-ignore */}
+          <Route path='/login' element={<AuthRoute><Login /></AuthRoute>} />
+          {/* prettier-ignore */}
+          <Route path='/register' element={<AuthRoute><Register /></AuthRoute>} />
+          {/* prettier-ignore */}
+          <Route path='/posts/:id' element={<SinglePost />} />
         </Routes>
       </Router>
     </AuthProvider>

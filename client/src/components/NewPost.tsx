@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
-import gql from 'graphql-tag';
 import { Button, Form, Card } from 'semantic-ui-react';
-import { FETCH_POSTS_QUERY } from '../util/GraphQL';
+
+import { CREATE_POST_MUTATION, FETCH_POSTS_QUERY } from '../util/GraphQL';
 import { useForm } from '../util/hooks';
 
 export default function NewPost() {
@@ -79,26 +79,3 @@ export default function NewPost() {
     </>
   );
 }
-
-const CREATE_POST_MUTATION = gql`
-  mutation CreatePost($body: String!) {
-    createPost(body: $body) {
-      id
-      body
-      createdAt
-      username
-      commentCount
-      likeCount
-      comments {
-        id
-        createdAt
-        username
-        body
-      }
-      likes {
-        id
-        createdAt
-      }
-    }
-  }
-`;
