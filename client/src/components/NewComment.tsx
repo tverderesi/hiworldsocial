@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useState } from 'react';
-import { Button, Form, Card } from 'semantic-ui-react';
 
-import { CREATE_COMMENT_MUTATION, FETCH_POSTS_QUERY } from '../util/GraphQL';
+import { Button, Form } from 'semantic-ui-react';
+
+import { CREATE_COMMENT_MUTATION } from '../util/GraphQL';
 import { useForm } from '../util/hooks';
 
 export default function NewComment({ id }) {
