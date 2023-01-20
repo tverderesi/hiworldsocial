@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth';
 import { LikeButton } from '../atoms/LikeButton';
-import { DeletePost } from '../atoms/DeletePost';
+import { DeleteButton } from '../atoms/DeleteButton';
 import { CommentButton } from '../atoms/CommentButton';
+import { DELETE_POST } from '../util/GraphQL';
 
 export default function Post({
   post: { body, createdAt, username, likeCount, commentCount, id, likes },
@@ -65,9 +66,11 @@ export default function Post({
             />
           </div>
 
-          <DeletePost
+          <DeleteButton
             user={user}
             username={username}
+            mutation={DELETE_POST}
+            postId={id}
           />
         </Card.Content>
       </Card>

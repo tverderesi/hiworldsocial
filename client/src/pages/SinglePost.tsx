@@ -3,19 +3,20 @@ import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { useContext } from 'react';
 
-import { Grid, Container, Image, Card } from 'semantic-ui-react';
+import { Grid, Container, Card } from 'semantic-ui-react';
 import { LikeButton } from '../atoms/LikeButton';
 import Comments from '../components/Comments';
-import { GET_POST } from '../util/GraphQL';
+import { DELETE_POST, GET_POST } from '../util/GraphQL';
 import { AuthContext } from '../context/auth';
 import { LikeLine } from '../atoms/LikeLine';
+import { DeleteButton } from '../atoms/DeleteButton';
 
 export default function SinglePost() {
   const { user } = useContext(AuthContext) as any;
   const { id } = useParams();
 
   const post = useQuery(GET_POST, { variables: { postId: id } }).data?.getPost;
-  console.log(post ? post.likes[0] : '');
+
   // const {
   //   body,
   //   createdAt,
@@ -27,7 +28,11 @@ export default function SinglePost() {
   // } = post;
 
   return (
-    <Container style={{ marginTop: '5vh' }}>
+    <Container
+      style={{
+        margin: '5vh auto ',
+      }}
+    >
       <Card fluid>
         {!post && <>ERROR PIU PIU PIU</>}
         {post && (
@@ -40,7 +45,6 @@ export default function SinglePost() {
               padding: '3%',
             }}
           >
-            {' '}
             <Grid.Row
               as={Card.Content}
               style={{
@@ -50,8 +54,8 @@ export default function SinglePost() {
                 marginLeft: '3rem',
                 marginRight: '3rem',
                 borderBottom: '1px solid rgba(34,36,38,.15)',
+                margin: '0 1rem',
               }}
-              className=' '
             >
               <Grid.Column
                 style={{
@@ -61,10 +65,9 @@ export default function SinglePost() {
                   width: 'auto',
                 }}
               >
-                <Image
+                <img
                   src='https://react.semantic-ui.com/images/avatar/large/molly.png'
-                  avatar
-                  size='massive'
+                  alt={post.username}
                   className='BigPicture'
                 />
                 <div
@@ -83,7 +86,7 @@ export default function SinglePost() {
               <Grid.Column
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
+                  flexDirection: 'row',
                   backgroudColor: 'none',
                   padding: '0',
                   width: 'auto',
@@ -94,28 +97,36 @@ export default function SinglePost() {
                   user={user}
                   showLabel={false}
                 />
+                <DeleteButton
+                  user={user}
+                  username={post.username}
+                  mutation={DELETE_POST}
+                  postId={id}
+                  basic
+                />
               </Grid.Column>
             </Grid.Row>
-            <Grid.Row style={{ marginTop: '2rem' }}>
+            <Grid.Row
+              style={{ marginTop: '2rem' }}
+              fluid
+            >
               <Grid.Column
-                width={8}
-                style={{ height: '80%' }}
+                className='ui bottom left popup fakepopup transition visible post-style'
+                computer={8}
+                mobile={16}
               >
-                <Grid.Row
-                  as={Card.Content}
-                  style={{
-                    margin: '0 7% 7% 3rem',
-                    fontSize: '1.1rem',
-                  }}
-                >
-                  {post.body}
-                </Grid.Row>
+                <div className='content'>{post.body}</div>
               </Grid.Column>
-              <Grid.Column width={8}>
+              <Grid.Column
+                computer={8}
+                mobile={16}
+              >
                 <Grid.Row>{LikeLine(post)}</Grid.Row>
                 <Comments
                   commentCount={post.commentCount}
                   comments={post.comments}
+                  id={id}
+                  user={user}
                 />
               </Grid.Column>
             </Grid.Row>

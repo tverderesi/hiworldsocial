@@ -14,13 +14,16 @@ function Home() {
 
   return (
     <Container>
-      <Grid columns={3}>
-        <Grid.Row style={{ marginBottom: '-2rem' }}>
+      <Grid
+        columns={3}
+        stackable
+      >
+        <Grid.Row style={{ margin: '1rem 0' }}>
           <h1 className='page-title'>Recent Posts</h1>
         </Grid.Row>
 
         <Grid.Row>
-          <Grid.Column style={{ marginTop: '2rem ' }}>
+          <Grid.Column style={{ marginBottom: '2rem' }}>
             {user ? <NewPost /> : <Ad />}
           </Grid.Column>
 
@@ -31,7 +34,7 @@ function Home() {
             posts.map((post: any) => (
               <Transition.Group key={post.id}>
                 <Grid.Column
-                  style={{ marginTop: '2rem ' }}
+                  style={{ marginBottom: '2rem' }}
                   key={post.id}
                 >
                   <Post post={post} />

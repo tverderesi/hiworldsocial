@@ -41,5 +41,40 @@
 
 a.logo:visited {
     color: black
+}
+ .post-style {
+    min-width: 20% !important;
+    max-width: 87% !important;
+    margin: -2% 6% 5% 1% !important;
+    max-height: auto !important;
+    font-size: 1.2rem !important;
+}
+@media only screen and (min-width: 992px) {
+    .post-style {
+    min-width: 20% !important;
+    max-width: 40% !important;
+    margin: -2% 6% 0 1% !important;
+    max-height: auto !important;
+    font-size: 1.2rem !important;
 
 }
+}
+
+.ui.basic.purple.button.DeleteComment:hover, .ui.basic.purple.button.DeleteComment{
+    box-shadow: none !important;
+}
+
+.ui.eight.wide.computer.sixteen.wide.mobile.column.ui.bottom.left.popup.fakepopup.transition.visible.post-style {
+
+   
+    z-index: 0 !important;
+  
+  }
+   
+  
+
+  .ui.eight.wide.computer.sixteen.wide.mobile.column.ui.bottom.left.popup.fakepopup.transition.visible.post-style::before {
+  
+    z-index: 0 !important;
+
+  }
