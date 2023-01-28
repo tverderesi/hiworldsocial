@@ -9,6 +9,7 @@ export const FETCH_POSTS_QUERY = gql`
       username
       commentCount
       likeCount
+      profilePicture
       comments {
         id
         createdAt
@@ -44,11 +45,14 @@ export const CREATE_POST_MUTATION = gql`
         createdAt
         username
         body
+        profilePicture
       }
       likes {
         id
         createdAt
+        profilePicture
       }
+      profilePicture
     }
   }
 `;
@@ -61,30 +65,20 @@ export const LOGIN_USER = gql`
       token
       username
       createdAt
+      profilePicture
     }
   }
 `;
 
 export const REGISTER_USER = gql`
-  mutation Register(
-    $username: String!
-    $email: String!
-    $password: String!
-    $confirmPassword: String!
-  ) {
-    register(
-      registerInput: {
-        username: $username
-        email: $email
-        password: $password
-        confirmPassword: $confirmPassword
-      }
-    ) {
-      createdAt
-      email
-      id
-      token
+  mutation Register($registerInput: RegisterInput) {
+    register(registerInput: $registerInput) {
       username
+      password
+      email
+      createdAt
+      profilePicture
+      token
     }
   }
 `;
@@ -96,6 +90,7 @@ export const LIKE_POST = gql`
       likes {
         id
         username
+        profilePicture
       }
       likeCount
     }
@@ -117,6 +112,7 @@ export const GET_POST = gql`
       body
       createdAt
       username
+      profilePicture
       comments {
         id
         username
@@ -127,6 +123,7 @@ export const GET_POST = gql`
         id
         createdAt
         username
+        profilePicture
       }
       likeCount
       commentCount
@@ -151,6 +148,7 @@ export const CREATE_COMMENT_MUTATION = gql`
         id
         createdAt
         username
+        profilePicture
       }
       likeCount
       commentCount
@@ -165,16 +163,19 @@ export const DELETE_COMMENT_MUTATION = gql`
       body
       createdAt
       username
+      profilePicture
       comments {
         id
         username
         createdAt
         body
+        profilePicture
       }
       likes {
         id
         createdAt
         username
+        profilePicture
       }
       likeCount
       commentCount

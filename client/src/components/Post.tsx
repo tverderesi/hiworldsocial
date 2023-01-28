@@ -7,9 +7,19 @@ import { LikeButton } from '../atoms/LikeButton';
 import { DeleteButton } from '../atoms/DeleteButton';
 import { CommentButton } from '../atoms/CommentButton';
 import { DELETE_POST } from '../util/GraphQL';
+import { getPictureURL } from '../util/profilePictureDictionary';
 
 export default function Post({
-  post: { body, createdAt, username, likeCount, commentCount, id, likes },
+  post: {
+    body,
+    createdAt,
+    username,
+    likeCount,
+    commentCount,
+    id,
+    likes,
+    profilePicture,
+  },
 }: {
   post: any;
 }) {
@@ -18,14 +28,14 @@ export default function Post({
   return (
     <>
       <Card
-        fluid
         style={{ height: '100%' }}
+        fluid
       >
         <Card.Content>
           <Image
             floated='right'
             size='mini'
-            src='https://react.semantic-ui.com/images/avatar/large/molly.png'
+            src={getPictureURL(profilePicture)}
             style={{
               borderRadius: '50%',
               height: '50px',
@@ -35,13 +45,14 @@ export default function Post({
               top: '8px',
               zIndex: '1',
             }}
+            rounded
           />
           <Card.Header>{username}</Card.Header>
           <Card.Meta
             as={Link}
             to={`/posts/${id}`}
           >
-            {moment(createdAt).fromNow(true)}
+            {moment(createdAt).fromNow()}
           </Card.Meta>
           <Card.Description>{body}</Card.Description>
         </Card.Content>

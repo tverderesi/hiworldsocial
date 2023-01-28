@@ -1,4 +1,5 @@
 const { model, Schema } = require('mongoose');
+
 /**
  * Represents a user in the database.
  * @typedef {Object} User
@@ -12,6 +13,7 @@ const userSchema = new Schema({
   password: String,
   email: String,
   createdAt: String,
+  profilePicture: String,
 });
 
 module.exports = model('User', userSchema);
