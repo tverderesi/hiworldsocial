@@ -30,6 +30,7 @@ const generateToken = user =>
       id: user.id,
       email: user.email,
       username: user.username,
+      profilePicture: user.profilePicture,
     },
     process.env.SECRET_KEY,
     { expiresIn: '1h' }
@@ -63,6 +64,7 @@ module.exports = {
       }
 
       const token = generateToken(user);
+
       return {
         ...user._doc,
         id: user.id,
@@ -82,7 +84,15 @@ module.exports = {
      */
     async register(
       _, // parent argument
-      { registerInput: { username, email, password, confirmPassword } } // args argument
+      {
+        registerInput: {
+          username,
+          email,
+          password,
+          confirmPassword,
+          profilePicture,
+        },
+      } // args argument
     ) {
       // validate user data
       const { valid, errors } = validateRegisterInput(
@@ -122,9 +132,13 @@ module.exports = {
         username,
         password,
         createdAt: new Date().toISOString(),
+        profilePicture,
       });
+
       const res = await newUser.save();
+
       const token = generateToken(res);
+
       return {
         ...res._doc,
         id: res.id,

@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button } from 'semantic-ui-react';
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { LIKE_POST } from '../util/GraphQL';
+import { Button, Popup } from "semantic-ui-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { LIKE_POST } from "../util/GraphQL";
 
 export function LikeButton({
   post: { id, likeCount, likes },
@@ -35,45 +35,63 @@ export function LikeButton({
   return (
     <>
       {user && showLabel && (
-        <Button
-          basic={!liked ? true : false}
-          color='red'
-          icon='heart'
-          label={{
-            color: 'red',
-            content: likeCount,
-          }}
-          onClick={likePost}
+        <Popup
+          content="Like Post"
+          inverted
+          trigger={
+            <Button
+              basic={!liked ? true : false}
+              color="red"
+              icon="heart"
+              label={{
+                color: "red",
+                content: likeCount,
+              }}
+              onClick={likePost}
+            />
+          }
         />
       )}
       {!user && showLabel && (
-        <Button
-          as={Link}
-          to={'/login'}
-          basic
-          color='red'
-          icon='heart'
-          label={{
-            color: 'red',
-            content: likeCount,
-          }}
+        <Popup
+          content="Like Post"
+          inverted
+          trigger={
+            <Button
+              as={Link}
+              to={"/login"}
+              basic
+              color="red"
+              icon="heart"
+              label={{
+                color: "red",
+                content: likeCount,
+              }}
+            />
+          }
         />
       )}
       {user && !showLabel && (
-        <Button
-          basic={!liked ? true : false}
-          color='red'
-          icon='heart'
-          onClick={likePost}
+        <Popup
+          content="Like Post"
+          inverted
+          trigger={
+            <Button
+              basic={!liked ? true : false}
+              color="red"
+              icon="heart"
+              onClick={likePost}
+            />
+          }
         />
       )}
       {!user && !showLabel && (
-        <Button
-          as={Link}
-          to={'/login'}
-          basic
-          color='red'
-          icon='heart'
+        <Popup
+          content="Like Post"
+          inverted
+          trigger={
+            <Button as={Link} to={"/login"} basic color="red" icon="heart" />
+          }
         />
       )}
     </>

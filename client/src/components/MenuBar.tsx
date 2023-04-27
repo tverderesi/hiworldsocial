@@ -1,12 +1,12 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Menu, MenuItemProps } from 'semantic-ui-react';
+import { Image, Menu, MenuItemProps } from 'semantic-ui-react';
 import { AuthContext } from '../context/auth';
-import { Logo } from '../atoms/Logo';
+import { getPictureURL } from '../util/profilePictureDictionary';
 
 export default function MenuBar() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout }: { user: any; logout: any } = useContext(AuthContext);
 
   const pathname = window.location.pathname;
 
@@ -26,27 +26,63 @@ export default function MenuBar() {
       secondary
       size='massive'
       color='purple'
+      style={{
+        display: 'flex',
+        justifyItems: 'center',
+        width: '100vw !important',
+        height: '7vh !important',
+      }}
     >
       <Menu.Item
-        //@ts-ignore
-        name={user.username}
-        //@ts-ignore
+        style={{ height: '100%', width: '33.333333%' }}
+        name={user?.username}
         active
         onClick={handleItemClick}
         as={Link}
         to='/'
+        children={
+          <>
+            <Image
+              src={getPictureURL(user.profilePicture)}
+              avatar
+              inline
+              style={{ marginRight: '.5rem' }}
+            />
+            {user?.username}
+          </>
+        }
       />
-      <Logo />
 
-      <Menu.Menu position='right'>
-        <Menu.Item
-          name='logout'
-          onClick={logout}
-          as={Link}
-          to='/login'
+      <Menu.Item
+        style={{
+          height: '7vh',
+          width: '33.333333%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Link
+          to={'/'}
+          className='logo'
           style={{ fontWeight: 'bold' }}
-        />
-      </Menu.Menu>
+        >
+          Hi World! 🌎
+        </Link>
+      </Menu.Item>
+
+      <Menu.Item
+        name='logout'
+        onClick={logout}
+        as={Link}
+        to='/login'
+        style={{
+          fontWeight: 'bold',
+          height: '7vh',
+          width: '33.333333%',
+          display: 'flex',
+          justifyContent: 'end',
+        }}
+      />
     </Menu>
   ) : (
     <Menu
@@ -54,6 +90,12 @@ export default function MenuBar() {
       secondary
       size='massive'
       color='purple'
+      style={{
+        display: 'flex',
+        justifyItems: 'center',
+        width: '100vw !important',
+        height: '100vh !important',
+      }}
     >
       <Menu.Item
         name='home'
@@ -61,8 +103,25 @@ export default function MenuBar() {
         onClick={handleItemClick}
         as={Link}
         to='/'
+        style={{ height: '7vh', width: '33.3333333333%' }}
       />
-      <Logo />
+      <Menu.Item
+        style={{
+          height: '7vh',
+          width: '33.333333%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Link
+          to={'/'}
+          className='logo'
+          style={{ fontWeight: 'bold' }}
+        >
+          Hi World! 🌎
+        </Link>
+      </Menu.Item>
+
       <Menu.Menu position='right'>
         <Menu.Item
           name='login'
@@ -70,7 +129,7 @@ export default function MenuBar() {
           onClick={handleItemClick}
           as={Link}
           to='/login'
-          style={{ fontWeight: 'bold' }}
+          style={{ fontWeight: 'bold', height: '7vh' }}
         />
         <Menu.Item
           name='register'
@@ -78,7 +137,7 @@ export default function MenuBar() {
           onClick={handleItemClick}
           as={Link}
           to='/register'
-          style={{ fontWeight: 'bold' }}
+          style={{ fontWeight: 'bold', height: '7vh' }}
         />
       </Menu.Menu>
     </Menu>

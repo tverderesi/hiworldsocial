@@ -10,7 +10,7 @@ import { LOGIN_USER } from '../util/GraphQL';
 export default function Login() {
   const context = useContext(AuthContext);
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}) as any;
 
   const initialState = { username: '', password: '' };
 
@@ -24,9 +24,8 @@ export default function Login() {
       context.login(userData);
       navigate('/', { replace: true });
     },
-    onError(err) {
-      //@ts-ignore
-      setErrors(err.graphQLErrors[0].extensions.errors);
+    onError(err: any) {
+      setErrors(err.graphQLErrors[0]?.extensions?.errors);
     },
     variables: values,
   });
@@ -47,7 +46,7 @@ export default function Login() {
         className='page-title'
         style={{ marginBottom: '2em', marginTop: '1em' }}
       >
-        Register
+        Login
       </h1>
       <Form
         onSubmit={onSubmit}
@@ -59,11 +58,9 @@ export default function Login() {
           label='Username'
           placeholder='Username'
           name='username'
-          //@ts-ignore
           value={values.username}
           onChange={onChange}
-          //@ts-ignore
-          error={errors.username ? true : false}
+          error={errors?.username ? true : false}
         />
 
         <Form.Input
@@ -71,11 +68,9 @@ export default function Login() {
           label='Password'
           placeholder='Password'
           name='password'
-          //@ts-ignore
           value={values.password}
           onChange={onChange}
-          //@ts-ignore
-          error={errors.password ? true : false}
+          error={errors?.password ? true : false}
         />
 
         <Button
@@ -85,7 +80,7 @@ export default function Login() {
           login
         </Button>
       </Form>
-      {Object.keys(errors)?.length > 0 && (
+      {errors && Object.keys(errors).length > 0 && (
         <div className='ui error message'>
           <ul className='list'>
             {Object.values(errors).map((value: any) => (

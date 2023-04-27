@@ -37,6 +37,7 @@ function AuthProvider(props: any): JSX.Element {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   const login = (userData: any) => {
+    console.log(userData);
     localStorage.setItem('jwtToken', userData.token);
     dispatch({ type: 'LOGIN', payload: userData });
   };

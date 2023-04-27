@@ -78,6 +78,7 @@ module.exports = {
         body,
         user: user.id,
         username: user.username,
+        profilePicture: user.profilePicture,
         createdAt: new Date().toISOString(),
       });
       // Save the post to the database and return it
@@ -131,7 +132,8 @@ module.exports = {
      * @throws {UserInputError} - If the post doesn't exist.
      */
     async likePost(_, { postId }, context) {
-      const { username } = checkAuth(context);
+      const { username, profilePicture } = checkAuth(context);
+
       const post = await Post.findById(postId);
       if (post) {
         if (post.likes.find(like => like.username === username)) {
@@ -139,7 +141,12 @@ module.exports = {
           post.likes = post.likes.filter(like => like.username !== username);
         } else {
           //Not Liked, like post
-          post.likes.push({ username, createdAt: new Date().toISOString() });
+
+          post.likes.push({
+            username,
+            createdAt: new Date().toISOString(),
+            profilePicture: profilePicture,
+          });
         }
         await post.save();
         return post;

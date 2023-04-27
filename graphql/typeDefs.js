@@ -65,6 +65,13 @@ const gql = require('graphql-tag');
  */
 
 const typeDefs = gql`
+  type Like {
+    id: ID!
+    createdAt: String!
+    username: String!
+    profilePicture: String!
+  }
+
   type Post {
     id: ID!
     body: String!
@@ -74,6 +81,7 @@ const typeDefs = gql`
     likes: [Like]!
     likeCount: Int!
     commentCount: Int!
+    profilePicture: String!
   }
 
   type Comment {
@@ -81,12 +89,7 @@ const typeDefs = gql`
     username: String!
     createdAt: String!
     body: String!
-  }
-
-  type Like {
-    id: ID!
-    createdAt: String!
-    username: String!
+    profilePicture: String!
   }
 
   input RegisterInput {
@@ -94,6 +97,7 @@ const typeDefs = gql`
     password: String!
     confirmPassword: String!
     email: String!
+    profilePicture: String!
   }
 
   type Query {
@@ -103,10 +107,12 @@ const typeDefs = gql`
 
   type User {
     id: ID!
+    username: String!
+    password: String!
     email: String!
     token: String!
-    username: String!
     createdAt: String!
+    profilePicture: String!
   }
 
   type Mutation {

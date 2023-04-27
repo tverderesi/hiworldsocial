@@ -6,7 +6,7 @@ export function Logo() {
     alignSelf: 'center',
     justifySelf: 'center',
     position: 'absolute',
-    width: '100%',
+    width: '10vw',
     textAlign: 'center',
   };
   return (

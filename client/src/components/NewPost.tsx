@@ -12,6 +12,7 @@ export default function NewPost() {
   const [createPost, { error }] = useMutation(CREATE_POST_MUTATION, {
     variables: values,
     update(proxy, result) {
+      console.log(result);
       const data: any = proxy.readQuery({ query: FETCH_POSTS_QUERY });
       proxy.writeQuery({
         query: FETCH_POSTS_QUERY,
@@ -44,7 +45,7 @@ export default function NewPost() {
                     fontWeight: '400',
                   }}
                 >
-                  {error.graphQLErrors[0].message}!
+                  {error?.graphQLErrors[0]?.message}!
                 </p>
               )}
             </Card.Header>

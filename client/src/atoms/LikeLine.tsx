@@ -1,24 +1,70 @@
-export function LikeLine(post: any) {
-  const likeLength = post.likes?.length;
+export function LikeLine({ post: { likes }, user: { username } }) {
+  console.log(likes);
+  const likeLength = likes?.length;
+  console.log(username);
 
-  return (
-    <>
-      {post.likes?.slice(0, 3).map((like, count) => (
-        <>
-          <span style={{ fontWeight: 'bold' }}>{like.username}</span>
-          {likeLength > 2 && count < likeLength - 1 ? ', ' : ''}
-          {likeLength === 2
-            ? ' and '
-            : likeLength === 3 && count === 1
-            ? 'and '
-            : ''}
-        </>
-      ))}{' '}
-      {likeLength > 3
-        ? `${' and '}
-      ${likeLength - 3} more ${likeLength - 3 === 1 ? 'user' : 'users'}`
-        : ''}
-      {post.likes.length >> 0 ? ' liked this.' : ' Nobody liked this.'}
-    </>
-  );
+  if (likes) {
+    switch (true) {
+      case likeLength === 1:
+        if (likes[0].username === username) {
+          return <p>You liked this.</p>;
+        } else {
+          return <p>{`${likes[0].username} liked this.`}</p>;
+        }
+
+      case likeLength === 2:
+        return (
+          <p>
+            <strong>{`${
+              likes[1].username === username ? 'You' : likes[1].username
+            }`}</strong>{' '}
+            and{' '}
+            <strong>{`${
+              likes[0].username === username ? 'You' : likes[0].username
+            }`}</strong>{' '}
+            liked this.
+          </p>
+        );
+
+      case likeLength === 3:
+        return (
+          <p>
+            <strong>{`${
+              likes[2].username === username ? 'You' : likes[2].username
+            }`}</strong>
+            ,{' '}
+            <strong>{`${
+              likes[1].username === username ? 'You' : likes[1].username
+            }`}</strong>{' '}
+            and{' '}
+            <strong>{`${
+              likes[0].username === username ? 'You' : likes[0].username
+            }`}</strong>{' '}
+            liked this.
+          </p>
+        );
+
+      case likeLength > 3:
+        return (
+          <p>
+            <strong>{`${
+              likes[2].username === username ? 'You' : likes.username[2]
+            }`}</strong>
+            ,
+            <strong>
+              {' '}
+              {`${likes[1].username === username ? 'You' : likes.username[1]}`}
+            </strong>
+            ,
+            <strong>{`${
+              likes[0].username === username ? 'You' : likes.username[0]
+            }`}</strong>
+            and ${likeLength - 3} more people liked this.
+          </p>
+        );
+
+      default:
+        return <p>Nobody Liked This</p>;
+    }
+  } else return <></>;
 }

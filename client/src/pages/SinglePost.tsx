@@ -3,16 +3,19 @@ import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { useContext } from 'react';
 
-import { Grid, Container, Card } from 'semantic-ui-react';
+import { Grid, Container, Card, Image } from 'semantic-ui-react';
 import { LikeButton } from '../atoms/LikeButton';
 import Comments from '../components/Comments';
 import { DELETE_POST, GET_POST } from '../util/GraphQL';
 import { AuthContext } from '../context/auth';
 import { LikeLine } from '../atoms/LikeLine';
 import { DeleteButton } from '../atoms/DeleteButton';
+import { getPictureURL } from '../util/profilePictureDictionary';
+import { LikePictures } from '../atoms/LikePictures';
 
 export default function SinglePost() {
   const { user } = useContext(AuthContext) as any;
+
   const { id } = useParams();
 
   const post = useQuery(GET_POST, { variables: { postId: id } }).data?.getPost;
@@ -66,9 +69,10 @@ export default function SinglePost() {
                 }}
               >
                 <img
-                  src='https://react.semantic-ui.com/images/avatar/large/molly.png'
+                  src={getPictureURL(post.profilePicture) as any}
                   alt={post.username}
                   className='BigPicture'
+                  style={{ borderRadius: '50%' }}
                 />
                 <div
                   style={{
@@ -121,7 +125,13 @@ export default function SinglePost() {
                 computer={8}
                 mobile={16}
               >
-                <Grid.Row>{LikeLine(post)}</Grid.Row>
+                <Grid.Row style={{ display: 'flex', alignItems: 'center' }}>
+                  <LikePictures post={post} />
+                  <LikeLine
+                    post={post}
+                    user={user}
+                  />
+                </Grid.Row>
                 <Comments
                   commentCount={post.commentCount}
                   comments={post.comments}

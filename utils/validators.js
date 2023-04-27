@@ -16,7 +16,8 @@ module.exports.validateRegisterInput = (
   username,
   email,
   password,
-  confirmPassword
+  confirmPassword,
+  profilePicture
 ) => {
   const errors = {};
   switch (true) {
