@@ -1,18 +1,23 @@
-import App from './App';
+import App from "./App";
 import {
   InMemoryCache,
   createHttpLink,
   ApolloProvider,
   ApolloClient,
-} from '@apollo/client';
-import { setContext } from 'apollo-link-context';
+} from "@apollo/client";
+import { setContext } from "apollo-link-context";
 
-const httpLink = createHttpLink({ uri: 'http://localhost:5000' });
+const httpLink = createHttpLink({
+  uri:
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_GRAPHQL_ENDPOINT
+      : "http://localhost:5000/",
+});
 
 const authLink = setContext(() => {
-  const token = localStorage.getItem('jwtToken');
+  const token = localStorage.getItem("jwtToken");
   return {
-    headers: { Authorization: token ? `Bearer ${token}` : '' },
+    headers: { Authorization: token ? `Bearer ${token}` : "" },
   };
 });
 
