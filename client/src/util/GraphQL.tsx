@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 export const FETCH_POSTS_QUERY = gql`
   {
@@ -118,6 +118,7 @@ export const GET_POST = gql`
         username
         createdAt
         body
+        profilePicture
       }
       likes {
         id

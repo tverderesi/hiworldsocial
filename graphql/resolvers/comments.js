@@ -1,6 +1,6 @@
-const { UserInputError, AuthenticationError } = require('apollo-server');
-const Post = require('../../models/Post');
-const checkAuth = require('../../utils/checkAuth');
+const { UserInputError, AuthenticationError } = require("apollo-server");
+const Post = require("../../models/Post");
+const checkAuth = require("../../utils/checkAuth");
 
 module.exports = {
   Mutation: {
@@ -19,23 +19,24 @@ module.exports = {
      */
     createComment: async (_, { postId, body }, context) => {
       // Retrieve the authenticated user's credentials
-      const { username } = checkAuth(context);
+      const { username, profilePicture } = checkAuth(context);
 
       post = await Post.findById(postId);
       // Check for different conditions and throw appropriate errors if necessary
       switch (true) {
-        case body.trim() === '':
-          throw new UserInputError('Empty comment.', {
-            errors: { body: 'Comment body must not be empty.' },
+        case body.trim() === "":
+          throw new UserInputError("Empty comment.", {
+            errors: { body: "Comment body must not be empty." },
           });
         case !username:
           throw new Error(`user not found. ${username}`);
         case !post:
-          throw new UserInputError('Post not found!');
+          throw new UserInputError("Post not found!");
         default:
           // Add the new comment to the beginning of the post's comments array
           post.comments.unshift({
             body,
+            profilePicture,
             username,
             createdAt: new Date().toISOString(),
           });
@@ -67,17 +68,17 @@ module.exports = {
 
       // Find the index of the comment within the post's comments array
       const commentIdx = post.comments.findIndex(
-        comment => comment.id === commentId
+        (comment) => comment.id === commentId
       );
 
       // Use a switch statement to handle different cases
       switch (true) {
         // If the post cannot be found, throw a UserInputError
         case !post:
-          throw new UserInputError('Post not found!');
+          throw new UserInputError("Post not found!");
         // If the comment cannot be found, throw a UserInputError
         case commentIdx === -1:
-          throw new UserInputError('Comment not found!');
+          throw new UserInputError("Comment not found!");
         // If the authenticated user did not make the comment, throw an AuthenticationError
         case post.comments[commentIdx].username !== username:
           throw new AuthenticationError(

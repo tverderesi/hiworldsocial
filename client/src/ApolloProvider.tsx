@@ -5,7 +5,7 @@ import {
   ApolloProvider,
   ApolloClient,
 } from "@apollo/client";
-import { setContext } from "apollo-link-context";
+import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
   uri:
@@ -22,7 +22,6 @@ const authLink = setContext(() => {
 });
 
 const client = new ApolloClient({
-  //@ts-ignore
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
