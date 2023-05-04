@@ -21,97 +21,61 @@ export default function MenuBar() {
   ) => (name ? setState({ activeItem: name }) : "");
 
   return user ? (
-    <Menu
-      pointing
-      secondary
-      size="massive"
-      color="purple"
-      style={{
-        display: "flex",
-        justifyItems: "center",
-        width: "100vw !important",
-        height: "7vh !important",
-      }}
-    >
-      <Menu.Item
-        style={{ height: "100%", width: "33.333333%" }}
-        name={user?.username}
-        active
-        onClick={handleItemClick}
-        as={Link}
-        to="/profile"
-        children={
-          <>
-            <Image
-              src={getPictureURL(user.profilePicture)}
-              avatar
-              inline
-              style={{ marginRight: ".5rem" }}
-            />
-            {user?.username}
-          </>
-        }
-      />
-
-      <Menu.Item
-        style={{
-          height: "7vh",
-          width: "33.333333%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+    <Menu pointing secondary size="massive" color="purple" stackable>
+      <Menu.Item style={{ height: "7vh" }}>
         <Link to={"/"} className="logo" style={{ fontWeight: "bold" }}>
           Hi World! 🌎
         </Link>
       </Menu.Item>
-
-      <Menu.Item
-        name="logout"
-        onClick={logout}
-        as={Link}
-        to="/login"
-        style={{
-          fontWeight: "bold",
-          height: "7vh",
-          width: "33.333333%",
-          display: "flex",
-          justifyContent: "end",
-        }}
-      />
+      <Menu.Menu position="right">
+        <Menu.Item
+          style={{
+            height: "7vh",
+            fontWeight: "bold",
+            color: "rgb(150, 39, 186)",
+          }}
+          name={user?.username}
+          as={Link}
+          to="/profile"
+          children={
+            <>
+              <Image
+                src={getPictureURL(user.profilePicture)}
+                avatar
+                inline
+                style={{ marginRight: ".5rem", height: "30px", width: "auto" }}
+              />
+              {user?.username}
+            </>
+          }
+        />
+        <Menu.Item
+          name="logout"
+          onClick={logout}
+          as={Link}
+          to="/login"
+          style={{
+            fontWeight: "bold",
+            height: "7vh",
+          }}
+        />
+      </Menu.Menu>
     </Menu>
   ) : (
-    <Menu
-      pointing
-      secondary
-      size="massive"
-      color="purple"
-      style={{
-        display: "flex",
-        justifyItems: "center",
-        width: "100vw !important",
-        height: "100vh !important",
-      }}
-    >
+    <Menu pointing secondary stackable size="massive" color="purple">
       <Menu.Item
+        as={Link}
+        to={"/"}
+        className="logo"
         name="home"
         active={activeItem === "home"}
         onClick={handleItemClick}
-        as={Link}
-        to="/"
-        style={{ height: "7vh", width: "33.3333333333%" }}
-      />
-      <Menu.Item
         style={{
           height: "7vh",
-          width: "33.333333%",
-          display: "flex",
-          justifyContent: "center",
+          fontWeight: "bold",
         }}
       >
-        <Link to={"/"} className="logo" style={{ fontWeight: "bold" }}>
-          Hi World! 🌎
-        </Link>
+        Hi World! 🌎
       </Menu.Item>
 
       <Menu.Menu position="right">

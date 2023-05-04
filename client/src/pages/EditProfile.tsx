@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { Form, Button, Container } from "semantic-ui-react";
-import { profilePictureDictionary } from "../util/profilePictureDictionary";
-import { ProfilePictureSelector } from "./ProfilePictureSelector";
+
+import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
 import { useForm } from "../util/hooks";
 import { useMutation } from "@apollo/client";
 import { REGISTER_USER } from "../util/GraphQL";
@@ -27,26 +27,9 @@ export function EditProfile() {
     e.preventDefault();
     // Submit form data to backend API
   };
-  const [placeholderNames, setPlaceholderNames] = useState(
-    profilePictureDictionary
-  );
 
   const { onChange, onSubmit, values } = useForm(registerUser, initialState);
-  const handleImageClick = (index) => {
-    setPlaceholderNames((prevState) => {
-      const newNames = prevState.map((item, i) => {
-        if (i === index) {
-          item.isSelected = true;
 
-          values.profilePicture = item.name;
-        } else {
-          item.isSelected = false;
-        }
-        return item;
-      });
-      return newNames;
-    });
-  };
   const [addUser, { loading }] = useMutation(REGISTER_USER, {
     update(_, { data: { register: userData } }) {
       context.login(userData);
@@ -94,10 +77,7 @@ export function EditProfile() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Field>
-        <ProfilePictureSelector
-          handleImageClick={handleImageClick}
-          placeholderNames={placeholderNames}
-        />
+        <ProfilePictureSelector values={values} />
         <Button type="submit" primary>
           Save Changes
         </Button>

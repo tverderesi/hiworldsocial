@@ -1,5 +1,5 @@
 import { Form, Grid, Button } from "semantic-ui-react";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import { useForm } from "../util/hooks";
 import { AuthContext } from "../context/auth";
 import { REGISTER_USER } from "../util/GraphQL";
 import { profilePictureDictionary } from "../util/profilePictureDictionary";
-import { ProfilePictureSelector } from "./ProfilePictureSelector";
+import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
 
 function Register() {
   const context = useContext(AuthContext);
@@ -20,27 +20,6 @@ function Register() {
     password: "",
     confirmPassword: "",
     profilePicture: "ade",
-  };
-
-  //prettier-ignore
-  const [placeholderNames, setPlaceholderNames] = useState(
-  profilePictureDictionary
-  )
-
-  const handleImageClick = (index) => {
-    setPlaceholderNames((prevState) => {
-      const newNames = prevState.map((item, i) => {
-        if (i === index) {
-          item.isSelected = true;
-
-          values.profilePicture = item.name;
-        } else {
-          item.isSelected = false;
-        }
-        return item;
-      });
-      return newNames;
-    });
   };
 
   const { onChange, onSubmit, values } = useForm(registerUser, initialState);
@@ -140,10 +119,7 @@ function Register() {
           />
         </div>
 
-        <ProfilePictureSelector
-          handleImageClick={handleImageClick}
-          placeholderNames={placeholderNames}
-        />
+        <ProfilePictureSelector values={values} />
         <Grid.Row
           style={{
             display: "grid",

@@ -1,24 +1,42 @@
 import { Button, Grid, GridColumn, Image } from "semantic-ui-react";
-import React from "react";
+import { useState } from "react";
 import { getPictureURL } from "../util/profilePictureDictionary";
+import { profilePictureDictionary } from "../util/profilePictureDictionary";
+import roundSpinner from "./roundSpinner.svg";
 
-export function ProfilePictureSelector({
-  placeholderNames,
-  handleImageClick,
-}: {
-  placeholderNames: { name: string; isSelected: boolean; v: string }[];
-  handleImageClick: (index: any) => void;
-}) {
+export function ProfilePictureSelector({ values }) {
+  const [loading, setLoading] = useState(true);
+  const [placeholderNames, setPlaceholderNames] = useState(
+    profilePictureDictionary
+  );
+  const [loadingPic, setLoadingPic] = useState(true);
+  const handleImageClick = (index) => {
+    setPlaceholderNames((prevState) => {
+      const newNames = prevState.map((item, i) => {
+        if (i === index) {
+          item.isSelected = true;
+
+          values.profilePicture = item.name;
+        } else {
+          item.isSelected = false;
+        }
+        return item;
+      });
+      return newNames;
+    });
+  };
+
   return (
     <Grid
       style={{
         marginTop: "2rem",
-        borderRadius: ".28571429rem",
-        // boxShadow: '0 1px 3px 0 #d4d4d5,0 0 0 1px #d4d4d5',
       }}
       relaxed
       centered
       columns={8}
+      onLoad={() => {
+        setLoading(false);
+      }}
     >
       <Grid.Row>
         <h2
@@ -46,8 +64,8 @@ export function ProfilePictureSelector({
               }}
               key={item.name}
               computer={2}
-              tablet={4}
-              mobile={8}
+              tablet={2}
+              mobile={4}
             >
               <Image
                 src={getPictureURL(item.name)}
@@ -60,8 +78,20 @@ export function ProfilePictureSelector({
                   boxShadow: item.isSelected
                     ? "0 1px 3px 0 #9627ba,0 0 0 2px #9627ba"
                     : "",
+
+                  background: loadingPic
+                    ? "linear-gradient(90deg, #c9c9c9, #f4f4f4, #c9c9c9 )"
+                    : "",
+
+                  backgroundSize: loadingPic ? "400% 400%" : "",
+                  animation: loadingPic
+                    ? "gradientAnimation 1s ease infinite"
+                    : "",
                 }}
                 size="small"
+                onLoad={() => {
+                  setLoadingPic(false);
+                }}
               />
               <h4
                 key={item.name}
