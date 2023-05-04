@@ -1,14 +1,15 @@
-import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import 'semantic-ui-css/semantic.min.css';
-import './App.css';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import MenuBar from './components/MenuBar';
-import { AuthProvider } from './context/auth';
-import AuthRoute from './util/AuthRoute';
-import SinglePost from './pages/SinglePost';
+import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "semantic-ui-css/semantic.min.css";
+import "./App.css";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import MenuBar from "./components/MenuBar";
+import { AuthProvider } from "./context/auth";
+import AuthRoute from "./util/AuthRoute";
+import SinglePost from "./pages/SinglePost";
+import EditProfile from "./pages/EditProfile";
 function App() {
   return (
     <AuthProvider>
@@ -23,6 +24,7 @@ function App() {
           <Route path='/register' element={<AuthRoute><Register /></AuthRoute>} />
           {/* prettier-ignore */}
           <Route path='/posts/:id' element={<SinglePost />} />
+          <Route path="/profile" element={<EditProfile />} />
         </Routes>
       </Router>
     </AuthProvider>

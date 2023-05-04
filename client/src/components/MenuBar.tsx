@@ -1,16 +1,16 @@
-import { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 
-import { Image, Menu, MenuItemProps } from 'semantic-ui-react';
-import { AuthContext } from '../context/auth';
-import { getPictureURL } from '../util/profilePictureDictionary';
+import { Image, Menu, MenuItemProps } from "semantic-ui-react";
+import { AuthContext } from "../context/auth";
+import { getPictureURL } from "../util/profilePictureDictionary";
 
 export default function MenuBar() {
   const { user, logout }: { user: any; logout: any } = useContext(AuthContext);
 
   const pathname = window.location.pathname;
 
-  const path = '/' ? 'home' : pathname.substring(1);
+  const path = "/" ? "home" : pathname.substring(1);
 
   const [state, setState] = useState({ activeItem: path });
   const { activeItem } = state;
@@ -18,35 +18,35 @@ export default function MenuBar() {
   const handleItemClick = (
     e: React.SyntheticEvent<any, any>,
     { name }: MenuItemProps
-  ) => (name ? setState({ activeItem: name }) : '');
+  ) => (name ? setState({ activeItem: name }) : "");
 
   return user ? (
     <Menu
       pointing
       secondary
-      size='massive'
-      color='purple'
+      size="massive"
+      color="purple"
       style={{
-        display: 'flex',
-        justifyItems: 'center',
-        width: '100vw !important',
-        height: '7vh !important',
+        display: "flex",
+        justifyItems: "center",
+        width: "100vw !important",
+        height: "7vh !important",
       }}
     >
       <Menu.Item
-        style={{ height: '100%', width: '33.333333%' }}
+        style={{ height: "100%", width: "33.333333%" }}
         name={user?.username}
         active
         onClick={handleItemClick}
         as={Link}
-        to='/'
+        to="/profile"
         children={
           <>
             <Image
               src={getPictureURL(user.profilePicture)}
               avatar
               inline
-              style={{ marginRight: '.5rem' }}
+              style={{ marginRight: ".5rem" }}
             />
             {user?.username}
           </>
@@ -55,32 +55,28 @@ export default function MenuBar() {
 
       <Menu.Item
         style={{
-          height: '7vh',
-          width: '33.333333%',
-          display: 'flex',
-          justifyContent: 'center',
+          height: "7vh",
+          width: "33.333333%",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        <Link
-          to={'/'}
-          className='logo'
-          style={{ fontWeight: 'bold' }}
-        >
+        <Link to={"/"} className="logo" style={{ fontWeight: "bold" }}>
           Hi World! 🌎
         </Link>
       </Menu.Item>
 
       <Menu.Item
-        name='logout'
+        name="logout"
         onClick={logout}
         as={Link}
-        to='/login'
+        to="/login"
         style={{
-          fontWeight: 'bold',
-          height: '7vh',
-          width: '33.333333%',
-          display: 'flex',
-          justifyContent: 'end',
+          fontWeight: "bold",
+          height: "7vh",
+          width: "33.333333%",
+          display: "flex",
+          justifyContent: "end",
         }}
       />
     </Menu>
@@ -88,56 +84,52 @@ export default function MenuBar() {
     <Menu
       pointing
       secondary
-      size='massive'
-      color='purple'
+      size="massive"
+      color="purple"
       style={{
-        display: 'flex',
-        justifyItems: 'center',
-        width: '100vw !important',
-        height: '100vh !important',
+        display: "flex",
+        justifyItems: "center",
+        width: "100vw !important",
+        height: "100vh !important",
       }}
     >
       <Menu.Item
-        name='home'
-        active={activeItem === 'home'}
+        name="home"
+        active={activeItem === "home"}
         onClick={handleItemClick}
         as={Link}
-        to='/'
-        style={{ height: '7vh', width: '33.3333333333%' }}
+        to="/"
+        style={{ height: "7vh", width: "33.3333333333%" }}
       />
       <Menu.Item
         style={{
-          height: '7vh',
-          width: '33.333333%',
-          display: 'flex',
-          justifyContent: 'center',
+          height: "7vh",
+          width: "33.333333%",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        <Link
-          to={'/'}
-          className='logo'
-          style={{ fontWeight: 'bold' }}
-        >
+        <Link to={"/"} className="logo" style={{ fontWeight: "bold" }}>
           Hi World! 🌎
         </Link>
       </Menu.Item>
 
-      <Menu.Menu position='right'>
+      <Menu.Menu position="right">
         <Menu.Item
-          name='login'
-          active={activeItem === 'login'}
+          name="login"
+          active={activeItem === "login"}
           onClick={handleItemClick}
           as={Link}
-          to='/login'
-          style={{ fontWeight: 'bold', height: '7vh' }}
+          to="/login"
+          style={{ fontWeight: "bold", height: "7vh" }}
         />
         <Menu.Item
-          name='register'
-          active={activeItem === 'register'}
+          name="register"
+          active={activeItem === "register"}
           onClick={handleItemClick}
           as={Link}
-          to='/register'
-          style={{ fontWeight: 'bold', height: '7vh' }}
+          to="/register"
+          style={{ fontWeight: "bold", height: "7vh" }}
         />
       </Menu.Menu>
     </Menu>
