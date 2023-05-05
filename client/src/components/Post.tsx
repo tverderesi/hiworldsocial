@@ -1,4 +1,4 @@
-import { Card, Image, Popup } from "semantic-ui-react";
+import { Card, Image } from "semantic-ui-react";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
@@ -29,21 +29,23 @@ export default function Post({
     <>
       <Card style={{ height: "100%" }} fluid>
         <Card.Content>
-          <Image
-            floated="right"
-            size="mini"
-            src={getPictureURL(profilePicture)}
-            style={{
-              borderRadius: "50%",
-              height: "50px",
-              width: "50px",
-              position: "absolute",
-              right: "8px",
-              top: "8px",
-              zIndex: "1",
-            }}
-            rounded
-          />
+          <Link to={`/profile/${username}`}>
+            <Image
+              floated="right"
+              size="mini"
+              src={getPictureURL(profilePicture)}
+              style={{
+                borderRadius: "50%",
+                height: "50px",
+                width: "50px",
+                position: "absolute",
+                right: "8px",
+                top: "8px",
+                zIndex: "1",
+              }}
+              rounded
+            />
+          </Link>
           <Card.Header>{username}</Card.Header>
           <Card.Meta as={Link} to={`/posts/${id}`}>
             {moment(createdAt).fromNow()}

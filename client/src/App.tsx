@@ -9,6 +9,8 @@ import MenuBar from "./components/MenuBar";
 import { AuthProvider } from "./context/auth";
 import AuthRoute from "./util/AuthRoute";
 import SinglePost from "./pages/SinglePost";
+
+import Profile from "./pages/User";
 import EditProfile from "./pages/EditProfile";
 function App() {
   return (
@@ -17,14 +19,16 @@ function App() {
         <MenuBar />
         <Routes>
           {/* prettier-ignore */}
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home />}>
+          <Route path="/profile/:username" element={<Profile />} />
+          </Route>
+          <Route path="/profile/editprofile" element={<EditProfile />} />
           {/* prettier-ignore */}
           <Route path='/login' element={<AuthRoute><Login /></AuthRoute>} />
           {/* prettier-ignore */}
           <Route path='/register' element={<AuthRoute><Register /></AuthRoute>} />
           {/* prettier-ignore */}
           <Route path='/posts/:id' element={<SinglePost />} />
-          <Route path="/profile" element={<EditProfile />} />
         </Routes>
       </Router>
     </AuthProvider>

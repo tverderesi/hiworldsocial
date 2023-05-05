@@ -1,4 +1,4 @@
-const gql = require('graphql-tag');
+const gql = require("graphql-tag");
 /**
  * Represents a post.
  * @typedef {Object} Post
@@ -99,10 +99,18 @@ const typeDefs = gql`
     email: String!
     profilePicture: String!
   }
-
+  input UpdateProfileInput {
+    username: String!
+    email: String!
+    oldPassword: String
+    newPassword: String
+    profilePicture: String
+  }
   type Query {
     getPosts: [Post]
     getPost(postId: ID!): Post
+    getUser(username: String!): User
+    getUsers: [User]
   }
 
   type User {
@@ -123,6 +131,7 @@ const typeDefs = gql`
     createComment(postId: String!, body: String!): Post!
     deleteComment(postId: String!, commentId: String!): Post!
     likePost(postId: ID!): Post!
+    updateUser(updateProfileInput: UpdateProfileInput!): User!
   }
 `;
 

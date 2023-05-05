@@ -1,12 +1,12 @@
 import { Form, Grid, Button } from "semantic-ui-react";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
 import { useForm } from "../util/hooks";
 import { AuthContext } from "../context/auth";
 import { REGISTER_USER } from "../util/GraphQL";
-import { profilePictureDictionary } from "../util/profilePictureDictionary";
+
 import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
 
 function Register() {
@@ -26,7 +26,6 @@ function Register() {
 
   const [addUser, { loading }] = useMutation(REGISTER_USER, {
     update(_, { data: { register: userData } }) {
-      console.log(userData);
       context.login(userData);
 
       navigate("/", { replace: true });

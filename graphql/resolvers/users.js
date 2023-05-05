@@ -4,16 +4,16 @@
  * @module auth/resolvers/users
  */
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { UserInputError } = require('apollo-server');
-require('dotenv').config();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { UserInputError } = require("apollo-server");
+require("dotenv").config();
 
-const User = require('../../models/User');
+const User = require("../../models/User");
 const {
   validateRegisterInput,
   validateLoginInput,
-} = require('../../utils/validators');
+} = require("../../utils/validators");
 
 /**
  * Generates a JSON web token for a user.
@@ -24,7 +24,7 @@ const {
  * @param {string} user.username - The username of the user.
  * @returns {string} The generated JSON web token.
  */
-const generateToken = user =>
+const generateToken = (user) =>
   jwt.sign(
     {
       id: user.id,
@@ -33,7 +33,7 @@ const generateToken = user =>
       profilePicture: user.profilePicture,
     },
     process.env.SECRET_KEY,
-    { expiresIn: '1h' }
+    { expiresIn: "1h" }
   );
 
 module.exports = {
@@ -50,17 +50,17 @@ module.exports = {
       const user = await User.findOne({ username });
 
       if (!valid) {
-        throw new UserInputError('Wrong credentials.', { errors });
+        throw new UserInputError("Wrong credentials.", { errors });
       }
 
       if (!user) {
-        errors.general = 'User not found!';
-        throw new UserInputError('User not found.', { errors });
+        errors.general = "User not found!";
+        throw new UserInputError("User not found.", { errors });
       }
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        throw new UserInputError('Wrong credentials.', { errors });
+        throw new UserInputError("Wrong credentials.", { errors });
       }
 
       const token = generateToken(user);
@@ -102,15 +102,15 @@ module.exports = {
         confirmPassword
       );
       if (!valid) {
-        throw new UserInputError('Errors', { errors });
+        throw new UserInputError("Errors", { errors });
       }
 
       // make sure username doesn't already exist
       const user = await User.findOne({ username });
       if (user) {
-        throw new UserInputError('Username is taken.', {
+        throw new UserInputError("Username is taken.", {
           errors: {
-            username: 'This username is taken!',
+            username: "This username is taken!",
           },
         });
       }
@@ -118,9 +118,9 @@ module.exports = {
       // make sure email doesn't already exist
       const uniqueEmail = await User.findOne({ email });
       if (uniqueEmail) {
-        throw new UserInputError('Email is already registered.', {
+        throw new UserInputError("Email is already registered.", {
           errors: {
-            username: 'This email is already registered.',
+            username: "This email is already registered.",
           },
         });
       }
@@ -144,6 +144,101 @@ module.exports = {
         id: res.id,
         token,
       };
+    },
+    async updateUser(
+      _,
+      { username, email, oldPassword, newPassword, profilePicture },
+      context
+    ) {
+      // Check if user is logged in
+      const { user } = checkAuth(context);
+
+      // Check if the logged-in user is the one trying to update their profile
+      if (user.username !== username) {
+        throw new AuthenticationError(
+          "You're not authorized to update this user's profile."
+        );
+      }
+
+      // Find the user in the database
+      const dbUser = await User.findOne({ username });
+
+      // Update user's email if it's different
+      if (email && email !== dbUser.email) {
+        // Validate email
+        const { valid, errors } = validateEmail(email);
+        if (!valid) {
+          throw new UserInputError("Errors", { errors });
+        }
+
+        // Check if email is already taken
+        const existingUser = await User.findOne({ email });
+        if (existingUser && existingUser.username !== username) {
+          throw new UserInputError("Email is already registered.", {
+            errors: {
+              email: "This email is already registered.",
+            },
+          });
+        }
+
+        dbUser.email = email;
+      }
+
+      // Update user's password if it's different
+      if (oldPassword && newPassword) {
+        // Validate old password
+        const { valid: passwordValid, errors } = validatePassword(
+          oldPassword,
+          dbUser.password
+        );
+        if (!passwordValid) {
+          throw new UserInputError("Errors", { errors });
+        }
+
+        // Validate new password
+        const { valid, errors: newPasswordErrors } =
+          validatePassword(newPassword);
+        if (!valid) {
+          throw new UserInputError("Errors", { errors: newPasswordErrors });
+        }
+
+        // Hash and update password
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        dbUser.password = hashedPassword;
+      }
+
+      // Update user's profile picture if it's different
+      if (profilePicture && profilePicture !== dbUser.profilePicture) {
+        dbUser.profilePicture = profilePicture;
+      }
+
+      // Save changes to the database
+      const updatedUser = await dbUser.save();
+
+      return updatedUser;
+    },
+  },
+  Query: {
+    async getUser(_, { username }) {
+      try {
+        const user = await User.findOne({ username });
+        if (user) {
+          return user;
+        } else {
+          throw new Error("User not found");
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getUsers() {
+      try {
+        const users = await User.find();
+        console.log(users);
+        return users;
+      } catch (err) {
+        throw new Error(err);
+      }
     },
   },
 };

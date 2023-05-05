@@ -3,7 +3,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useContext } from "react";
 import spinner from "../atoms/3-dots-bounce.svg";
-import { Grid, Container, Card, Image } from "semantic-ui-react";
+import { Grid, Container, Card } from "semantic-ui-react";
 import { LikeButton } from "../atoms/LikeButton";
 import Comments from "../components/Comments";
 import { DELETE_POST, GET_POST } from "../util/GraphQL";
@@ -12,6 +12,7 @@ import { LikeLine } from "../atoms/LikeLine";
 import { DeleteButton } from "../atoms/DeleteButton";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { LikePictures } from "../atoms/LikePictures";
+import { Link } from "react-router-dom";
 
 export default function SinglePost() {
   const { user } = useContext(AuthContext) as any;
@@ -92,12 +93,14 @@ export default function SinglePost() {
                     width: "auto",
                   }}
                 >
-                  <img
-                    src={getPictureURL(post.profilePicture) as any}
-                    alt={post.username}
-                    className="BigPicture"
-                    style={{ borderRadius: "50%" }}
-                  />
+                  <Link to={`/profile/${post.username}`}>
+                    <img
+                      src={getPictureURL(post.profilePicture) as any}
+                      alt={post.username}
+                      className="BigPicture"
+                      style={{ borderRadius: "50%" }}
+                    />
+                  </Link>
                   <div
                     style={{
                       display: "flex",

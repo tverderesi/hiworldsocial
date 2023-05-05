@@ -4,7 +4,7 @@ import { getPictureURL } from "../util/profilePictureDictionary";
 import { profilePictureDictionary } from "../util/profilePictureDictionary";
 import roundSpinner from "./roundSpinner.svg";
 
-export function ProfilePictureSelector({ values }) {
+export function ProfilePictureSelector({ values, update = false }) {
   const [loading, setLoading] = useState(true);
   const [placeholderNames, setPlaceholderNames] = useState(
     profilePictureDictionary
@@ -48,7 +48,7 @@ export function ProfilePictureSelector({ values }) {
             textAlign: "center",
           }}
         >
-          Select an Avatar
+          {`  Select ${update ? "a new" : "an"} Avatar`}
         </h2>
       </Grid.Row>
       <Grid.Row>

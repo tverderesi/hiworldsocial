@@ -7,6 +7,7 @@ import Post from "../components/Post";
 import { AuthContext } from "../context/auth";
 import { FETCH_POSTS_QUERY } from "../util/GraphQL";
 import { relative } from "path";
+import { Outlet } from "react-router-dom";
 
 function Home() {
   const { loading, data } = useQuery(FETCH_POSTS_QUERY); //can't destructure here or else TS will scream
@@ -19,7 +20,7 @@ function Home() {
         <Grid.Row style={{ margin: "1rem 0" }}>
           <h1 className="page-title">Recent Posts</h1>
         </Grid.Row>
-
+        <Outlet />
         <Grid.Row>
           <Grid.Column style={{ marginBottom: "2rem" }}>
             {user ? <NewPost /> : <Ad />}

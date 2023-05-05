@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm start --prefix ./client/",
-    "dev": "concurrently \"npm run serve\" \"npm run client ----host\"",
+    "dev": "concurrently \"npm run serveDev\" \"npm run client ----host\"",
     "serve": "node index.js",
-    "serveDev": "nodemon index.js"
+    "serveDev": "nodemon index.js",
+    "start":  "concurrently \"npm run serve\" \"npm run client ----host\""
   },
   "author": "tverderesi",
   "license": "ISC",

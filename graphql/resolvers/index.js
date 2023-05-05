@@ -5,9 +5,9 @@
  */
 
 // Import the resolvers for each type
-const postsResolvers = require('./posts');
-const usersResolvers = require('./users');
-const commentsResolvers = require('./comments');
+const postsResolvers = require("./posts");
+const usersResolvers = require("./users");
+const commentsResolvers = require("./comments");
 
 module.exports = {
   /**
@@ -22,7 +22,7 @@ module.exports = {
      * @param {Object} parent - The parent object containing the "likes" field.
      * @returns {number} The number of likes the post has received.
      */
-    likeCount: parent => {
+    likeCount: (parent) => {
       return parent.likes.length;
     },
     /**
@@ -31,7 +31,7 @@ module.exports = {
      * @param {Object} parent - The parent object containing the "comments" field.
      * @returns {number} The number of comments on the post.
      */
-    commentCount: parent => {
+    commentCount: (parent) => {
       return parent.comments.length;
     },
   },
@@ -44,6 +44,7 @@ module.exports = {
   Query: {
     // Add the Query resolvers for the Post type
     ...postsResolvers.Query,
+    ...usersResolvers.Query,
   },
   /**
    * The resolvers for the Mutation type.

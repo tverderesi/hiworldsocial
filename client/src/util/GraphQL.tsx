@@ -183,3 +183,37 @@ export const DELETE_COMMENT_MUTATION = gql`
     }
   }
 `;
+
+export const GET_USER_QUERY = gql`
+  query GetUser($username: String!) {
+    getUser(username: $username) {
+      username
+      password
+      email
+      createdAt
+      profilePicture
+    }
+  }
+`;
+
+export const UPDATE_USER_MUTATION = gql`
+  mutation updateUser(
+    $id: ID!
+    $username: String!
+    $email: String!
+    $profilePicture: String!
+  ) {
+    updateUser(
+      id: $id
+      username: $username
+      email: $email
+      profilePicture: $profilePicture
+    ) {
+      id
+      username
+      email
+      createdAt
+      profilePicture
+    }
+  }
+`;

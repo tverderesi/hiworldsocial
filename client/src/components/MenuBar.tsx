@@ -36,7 +36,7 @@ export default function MenuBar() {
           }}
           name={user?.username}
           as={Link}
-          to="/profile"
+          to={`/profile/${user?.username}`}
           children={
             <>
               <Image
