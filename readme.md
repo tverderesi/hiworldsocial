@@ -12,10 +12,10 @@ Hey World is a social network web application built with React, Node.js, and Mon
 - editing profile
 
 ## Database
-Hey World uses MongoDB as its database system. The application has one database called *merng*, which contains two collections:
+Hey World uses MongoDB as its database system. The application has one database called **merng**, which contains two collections:
 
-*users*: stores user profile information including usernames, email addresses, passwords, and profile pictures.
-*messages*: stores message data including the message content, user who posted it, and comments on the message.
+**users**: stores user profile information including usernames, email addresses, passwords, and profile pictures.
+**messages**: stores message data including the message content, user who posted it, and comments on the message.
 
 Before running the application, make sure to create the merng database and its collections in your local or remote MongoDB instance. You can use the following commands to create the collections in the MongoDB shell:
 
