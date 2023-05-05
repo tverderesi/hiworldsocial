@@ -9,7 +9,8 @@
     "dev": "concurrently \"npm run serveDev\" \"npm run client ----host\"",
     "serve": "node index.js",
     "serveDev": "nodemon index.js",
-    "start":  "concurrently \"npm run serve\" \"npm run client ----host\""
+    "start":  "concurrently \"npm run serve\" \"npm run client ----host\"",
+    "install-deps": "npm install && cd client && npm install && cd .."
   },
   "author": "tverderesi",
   "license": "ISC",
