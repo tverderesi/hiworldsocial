@@ -27,7 +27,7 @@ npm run install-deps
 
 3. Create a `.env` file in the root directory with the following variables:
 ```
-   MONGODB_URI=<your-mongodb-uri>
+   MONGODB=<your-mongodb-uri>
    SECRET_KEY=<your-secret-key>
    ```
 
