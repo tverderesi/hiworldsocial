@@ -11,7 +11,7 @@ Hey World is a social network web application built with React, Node.js, and Mon
 - deleting meesages
 - editing profile
 
-##Database
+## Database
 Hey World uses MongoDB as its database system. The application has one database called merng, which contains two collections:
 
 users: stores user profile information including usernames, email addresses, passwords, and profile pictures.
