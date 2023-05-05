@@ -28,7 +28,9 @@ function App() {
           {/* prettier-ignore */}
           <Route path='/register' element={<AuthRoute><Register /></AuthRoute>} />
           {/* prettier-ignore */}
-          <Route path='/posts/:id' element={<SinglePost />} />
+          <Route path='/posts/:id' element={<SinglePost />} >
+             <Route path="/posts/:id/profile/:username" element={<Profile />} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

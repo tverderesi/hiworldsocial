@@ -12,7 +12,7 @@ import { LikeLine } from "../atoms/LikeLine";
 import { DeleteButton } from "../atoms/DeleteButton";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { LikePictures } from "../atoms/LikePictures";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function SinglePost() {
   const { user } = useContext(AuthContext) as any;
@@ -38,6 +38,7 @@ export default function SinglePost() {
         margin: "5vh auto ",
       }}
     >
+      <Outlet />
       {loading ? (
         <h2
           style={{ width: "100%", display: "flex", justifyContent: "center" }}
@@ -93,7 +94,7 @@ export default function SinglePost() {
                     width: "auto",
                   }}
                 >
-                  <Link to={`/profile/${post.username}`}>
+                  <Link to={`/posts/${id}/profile/${post.username}`}>
                     <img
                       src={getPictureURL(post.profilePicture) as any}
                       alt={post.username}
