@@ -62,7 +62,7 @@ npm run dev
 - [x] Posting messages
 - [x] Commenting on messages
 - [x] Deleting messages
-- [ ] Editing profiles (In progress)
+- [x] Editing profiles
 - [ ] Deleting profile
 - [x] Deployement
 
