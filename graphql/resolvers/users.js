@@ -13,6 +13,8 @@ const User = require("../../models/User");
 const {
   validateRegisterInput,
   validateLoginInput,
+  validateUsername,
+  validatePassword,
 } = require("../../utils/validators");
 
 /**
@@ -145,77 +147,146 @@ module.exports = {
         token,
       };
     },
+    /**
+     * Update user profile.
+     *
+     * @param {Object} _ - The parent object (unused).
+     * @param {Object} updateProfileInput - The input object containing profile update fields.
+     * @param {string} updateProfileInput.oldUsername - The old username of the user.
+     * @param {string} updateProfileInput.newUsername - The new username to update (optional).
+     * @param {string} updateProfileInput.email - The new email to update (optional).
+     * @param {string} updateProfileInput.oldPassword - The old password for authentication.
+     * @param {string} updateProfileInput.newPassword - The new password to update (optional).
+     * @param {string} updateProfileInput.profilePicture - The new profile picture to update (optional).
+     * @returns {Object} - The updated user object.
+     * @throws {UserInputError} - If the user is not found, credentials are wrong, or validation errors occur.
+     */
+
     async updateUser(
       _,
-      { username, email, oldPassword, newPassword, profilePicture },
-      context
+      {
+        updateProfileInput: {
+          oldUsername,
+          newUsername,
+          email,
+          oldPassword,
+          newPassword,
+          confirmPassword,
+          profilePicture,
+        },
+      }
     ) {
-      // Check if user is logged in
-      const { user } = checkAuth(context);
+      // Find the user in the database
+      console.log(oldUsername, oldPassword, newUsername, newPassword, email);
+      const user = await User.findOne({ username: oldUsername });
 
-      // Check if the logged-in user is the one trying to update their profile
-      if (user.username !== username) {
-        throw new AuthenticationError(
-          "You're not authorized to update this user's profile."
-        );
+      // Check if user exists
+      if (!user) {
+        throw new UserInputError("User not found.", {
+          errors: {
+            username: "User not found.",
+          },
+        });
       }
 
-      // Find the user in the database
-      const dbUser = await User.findOne({ username });
+      const match = await bcrypt.compare(oldPassword, user.password);
+      if (!match) {
+        throw new UserInputError("Wrong credentials.", {
+          errors: {
+            password: "Wrong credentials.",
+          },
+        });
+      }
 
-      // Update user's email if it's different
-      if (email && email !== dbUser.email) {
-        // Validate email
-        const { valid, errors } = validateEmail(email);
-        if (!valid) {
-          throw new UserInputError("Errors", { errors });
+      // Update user's username if it's different
+      if (newUsername && newUsername !== user.username) {
+        // Validate username
+        const { valid: usernameValid, errors: usernameErrors } =
+          validateUsername(newUsername);
+        if (!usernameValid) {
+          throw new UserInputError("Errors", { errors: usernameErrors });
         }
 
-        // Check if email is already taken
-        const existingUser = await User.findOne({ email });
-        if (existingUser && existingUser.username !== username) {
-          throw new UserInputError("Email is already registered.", {
+        // Check if username is already taken
+        const existingUser = await User.findOne({ username: newUsername });
+        if (existingUser && existingUser.email !== email) {
+          throw new UserInputError("Username is taken.", {
             errors: {
-              email: "This email is already registered.",
+              username: "Username is taken.",
             },
           });
         }
 
-        dbUser.email = email;
+        user.username = newUsername;
+      }
+
+      // Update user's email if it's different
+      if (email && email !== user.email) {
+        // Validate email
+        const { valid: emailValid, errors: emailErrors } = validateEmail(email);
+        if (!emailValid) {
+          throw new UserInputError("Errors", { errors: emailErrors });
+        }
+
+        // Check if email is already taken
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail && existingEmail.username !== user.username) {
+          throw new UserInputError("Email is already registered.", {
+            errors: {
+              email: "This email is already registered to another account.",
+            },
+          });
+        }
+
+        user.email = email;
       }
 
       // Update user's password if it's different
       if (oldPassword && newPassword) {
         // Validate old password
-        const { valid: passwordValid, errors } = validatePassword(
-          oldPassword,
-          dbUser.password
-        );
+        const { valid: passwordValid, errors: passwordErrors } =
+          validatePassword(oldPassword, user.password);
         if (!passwordValid) {
-          throw new UserInputError("Errors", { errors });
+          throw new UserInputError("Errors", { errors: passwordErrors });
+        }
+
+        // Verify if new password matches confirm password
+        if (newPassword !== confirmPassword) {
+          throw new UserInputError("Passwords do not match.", {
+            errors: {
+              confirmPassword: "Passwords do not match.",
+            },
+          });
         }
 
         // Validate new password
-        const { valid, errors: newPasswordErrors } =
+        const { valid: newPasswordValid, errors: newPasswordErrors } =
           validatePassword(newPassword);
-        if (!valid) {
+        if (!newPasswordValid) {
           throw new UserInputError("Errors", { errors: newPasswordErrors });
         }
 
         // Hash and update password
         const hashedPassword = await bcrypt.hash(newPassword, 12);
-        dbUser.password = hashedPassword;
+        user.password = hashedPassword;
       }
 
       // Update user's profile picture if it's different
-      if (profilePicture && profilePicture !== dbUser.profilePicture) {
-        dbUser.profilePicture = profilePicture;
+      if (profilePicture && profilePicture !== user.profilePicture) {
+        user.profilePicture = profilePicture;
       }
 
       // Save changes to the database
-      const updatedUser = await dbUser.save();
+      const res = await user.save();
 
-      return updatedUser;
+      const token = generateToken(res);
+
+      return {
+        ...res._doc,
+        id: res.id,
+        token,
+        __v: res.__v++,
+      };
     },
   },
   Query: {
@@ -234,7 +305,7 @@ module.exports = {
     async getUsers() {
       try {
         const users = await User.find();
-        console.log(users);
+
         return users;
       } catch (err) {
         throw new Error(err);

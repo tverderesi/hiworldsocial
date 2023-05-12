@@ -197,21 +197,13 @@ export const GET_USER_QUERY = gql`
 `;
 
 export const UPDATE_USER_MUTATION = gql`
-  mutation updateUser(
-    $id: ID!
-    $username: String!
-    $email: String!
-    $profilePicture: String!
-  ) {
-    updateUser(
-      id: $id
-      username: $username
-      email: $email
-      profilePicture: $profilePicture
-    ) {
+  mutation Mutation($updateProfileInput: UpdateProfileInput!) {
+    updateUser(updateProfileInput: $updateProfileInput) {
       id
       username
+      password
       email
+      token
       createdAt
       profilePicture
     }

@@ -111,11 +111,6 @@ function Register() {
             onChange={onChange}
             error={errors?.confirmPassword ? true : false}
           />
-          <Form.Input
-            style={{ display: "none" }}
-            value={values.profilePicture}
-            onChange={onChange}
-          />
         </div>
 
         <ProfilePictureSelector values={values} />

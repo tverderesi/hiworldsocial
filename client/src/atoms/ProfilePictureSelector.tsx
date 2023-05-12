@@ -1,29 +1,17 @@
-import { Button, Grid, GridColumn, Image } from "semantic-ui-react";
+import { Button, Grid, GridColumn, Image, Radio } from "semantic-ui-react";
 import { useState } from "react";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { profilePictureDictionary } from "../util/profilePictureDictionary";
 import roundSpinner from "./roundSpinner.svg";
 
 export function ProfilePictureSelector({ values, update = false }) {
-  const [loading, setLoading] = useState(true);
-  const [placeholderNames, setPlaceholderNames] = useState(
-    profilePictureDictionary
-  );
+  const [selectedPicture, setSelectedPicture] = useState(values.profilePicture);
   const [loadingPic, setLoadingPic] = useState(true);
-  const handleImageClick = (index) => {
-    setPlaceholderNames((prevState) => {
-      const newNames = prevState.map((item, i) => {
-        if (i === index) {
-          item.isSelected = true;
 
-          values.profilePicture = item.name;
-        } else {
-          item.isSelected = false;
-        }
-        return item;
-      });
-      return newNames;
-    });
+  const handleImageClick = (e) => {
+    e.preventDefault();
+    values.profilePicture = e.target.alt;
+    setSelectedPicture(e.target.alt);
   };
 
   return (
@@ -34,9 +22,6 @@ export function ProfilePictureSelector({ values, update = false }) {
       relaxed
       centered
       columns={8}
-      onLoad={() => {
-        setLoading(false);
-      }}
     >
       <Grid.Row>
         <h2
@@ -52,7 +37,7 @@ export function ProfilePictureSelector({ values, update = false }) {
         </h2>
       </Grid.Row>
       <Grid.Row>
-        {placeholderNames.map((item, index) => {
+        {profilePictureDictionary.map((item) => {
           return (
             <GridColumn
               style={{
@@ -68,16 +53,16 @@ export function ProfilePictureSelector({ values, update = false }) {
               mobile={4}
             >
               <Image
+                value={selectedPicture}
                 src={getPictureURL(item.name)}
+                alt={item.name}
                 circular
-                onClick={(e: React.SyntheticEvent) => {
-                  e.preventDefault();
-                  handleImageClick(index);
-                }}
+                onClick={handleImageClick}
                 style={{
-                  boxShadow: item.isSelected
-                    ? "0 1px 3px 0 #9627ba,0 0 0 2px #9627ba"
-                    : "",
+                  boxShadow:
+                    selectedPicture === item.name
+                      ? "0 1px 3px 0 #9627ba,0 0 0 2px #9627ba"
+                      : "",
 
                   background: loadingPic
                     ? "linear-gradient(90deg, #c9c9c9, #f4f4f4, #c9c9c9 )"
@@ -97,7 +82,7 @@ export function ProfilePictureSelector({ values, update = false }) {
                 key={item.name}
                 style={{
                   textTransform: "capitalize",
-                  fontWeight: item.isSelected ? "bold" : "200",
+                  fontWeight: item.name === selectedPicture ? "bold" : "200",
                   marginTop: ".5rem",
                 }}
               >

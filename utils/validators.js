@@ -16,16 +16,15 @@ module.exports.validateRegisterInput = (
   username,
   email,
   password,
-  confirmPassword,
-  profilePicture
+  confirmPassword
 ) => {
   const errors = {};
   switch (true) {
-    case username.trim() === '':
-      errors.username = 'Username must not be empty!';
+    case username.trim() === "":
+      errors.username = "Username must not be empty!";
       break;
-    case email.trim() === '':
-      errors.email = 'E-mail must not be empty!';
+    case email.trim() === "":
+      errors.email = "E-mail must not be empty!";
       break;
     /**
      * A regular expression that checks that a string is a valid email address.
@@ -34,10 +33,10 @@ module.exports.validateRegisterInput = (
     case !email.match(
       /[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
     ):
-      errors.email = 'Email must be a valid email address.';
+      errors.email = "Email must be a valid email address.";
       break;
-    case password === '':
-      errors.password = 'Password must not be empty or contain spaces!';
+    case password === "":
+      errors.password = "Password must not be empty or contain spaces!";
       break;
     /**
      * A regular expression that checks that a password meets the following requirements:
@@ -52,10 +51,10 @@ module.exports.validateRegisterInput = (
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
     ):
       errors.password =
-        'Password must contain at least one uppercase case, one lowercase letter, one number and one symbol.';
+        "Password must contain at least one uppercase case, one lowercase letter, one number and one symbol.";
       break;
     case password !== confirmPassword:
-      errors.confirmPassword = 'Passwords must match!';
+      errors.confirmPassword = "Passwords must match!";
       break;
   }
   return { errors, valid: Object.keys(errors).length < 1 };
@@ -73,11 +72,35 @@ module.exports.validateRegisterInput = (
  */
 module.exports.validateLoginInput = (username, password) => {
   const errors = {};
-  if (username.trim() === '') {
-    errors.username = 'Username must not be empty!';
+  if (username.trim() === "") {
+    errors.username = "Username must not be empty!";
   }
-  if (password.trim() === '') {
-    errors.password = 'Password must not be empty!';
+  if (password.trim() === "") {
+    errors.password = "Password must not be empty!";
+  }
+  return { errors, valid: Object.keys(errors).length < 1 };
+};
+
+module.exports.validateUsername = (username) => {
+  const errors = {};
+  if (username.trim() === "") {
+    errors.username = "Username must not be empty!";
+  }
+  return { errors, valid: Object.keys(errors).length < 1 };
+};
+
+module.exports.validatePassword = (password) => {
+  const errors = {};
+  if (password.trim() === "") {
+    errors.password = "Password must not be empty!";
+  }
+  if (
+    !password.match(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+    )
+  ) {
+    errors.password =
+      "Password must contain at least one uppercase case, one lowercase letter, one number and one symbol.";
   }
   return { errors, valid: Object.keys(errors).length < 1 };
 };

@@ -10,13 +10,11 @@ import {
 } from "semantic-ui-react";
 import { GET_USER_QUERY } from "../util/GraphQL";
 import { AuthContext } from "../context/auth";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import { getPictureURL } from "../util/profilePictureDictionary";
 
-export default function Profile() {
-  const navigate = useNavigate();
-  const { username } = useParams();
+export default function Profile({ username, setProfileState }) {
   const { user } = useContext(AuthContext) as any;
   const { loading, error, data } = useQuery(GET_USER_QUERY, {
     variables: { username: username },
@@ -25,7 +23,7 @@ export default function Profile() {
   if (loading) return <Loader active />;
   if (error) return <p>Error: {error.message}</p>;
 
-  const { id, email, createdAt, profilePicture } = data.getUser;
+  const { createdAt, profilePicture } = data.getUser;
   const isAuthUser = user?.username === username;
 
   return (
@@ -52,8 +50,9 @@ export default function Profile() {
               circular
               color="red"
               size="mini"
-              onClick={() => {
-                navigate(-1);
+              onClick={(e) => {
+                e.preventDefault();
+                setProfileState(false);
               }}
               style={{
                 position: "absolute",
@@ -76,7 +75,14 @@ export default function Profile() {
 
             {isAuthUser && (
               <Card.Content extra>
-                <Button as={Link} to="/profile/editprofile" primary>
+                <Button
+                  as={Link}
+                  to="/profile/editprofile"
+                  primary
+                  onClick={(e) => {
+                    setProfileState(false);
+                  }}
+                >
                   Edit Profile
                 </Button>
               </Card.Content>

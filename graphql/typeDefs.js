@@ -100,11 +100,13 @@ const typeDefs = gql`
     profilePicture: String!
   }
   input UpdateProfileInput {
-    username: String!
+    oldUsername: String!
+    newUsername: String!
     email: String!
-    oldPassword: String
-    newPassword: String
-    profilePicture: String
+    oldPassword: String!
+    newPassword: String!
+    confirmPassword: String!
+    profilePicture: String!
   }
   type Query {
     getPosts: [Post]

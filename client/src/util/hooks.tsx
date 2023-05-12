@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, SyntheticEvent } from "react";
 
 export const useForm = (
   callback: { (): void; (): void; (): void },
@@ -18,5 +18,21 @@ export const useForm = (
     onChange,
     onSubmit,
     values,
+  };
+};
+
+export const useDisplayProfile = (initialState, callback = () => {}) => {
+  const [showProfile, setShowProfile] = useState(initialState);
+
+  const onClick = (e: SyntheticEvent) => {
+    e.preventDefault();
+    setShowProfile(!showProfile);
+    callback();
+  };
+
+  return {
+    onClick,
+    showProfile,
+    setShowProfile,
   };
 };

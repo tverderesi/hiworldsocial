@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Image, Menu, MenuItemProps } from "semantic-ui-react";
 import { AuthContext } from "../context/auth";
 import { getPictureURL } from "../util/profilePictureDictionary";
+import { useDisplayProfile } from "../util/hooks";
+import Profile from "../pages/User";
 
 export default function MenuBar() {
   const { user, logout }: { user: any; logout: any } = useContext(AuthContext);
@@ -15,6 +17,8 @@ export default function MenuBar() {
   const [state, setState] = useState({ activeItem: path });
   const { activeItem } = state;
 
+  const { onClick, setShowProfile, showProfile } = useDisplayProfile(false);
+
   const handleItemClick = (
     e: React.SyntheticEvent<any, any>,
     { name }: MenuItemProps
@@ -22,6 +26,9 @@ export default function MenuBar() {
 
   return user ? (
     <Menu pointing secondary size="massive" color="purple" stackable>
+      {showProfile && (
+        <Profile setProfileState={setShowProfile} username={user.username} />
+      )}
       <Menu.Item style={{ height: "7vh" }}>
         <Link to={"/"} className="logo" style={{ fontWeight: "bold" }}>
           Hi World! 🌎
@@ -29,14 +36,13 @@ export default function MenuBar() {
       </Menu.Item>
       <Menu.Menu position="right">
         <Menu.Item
+          onClick={onClick}
           style={{
             height: "7vh",
             fontWeight: "bold",
             color: "rgb(150, 39, 186)",
           }}
           name={user?.username}
-          as={Link}
-          to={`/profile/${user?.username}`}
           children={
             <>
               <Image
