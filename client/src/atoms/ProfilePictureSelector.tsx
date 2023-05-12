@@ -1,8 +1,7 @@
-import { Button, Grid, GridColumn, Image, Radio } from "semantic-ui-react";
+import { Grid, GridColumn, Image } from "semantic-ui-react";
 import { useState } from "react";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { profilePictureDictionary } from "../util/profilePictureDictionary";
-import roundSpinner from "./roundSpinner.svg";
 
 export function ProfilePictureSelector({ values, update = false }) {
   const [selectedPicture, setSelectedPicture] = useState(values.profilePicture);
