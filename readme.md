@@ -61,6 +61,15 @@ cp apps/client/.env.example apps/client/.env
 
 For Docker Compose, the root `.env` controls published ports, MongoDB, the API secret, and the client build-time GraphQL endpoint.
 
+To enable email sending with Resend, also set these server env vars:
+
+```
+RESEND_API_KEY=re_xxxxxxxxx
+RESEND_FROM_EMAIL=onboarding@resend.dev
+```
+
+Replace `re_xxxxxxxxx` with your real Resend API key.
+
 4. Start both apps through Turborepo:
 
 ```
@@ -97,7 +106,7 @@ docker compose up --build
 
 The client is served at `http://localhost:3000`, and the GraphQL API is exposed at `http://localhost:5000`.
 
-For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument, and it also accepts the legacy `REACT_APP_GRAPHQL_ENDPOINT` name for hosted builds that still use that variable.
+For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
 
 The server owns the executable GraphQL schema. When the schema changes, refresh the client-facing schema artifact with:
 
