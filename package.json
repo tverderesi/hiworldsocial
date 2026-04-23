@@ -1,6 +1,6 @@
 {
-  "name": "merng-social-network",
-  "version": "0.0.1",
+  "name": "hiworldsocial",
+  "version": "0.0.2",
   "description": "social network prototype using the MERNG stack.",
   "private": true,
   "packageManager": "pnpm@9.15.1",
