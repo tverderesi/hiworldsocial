@@ -3,7 +3,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["build/**", "dist/**"]
+      "outputs": ["build/**", "dist/**"],
+      "env": ["VITE_GRAPHQL_ENDPOINT", "REACT_APP_GRAPHQL_ENDPOINT"]
     },
     "dev": {
       "cache": false,

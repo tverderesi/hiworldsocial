@@ -4,6 +4,9 @@
   "description": "social network prototype using the MERNG stack.",
   "private": true,
   "packageManager": "pnpm@9.15.1",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "workspaces": [
     "apps/*"
   ],
