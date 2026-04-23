@@ -2,6 +2,7 @@ import { AuthenticationError, UserInputError } from "apollo-server";
 
 import Post from "../../models/Post.js";
 import checkAuth from "../../utils/checkAuth.js";
+import { enforcePostRateLimit } from "../../utils/postRateLimit.js";
 import { validatePostBody } from "../../utils/validators.js";
 import type { GraphQLContext, PostLike } from "../../types.js";
 
@@ -54,6 +55,8 @@ const postsResolvers = {
       if (!valid) {
         throw new UserInputError("Invalid post body.", { errors });
       }
+
+      await enforcePostRateLimit(user.id);
 
       const newPost = new Post({
         body,
