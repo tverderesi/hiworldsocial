@@ -2,6 +2,7 @@ import { AuthenticationError, UserInputError } from "apollo-server";
 
 import Post from "../../models/Post.js";
 import checkAuth from "../../utils/checkAuth.js";
+import { validatePostBody } from "../../utils/validators.js";
 import type { GraphQLContext, PostLike } from "../../types.js";
 
 interface PostArgs {
@@ -48,9 +49,10 @@ const postsResolvers = {
       context: GraphQLContext
     ) {
       const user = checkAuth(context);
+      const { valid, errors } = validatePostBody(body);
 
-      if (body.trim() === "") {
-        throw new Error("Post body must not be empty");
+      if (!valid) {
+        throw new UserInputError("Invalid post body.", { errors });
       }
 
       const newPost = new Post({
