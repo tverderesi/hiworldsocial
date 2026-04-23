@@ -35,6 +35,19 @@ async function ensureCollection(name: string) {
   console.log(`Created collection: ${name}`);
 }
 
+async function isDatabaseSeeded() {
+  const [userCount, postCount] = await Promise.all([
+    User.countDocuments().exec(),
+    Post.countDocuments().exec(),
+  ]);
+
+  return {
+    seeded: userCount > 0 || postCount > 0,
+    userCount,
+    postCount,
+  };
+}
+
 async function main() {
   mongoose.set("strictQuery", false);
 
@@ -45,6 +58,16 @@ async function main() {
 
   for (const collectionName of requiredCollections) {
     await ensureCollection(collectionName);
+  }
+
+  const seedStatus = await isDatabaseSeeded();
+
+  if (seedStatus.seeded) {
+    console.log(
+      `Database already appears to be seeded (users=${seedStatus.userCount}, posts=${seedStatus.postCount}).`
+    );
+  } else {
+    console.log("Database is initialized but not seeded yet.");
   }
 
   console.log("Database setup complete.");
