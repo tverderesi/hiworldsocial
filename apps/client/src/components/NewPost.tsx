@@ -5,6 +5,8 @@ import { CREATE_POST_MUTATION, FETCH_POSTS_QUERY } from '../util/GraphQL';
 import { getGraphQLErrorMessage } from '../util/errors';
 import { useForm } from '../util/hooks';
 
+const MAX_POST_BODY_LENGTH = 512;
+
 export default function NewPost() {
   const { onChange, onSubmit, values } = useForm(createPostCallback, {
     body: '',
@@ -54,13 +56,24 @@ export default function NewPost() {
 
             <Card.Description style={{ marginTop: '1rem' }}>
               <Form.Field>
-                <Form.Input
+                <Form.TextArea
                   placeholder='Say hi to the World!'
                   name='body'
                   onChange={onChange}
                   value={values.body}
+                  maxLength={MAX_POST_BODY_LENGTH}
                   error={error ? true : false}
                 />
+                <div
+                  style={{
+                    marginTop: '0.5rem',
+                    textAlign: 'right',
+                    fontSize: '0.9rem',
+                    color: values.body.length >= MAX_POST_BODY_LENGTH ? '#9f3a38' : '#6b6b6b',
+                  }}
+                >
+                  {values.body.length}/{MAX_POST_BODY_LENGTH}
+                </div>
               </Form.Field>
             </Card.Description>
           </Card.Content>
