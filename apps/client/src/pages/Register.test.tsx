@@ -59,12 +59,11 @@ describe("Register page", () => {
           result: {
             data: {
               register: {
+                id: "user-1",
                 username: "alice",
-                password: "hashed-password",
                 email: "alice@example.com",
                 createdAt: "2026-04-23T00:00:00.000Z",
                 profilePicture: "ade",
-                token: "signed-token",
                 __typename: "User",
               },
             },
@@ -86,9 +85,9 @@ describe("Register page", () => {
     await waitFor(() => {
       expect(login).toHaveBeenCalledWith(
         expect.objectContaining({
+          id: "user-1",
           username: "alice",
           email: "alice@example.com",
-          token: "signed-token",
         })
       );
     });

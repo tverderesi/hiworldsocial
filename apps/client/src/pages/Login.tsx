@@ -1,7 +1,7 @@
 import { Button, Form } from "semantic-ui-react";
 import { useState, useContext } from "react";
 import { useMutation } from "@apollo/client/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useForm } from "../util/hooks";
 import { AuthContext } from "../context/auth";
@@ -78,6 +78,9 @@ export default function Login() {
           login
         </Button>
       </Form>
+      <p style={{ marginTop: "1em" }}>
+        <Link to="/forgot-password">Forgot your password?</Link>
+      </p>
       {errors && Object.keys(errors).length > 0 && (
         <div className="ui error message">
           <ul className="list">

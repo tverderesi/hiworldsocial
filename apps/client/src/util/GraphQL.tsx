@@ -62,7 +62,6 @@ export const LOGIN_USER = gql`
     login(username: $username, password: $password) {
       id
       email
-      token
       username
       createdAt
       profilePicture
@@ -70,15 +69,40 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const REQUEST_PASSWORD_RESET = gql`
+  mutation RequestPasswordReset($email: String!) {
+    requestPasswordReset(email: $email) {
+      success
+      message
+    }
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword(
+    $token: String!
+    $password: String!
+    $confirmPassword: String!
+  ) {
+    resetPassword(
+      token: $token
+      password: $password
+      confirmPassword: $confirmPassword
+    ) {
+      success
+      message
+    }
+  }
+`;
+
 export const REGISTER_USER = gql`
   mutation Register($registerInput: RegisterInput!) {
     register(registerInput: $registerInput) {
+      id
       username
-      password
       email
       createdAt
       profilePicture
-      token
     }
   }
 `;
@@ -187,8 +211,8 @@ export const DELETE_COMMENT_MUTATION = gql`
 export const GET_USER_QUERY = gql`
   query GetUser($username: String!) {
     getUser(username: $username) {
+      id
       username
-      password
       email
       createdAt
       profilePicture
@@ -201,11 +225,27 @@ export const UPDATE_USER_MUTATION = gql`
     updateUser(updateProfileInput: $updateProfileInput) {
       id
       username
-      password
       email
-      token
       createdAt
       profilePicture
     }
+  }
+`;
+
+export const ME_QUERY = gql`
+  query Me {
+    me {
+      id
+      username
+      email
+      createdAt
+      profilePicture
+    }
+  }
+`;
+
+export const LOGOUT_USER = gql`
+  mutation Logout {
+    logout
   }
 `;
