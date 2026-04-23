@@ -1,0 +1,43 @@
+services:
+  dev-proxy:
+    image: nginx:1.27-alpine
+    ports:
+      - "${DEV_PROXY_PORT:-80}:80"
+    volumes:
+      - ./docker/dev/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - client
+      - server
+
+  server:
+    build:
+      target: deps
+    command: sh -c "pnpm --filter @hiworld/server codegen && pnpm --filter @hiworld/server dev"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./apps/server:/repo/apps/server
+      - server-root-node-modules:/repo/node_modules
+      - server-app-node-modules:/repo/apps/server/node_modules
+
+  client:
+    build:
+      target: deps
+    command: pnpm --filter @hiworld/client dev
+    environment:
+      HOST: 0.0.0.0
+      VITE_GRAPHQL_ENDPOINT: ${VITE_GRAPHQL_ENDPOINT:-http://server.hiworld.local/}
+      VITE_HMR_HOST: ${VITE_HMR_HOST:-hiworld.local}
+      VITE_HMR_CLIENT_PORT: ${VITE_HMR_CLIENT_PORT:-80}
+    ports: !override
+      - "${CLIENT_PORT:-3000}:3000"
+    volumes:
+      - ./apps/client:/repo/apps/client
+      - client-root-node-modules:/repo/node_modules
+      - client-app-node-modules:/repo/apps/client/node_modules
+
+volumes:
+  server-root-node-modules:
+  server-app-node-modules:
+  client-root-node-modules:
+  client-app-node-modules:

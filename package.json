@@ -1,32 +1,24 @@
 {
-  "name": "merng-social-network",
-  "version": "0.0.1",
+  "name": "hiworldsocial",
+  "version": "0.0.2",
   "description": "social network prototype using the MERNG stack.",
-  "main": "index.js",
+  "private": true,
+  "packageManager": "pnpm@9.15.1",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "npm start --prefix ./client/",
-    "dev": "concurrently \"npm run serveDev\" \"npm run client ----host\"",
-    "serve": "node index.js",
-    "serveDev": "nodemon index.js",
-    "start":  "concurrently \"npm run serve\" \"npm run client ----host\"",
-    "install-deps": "npm install && cd client && npm install && cd .."
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "start": "turbo run start",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "server": "pnpm --filter @hiworld/server dev",
+    "client": "pnpm --filter @hiworld/client dev"
   },
   "author": "tverderesi",
   "license": "ISC",
-  "dependencies": {
-    "apollo-link-context": "^1.0.20",
-    "apollo-server": "^3.11.1",
-    "bcryptjs": "^2.4.3",
-    "concurrently": "^7.6.0",
-    "dotenv": "^16.0.3",
-    "graphql": "^16.6.0",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.11.3",
-    "react-intersection-observer": "^9.4.3"
-  },
   "devDependencies": {
-    "nodemon": "^2.0.20",
-    "tailwindcss": "^3.2.4"
+    "turbo": "^2.9.6"
   }
 }
