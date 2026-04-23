@@ -99,6 +99,14 @@ The client is served at `http://localhost:3000`, and the GraphQL API is exposed 
 
 For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument, and it also accepts the legacy `REACT_APP_GRAPHQL_ENDPOINT` name for hosted builds that still use that variable.
 
+The server owns the executable GraphQL schema. When the schema changes, refresh the client-facing schema artifact with:
+
+```
+pnpm schema:export
+```
+
+CI runs `pnpm schema:check` to ensure `apps/client/src/graphql/schema.graphql` stays in sync with the server schema.
+
 ### Dev Mode
 
 Dev mode runs the client and server watchers inside Docker with bind-mounted source files, so most source edits do not need an image rebuild.
