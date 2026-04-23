@@ -1,6 +1,14 @@
 # Hey World Social Network
 
-Hey World is a social network web application built with React, Node.js, and MongoDB. The project allows users to create profiles, post messages, comment on messages, and edit their profiles. The application is designed to be simple and easy to use, with a clean and intuitive user interface.
+Hey World is a social network web application built with React, Node.js, GraphQL, and MongoDB. The codebase is organized as a Turborepo with separate client and server applications.
+
+## Project Structure
+
+```
+apps/
+  client/   React application
+  server/   Apollo Server API
+```
 
 ## Features
 
@@ -12,6 +20,7 @@ Hey World is a social network web application built with React, Node.js, and Mon
 - editing profile
 
 ## Database
+
 Hey World uses MongoDB as its database system. The application has one database called **merng**, which contains two collections:
 
 **users**: stores user profile information including usernames, email addresses, passwords, and profile pictures.
@@ -26,7 +35,7 @@ db.createCollection("users")
 db.createCollection("messages")
 ```
 
-Once you have created the collections, you can set the MongoDB URI in the .env file and start the development server to begin using the application.
+Once you have created the collections, you can set the MongoDB URI in `apps/server/.env` and start the development server to begin using the application.
 
 ## Getting Started
 
@@ -36,24 +45,59 @@ Once you have created the collections, you can set the MongoDB URI in the .env f
 git clone https://github.com/<username>/hey-world.git
 ```
 
-2. Install the required dependencies:
+2. Install the required dependencies from the repo root:
 
 ```
-npm run install-deps
+pnpm install
 ```
-3. Create a `.env` file in the root directory with the following variables:
-```
-   MONGODB=<your-mongodb-uri>
-   SECRET_KEY=<your-secret-key>
-   ```
 
-4. Start the development server:
+3. Create local env files:
 
 ```
-npm run dev
+cp .env.example .env
+cp apps/server/.env.example apps/server/.env
+cp apps/client/.env.example apps/client/.env
+```
+
+For Docker Compose, the root `.env` controls published ports, MongoDB, the API secret, and the client build-time GraphQL endpoint.
+
+4. Start both apps through Turborepo:
+
+```
+pnpm dev
 ```
 
 5. Open the application in your web browser at `http://localhost:3000`.
+
+## Workspace Commands
+
+Run all apps:
+
+```
+pnpm dev
+pnpm build
+```
+
+Run one app:
+
+```
+pnpm client
+pnpm server
+pnpm --filter @hiworld/client build
+pnpm --filter @hiworld/server start
+```
+
+## Docker
+
+Build and run the full stack, including MongoDB:
+
+```
+docker compose up --build
+```
+
+The client is served at `http://localhost:3000`, and the GraphQL API is exposed at `http://localhost:5000`.
+
+For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `REACT_APP_GRAPHQL_ENDPOINT` as a build argument.
 
 ## Features Pipeline
 
@@ -70,7 +114,6 @@ npm run dev
 
 - React
 - Node.js
-- Express
 - MongoDB
 - GraphQL
 - Apollo Server/Client

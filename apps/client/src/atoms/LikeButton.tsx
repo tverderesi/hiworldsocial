@@ -2,7 +2,7 @@
 import { Button, Popup } from "semantic-ui-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { LIKE_POST } from "../util/GraphQL";
 
 export function LikeButton({
@@ -28,7 +28,7 @@ export function LikeButton({
     likePostMutation();
   };
 
-  const [likePostMutation] = useMutation(LIKE_POST, {
+  const [likePostMutation] = useMutation<any>(LIKE_POST, {
     variables: { PostId: id },
   });
   //I'm deeply ashamed the folowwing block of code exists

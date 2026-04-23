@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import { Button, Popup, Confirm } from "semantic-ui-react";
 import { FETCH_POSTS_QUERY } from "../util/GraphQL";
@@ -22,7 +22,7 @@ export function DeleteButton({
 }): JSX.Element {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const [deleteCommentorPostMutation] = useMutation(mutation, {
+  const [deleteCommentorPostMutation] = useMutation<any>(mutation, {
     update(proxy) {
       setConfirmOpen(false);
       if (!commentId) {

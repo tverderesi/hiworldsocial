@@ -1,0 +1,24 @@
+{
+  "name": "@hiworld/server",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "build": "node --check index.js",
+    "test": "echo \"No server tests configured\""
+  },
+  "dependencies": {
+    "apollo-server": "^3.13.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "graphql": "^16.13.2",
+    "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

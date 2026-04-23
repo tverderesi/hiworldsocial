@@ -1,7 +1,8 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { Button, Form, Card } from 'semantic-ui-react';
 
 import { CREATE_POST_MUTATION, FETCH_POSTS_QUERY } from '../util/GraphQL';
+import { getGraphQLErrorMessage } from '../util/errors';
 import { useForm } from '../util/hooks';
 
 export default function NewPost() {
@@ -9,14 +10,15 @@ export default function NewPost() {
     body: '',
   });
 
-  const [createPost, { error }] = useMutation(CREATE_POST_MUTATION, {
+  const [createPost, { error }] = useMutation<any>(CREATE_POST_MUTATION, {
     variables: values,
     update(proxy, result) {
       console.log(result);
       const data: any = proxy.readQuery({ query: FETCH_POSTS_QUERY });
+      const resultData = result.data as { createPost: any };
       proxy.writeQuery({
         query: FETCH_POSTS_QUERY,
-        data: { getPosts: [result.data.createPost, ...data.getPosts] },
+        data: { getPosts: [resultData.createPost, ...data.getPosts] },
       });
       values.body = '';
     },
@@ -45,7 +47,7 @@ export default function NewPost() {
                     fontWeight: '400',
                   }}
                 >
-                  {error?.graphQLErrors[0]?.message}!
+                  {getGraphQLErrorMessage(error)}!
                 </p>
               )}
             </Card.Header>

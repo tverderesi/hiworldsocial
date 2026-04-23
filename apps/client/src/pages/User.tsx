@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import {
   Image,
   Loader,
@@ -16,7 +16,7 @@ import { getPictureURL } from "../util/profilePictureDictionary";
 
 export default function Profile({ username, setProfileState }) {
   const { user } = useContext(AuthContext) as any;
-  const { loading, error, data } = useQuery(GET_USER_QUERY, {
+  const { loading, error, data } = useQuery<any>(GET_USER_QUERY, {
     variables: { username: username },
   });
 

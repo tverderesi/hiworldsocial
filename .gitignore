@@ -1,2 +1,8 @@
 node_modules
 .env
+.turbo
+apps/*/node_modules
+apps/client/build
+apps/server/.env
+apps/client/.env
+.pnpm-store

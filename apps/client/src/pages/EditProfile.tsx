@@ -1,8 +1,9 @@
 import { useState, useContext } from "react";
 import { Form, Button, Container, Grid, Loader } from "semantic-ui-react";
 import { useForm } from "../util/hooks";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { UPDATE_USER_MUTATION } from "../util/GraphQL";
+import { getGraphQLErrors } from "../util/errors";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth";
 import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
@@ -26,7 +27,7 @@ export function EditProfile() {
 
   const [errors, setErrors] = useState({}) as any;
 
-  const [changeUser, { loading }] = useMutation(UPDATE_USER_MUTATION, {
+  const [changeUser, { loading }] = useMutation<any>(UPDATE_USER_MUTATION, {
     update(_, { data: { updateUser: userData } }) {
       context.logout();
       context.login(userData);
@@ -34,7 +35,7 @@ export function EditProfile() {
       navigate("/", { replace: true });
     },
     onError(err) {
-      setErrors(err.graphQLErrors[0].extensions?.errors);
+      setErrors(getGraphQLErrors(err));
     },
     variables: { updateProfileInput: values },
   });

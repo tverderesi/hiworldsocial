@@ -1,11 +1,12 @@
 import { Button, Form } from "semantic-ui-react";
 import { useState, useContext } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
 
 import { useForm } from "../util/hooks";
 import { AuthContext } from "../context/auth";
 import { LOGIN_USER } from "../util/GraphQL";
+import { getGraphQLErrors } from "../util/errors";
 
 export default function Login() {
   const context = useContext(AuthContext);
@@ -19,13 +20,13 @@ export default function Login() {
     initialState
   );
 
-  const [loginUser, { loading }] = useMutation(LOGIN_USER, {
+  const [loginUser, { loading }] = useMutation<any>(LOGIN_USER, {
     update(_, { data: { login: userData } }) {
       context.login(userData);
       navigate("/", { replace: true });
     },
     onError(err: any) {
-      setErrors(err.graphQLErrors[0]?.extensions?.errors);
+      setErrors(getGraphQLErrors(err));
     },
     variables: values,
   });

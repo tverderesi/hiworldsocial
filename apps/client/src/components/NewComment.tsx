@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 
 import { Button, Form } from "semantic-ui-react";
 
@@ -10,7 +10,7 @@ export default function NewComment({ id }) {
     body: "",
   });
 
-  const [createComment, { error }] = useMutation(CREATE_COMMENT_MUTATION, {
+  const [createComment, { error }] = useMutation<any>(CREATE_COMMENT_MUTATION, {
     variables: { postId: id, body: values.body },
     update() {
       values.body = "";

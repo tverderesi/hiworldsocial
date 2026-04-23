@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client/react";
 import { useContext } from "react";
 import { Card, Container, Grid, Transition } from "semantic-ui-react";
 import Ad from "../components/Ad";
@@ -6,11 +6,10 @@ import NewPost from "../components/NewPost";
 import Post from "../components/Post";
 import { AuthContext } from "../context/auth";
 import { FETCH_POSTS_QUERY } from "../util/GraphQL";
-import { relative } from "path";
 import { Outlet } from "react-router-dom";
 
 function Home() {
-  const { loading, data } = useQuery(FETCH_POSTS_QUERY); //can't destructure here or else TS will scream
+  const { loading, data } = useQuery<any>(FETCH_POSTS_QUERY); //can't destructure here or else TS will scream
   const posts = data?.getPosts;
   const { user } = useContext(AuthContext);
 

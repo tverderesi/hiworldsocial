@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useContext } from "react";
@@ -19,7 +19,7 @@ export default function SinglePost() {
 
   const { id } = useParams();
 
-  const { loading, data } = useQuery(GET_POST, { variables: { postId: id } });
+  const { loading, data } = useQuery<any>(GET_POST, { variables: { postId: id } });
   const post = data?.getPost;
 
   //   body,
