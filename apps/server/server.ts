@@ -4,7 +4,7 @@ import resolvers from "./graphql/resolvers/index.js";
 import typeDefs from "./graphql/typeDefs.js";
 import type { GraphQLContext } from "./types.js";
 
-export function createApolloServer(): ApolloServer<GraphQLContext> {
+export function createApolloServer() {
   if (!process.env.SECRET_KEY) {
     throw new Error("Missing required environment variable: SECRET_KEY");
   }
