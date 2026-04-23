@@ -97,7 +97,7 @@ docker compose up --build
 
 The client is served at `http://localhost:3000`, and the GraphQL API is exposed at `http://localhost:5000`.
 
-For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
+For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument, and it also accepts the legacy `REACT_APP_GRAPHQL_ENDPOINT` name for hosted builds that still use that variable.
 
 ### Dev Mode
 

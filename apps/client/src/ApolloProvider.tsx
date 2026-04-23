@@ -5,7 +5,10 @@ import { ApolloProvider } from "@apollo/client/react";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_ENDPOINT ?? "http://localhost:5000/",
+  uri:
+    import.meta.env.VITE_GRAPHQL_ENDPOINT ??
+    import.meta.env.REACT_APP_GRAPHQL_ENDPOINT ??
+    "http://localhost:5000/",
 });
 
 const authLink = setContext(() => {
