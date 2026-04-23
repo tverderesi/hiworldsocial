@@ -2,11 +2,13 @@
   "name": "@hiworld/server",
   "version": "0.0.1",
   "private": true,
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "build": "node --check index.js",
+    "dev": "tsx watch index.ts",
+    "start": "node dist/index.js",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "build": "pnpm codegen && tsc -p tsconfig.json && cp graphql/schema.graphql dist/graphql/schema.graphql",
     "test": "echo \"No server tests configured\""
   },
   "dependencies": {
@@ -14,11 +16,16 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "graphql": "^16.13.2",
-    "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@graphql-codegen/cli": "^6.3.1",
+    "@graphql-codegen/typescript": "^5.0.6",
+    "@graphql-codegen/typescript-resolvers": "^5.1.8",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
