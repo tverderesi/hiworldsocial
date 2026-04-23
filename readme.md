@@ -124,7 +124,7 @@ Dev mode runs the client and server watchers inside Docker with bind-mounted sou
 1. Add the local hostnames to your host machine's hosts file:
 
 ```
-127.0.0.1 hiworld.local server.hiworld.local
+127.0.0.1 hiworld.local server.hiworld.local mail.hiworld.local
 ```
 
 2. Start the dev stack:
@@ -150,10 +150,10 @@ http://server.hiworld.local
 5. Open Mailpit to inspect locally sent emails:
 
 ```
-http://localhost:8025
+http://mail.hiworld.local
 ```
 
-The dev override uses an Nginx proxy for `hiworld.local` and `server.hiworld.local`, runs Mailpit for local email capture, bind mounts `apps/client` and `apps/server`, and stores container dependencies in named volumes. The server uses `EMAIL_TRANSPORT=smtp` in dev so forgot-password emails go to Mailpit instead of calling Resend. The default `docker-compose.yml` is image-based, so source changes there require a rebuild.
+The dev override uses an Nginx proxy for `hiworld.local`, `server.hiworld.local`, and `mail.hiworld.local`, runs Mailpit for local email capture, bind mounts `apps/client` and `apps/server`, and stores container dependencies in named volumes. The server uses `EMAIL_TRANSPORT=smtp` in dev so forgot-password emails go to Mailpit instead of calling Resend. The default `docker-compose.yml` is image-based, so source changes there require a rebuild.
 
 ## Features Pipeline
 

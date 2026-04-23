@@ -14,6 +14,7 @@ services:
     depends_on:
       - client
       - server
+      - mailpit
 
   server:
     build:
