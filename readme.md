@@ -107,7 +107,7 @@ docker compose up --build
 
 The client is served at `http://localhost:3000`, and the GraphQL API is exposed at `http://localhost:5000`.
 
-For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. Posting is rate-limited on the server with `POST_RATE_LIMIT_MAX_POSTS` and `POST_RATE_LIMIT_WINDOW_SECONDS`, which default to `5` posts per `60` seconds. Locally, password reset emails default to `http://hiworld.local`; in production, set `PASSWORD_RESET_URL_BASE=https://hiworldsocial.vercel.app` so reset emails link back to the live app. Posting is rate-limited on the server with `POST_RATE_LIMIT_MAX_POSTS` and `POST_RATE_LIMIT_WINDOW_SECONDS`, which default to `5` posts per `60` seconds. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
+For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. Locally, password reset emails default to `http://hiworld.local`; in production, set `PASSWORD_RESET_URL_BASE=https://hiworldsocial.vercel.app` so reset emails link back to the live app. Posting is rate-limited on the server with `POST_RATE_LIMIT_MAX_POSTS` and `POST_RATE_LIMIT_WINDOW_SECONDS`, which default to `5` posts per `60` seconds. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
 
 The server owns the executable GraphQL schema. When the schema changes, refresh the client-facing schema artifact with:
 
