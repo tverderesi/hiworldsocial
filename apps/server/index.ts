@@ -10,6 +10,7 @@ config({ quiet: true });
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGODB;
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 if (!MONGODB_URI) {
   throw new Error("Missing required environment variable: MONGODB_URI");
@@ -23,6 +24,8 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   cache: "bounded",
+  introspection: isDevelopment,
+  ...(isDevelopment ? { playground: true } : {}),
   context: ({ req }): GraphQLContext => ({ req }),
 });
 

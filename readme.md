@@ -99,21 +99,35 @@ The client is served at `http://localhost:3000`, and the GraphQL API is exposed 
 
 For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
 
-For live local development with bind-mounted source files:
+### Dev Mode
 
-```
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-```
+Dev mode runs the client and server watchers inside Docker with bind-mounted source files, so most source edits do not need an image rebuild.
 
-The default `docker-compose.yml` is image-based, so source changes require a rebuild. The dev override runs the client and server dev watchers inside Docker and mounts `apps/client` and `apps/server` into the containers.
-
-The dev override also exposes friendly local hostnames through an Nginx proxy:
+1. Add the local hostnames to your host machine's hosts file:
 
 ```
 127.0.0.1 hiworld.local server.hiworld.local
 ```
 
-After adding those entries to your host machine's hosts file, use `http://hiworld.local` for the client and `http://server.hiworld.local` for the GraphQL server.
+2. Start the dev stack:
+
+```
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+3. Open the app:
+
+```
+http://hiworld.local
+```
+
+4. Open Apollo Sandbox in dev mode:
+
+```
+http://server.hiworld.local
+```
+
+The dev override uses an Nginx proxy for `hiworld.local` and `server.hiworld.local`, bind mounts `apps/client` and `apps/server`, and stores container dependencies in named volumes. The default `docker-compose.yml` is image-based, so source changes there require a rebuild.
 
 ## Features Pipeline
 
