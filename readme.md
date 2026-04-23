@@ -21,21 +21,19 @@ apps/
 
 ## Database
 
-Hey World uses MongoDB as its database system. The application has one database called **merng**, which contains two collections:
+Hey World uses MongoDB as its database system. The default local database is **merng**, and the server expects two collections:
 
 **users**: stores user profile information including usernames, email addresses, passwords, and profile pictures.
 
-**messages**: stores message data including the message content, user who posted it, and comments on the message.
+**posts**: stores post data including the message content, user who posted it, likes, and comments.
 
-Before running the application, make sure to create the merng database and its collections in your local or remote MongoDB instance. You can use the following commands to create the collections in the MongoDB shell:
+Instead of creating collections manually in the MongoDB shell, copy `apps/server/.env.example` to `apps/server/.env`, set `MONGODB_URI`, and run:
 
 ```
-use merng
-db.createCollection("users")
-db.createCollection("messages")
+pnpm db:setup
 ```
 
-Once you have created the collections, you can set the MongoDB URI in `apps/server/.env` and start the development server to begin using the application.
+The setup script connects to the configured MongoDB database and creates any missing required collections automatically. After that, start the development server with `pnpm dev`.
 
 ## Getting Started
 
@@ -61,14 +59,17 @@ cp apps/client/.env.example apps/client/.env
 
 For Docker Compose, the root `.env` controls published ports, MongoDB, the API secret, and the client build-time GraphQL endpoint.
 
-To enable email sending with Resend, also set these server env vars:
+To enable real email delivery through Resend, set these server env vars:
 
 ```
 RESEND_API_KEY=re_xxxxxxxxx
 RESEND_FROM_EMAIL=onboarding@resend.dev
+PASSWORD_RESET_URL_BASE=http://hiworld.local
+EMAIL_TRANSPORT=resend
 ```
 
-Replace `re_xxxxxxxxx` with your real Resend API key.
+Replace `re_xxxxxxxxx` with your real Resend API key. For production, override `PASSWORD_RESET_URL_BASE` to `https://hiworldsocial.vercel.app`.
+Local Docker dev does not run Resend. It overrides `EMAIL_TRANSPORT` to `smtp` and delivers mail to Mailpit instead.
 
 4. Start both apps through Turborepo:
 
@@ -132,6 +133,8 @@ Dev mode runs the client and server watchers inside Docker with bind-mounted sou
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
+The dev server startup runs `pnpm db:setup` automatically after MongoDB becomes healthy, so the required collections are created without a separate manual step.
+
 3. Open the app:
 
 ```
@@ -144,7 +147,13 @@ http://hiworld.local
 http://server.hiworld.local
 ```
 
-The dev override uses an Nginx proxy for `hiworld.local` and `server.hiworld.local`, bind mounts `apps/client` and `apps/server`, and stores container dependencies in named volumes. The default `docker-compose.yml` is image-based, so source changes there require a rebuild.
+5. Open Mailpit to inspect locally sent emails:
+
+```
+http://localhost:8025
+```
+
+The dev override uses an Nginx proxy for `hiworld.local` and `server.hiworld.local`, runs Mailpit for local email capture, bind mounts `apps/client` and `apps/server`, and stores container dependencies in named volumes. The server uses `EMAIL_TRANSPORT=smtp` in dev so forgot-password emails go to Mailpit instead of calling Resend. The default `docker-compose.yml` is image-based, so source changes there require a rebuild.
 
 ## Features Pipeline
 

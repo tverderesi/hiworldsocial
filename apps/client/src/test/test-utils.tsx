@@ -12,6 +12,7 @@ interface RenderOptions {
   mocks?: MockedResponse[];
   route?: string;
   user?: Record<string, unknown> | null;
+  authLoading?: boolean;
   login?: (userData: unknown) => void;
   logout?: () => void;
 }
@@ -22,6 +23,7 @@ export function renderWithProviders(
     mocks = [],
     route = "/",
     user = null,
+    authLoading = false,
     login = () => undefined,
     logout = () => undefined,
   }: RenderOptions = {}
@@ -29,7 +31,7 @@ export function renderWithProviders(
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <MockedProvider mocks={mocks}>
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ authLoading, user, login, logout }}>
           <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
         </AuthContext.Provider>
       </MockedProvider>

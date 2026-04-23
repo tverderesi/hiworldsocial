@@ -8,6 +8,10 @@ const userSchema = new Schema<UserShape>({
   email: String,
   createdAt: String,
   profilePicture: String,
+  passwordResetTokenHash: String,
+  passwordResetExpiresAt: String,
+  passwordResetRequestedAt: String,
+  passwordResetRequestCount: Number,
 });
 
 export default model<UserShape>("User", userSchema);

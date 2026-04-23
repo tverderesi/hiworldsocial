@@ -1,4 +1,10 @@
 services:
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+
   dev-proxy:
     image: nginx:1.27-alpine
     ports:
@@ -12,13 +18,21 @@ services:
   server:
     build:
       target: deps
-    command: sh -c "pnpm --filter @hiworld/server codegen && pnpm --filter @hiworld/server dev"
+    command: sh -c "pnpm db:setup && pnpm --filter @hiworld/server codegen && pnpm --filter @hiworld/server dev"
     environment:
       NODE_ENV: development
+      EMAIL_TRANSPORT: smtp
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
     volumes:
       - ./apps/server:/repo/apps/server
       - server-root-node-modules:/repo/node_modules
       - server-app-node-modules:/repo/apps/server/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
 
   client:
     build:
@@ -26,7 +40,7 @@ services:
     command: pnpm --filter @hiworld/client dev
     environment:
       HOST: 0.0.0.0
-      VITE_GRAPHQL_ENDPOINT: ${VITE_GRAPHQL_ENDPOINT:-http://server.hiworld.local/}
+      VITE_GRAPHQL_ENDPOINT: ${VITE_GRAPHQL_ENDPOINT:-http://hiworld.local/graphql}
       VITE_HMR_HOST: ${VITE_HMR_HOST:-hiworld.local}
       VITE_HMR_CLIENT_PORT: ${VITE_HMR_CLIENT_PORT:-80}
     ports: !override
