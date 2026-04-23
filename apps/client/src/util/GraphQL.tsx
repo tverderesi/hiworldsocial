@@ -71,7 +71,7 @@ export const LOGIN_USER = gql`
 `;
 
 export const REGISTER_USER = gql`
-  mutation Register($registerInput: RegisterInput) {
+  mutation Register($registerInput: RegisterInput!) {
     register(registerInput: $registerInput) {
       username
       password
