@@ -1,7 +1,6 @@
 import { ApolloServer } from "apollo-server";
 
-import resolvers from "./graphql/resolvers/index.js";
-import typeDefs from "./graphql/typeDefs.js";
+import schema from "./graphql/schema.js";
 import type { GraphQLContext } from "./types.js";
 
 export function createApolloServer() {
@@ -12,8 +11,7 @@ export function createApolloServer() {
   const isDevelopment = process.env.NODE_ENV !== "production";
 
   return new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     cache: "bounded",
     introspection: isDevelopment,
     ...(isDevelopment ? { playground: true } : {}),

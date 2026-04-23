@@ -1,0 +1,72 @@
+type Comment {
+  body: String!
+  createdAt: String!
+  id: ID!
+  profilePicture: String!
+  username: String!
+}
+
+type Like {
+  createdAt: String!
+  id: ID!
+  profilePicture: String!
+  username: String!
+}
+
+type Mutation {
+  createComment(body: String!, postId: String!): Post!
+  createPost(body: String!): Post!
+  deleteComment(commentId: String!, postId: String!): Post!
+  deletePost(postId: ID!): String!
+  likePost(postId: ID!): Post!
+  login(password: String!, username: String!): User!
+  register(registerInput: RegisterInput!): User!
+  updateUser(updateProfileInput: UpdateProfileInput!): User!
+}
+
+type Post {
+  body: String!
+  commentCount: Int!
+  comments: [Comment]!
+  createdAt: String!
+  id: ID!
+  likeCount: Int!
+  likes: [Like]!
+  profilePicture: String!
+  username: String!
+}
+
+type Query {
+  getPost(postId: ID!): Post
+  getPosts: [Post]
+  getUser(username: String!): User
+  getUsers: [User]
+}
+
+input RegisterInput {
+  confirmPassword: String!
+  email: String!
+  password: String!
+  profilePicture: String!
+  username: String!
+}
+
+input UpdateProfileInput {
+  confirmPassword: String!
+  email: String!
+  newPassword: String!
+  newUsername: String!
+  oldPassword: String!
+  oldUsername: String!
+  profilePicture: String!
+}
+
+type User {
+  createdAt: String!
+  email: String!
+  id: ID!
+  password: String!
+  profilePicture: String!
+  token: String!
+  username: String!
+}

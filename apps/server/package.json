@@ -8,10 +8,12 @@
     "dev": "tsx watch --clear-screen=false index.ts",
     "start": "node dist/index.js",
     "codegen": "graphql-codegen --config codegen.ts",
+    "export-schema": "tsx scripts/export-schema.ts",
     "build": "tsc -p tsconfig.json && cp graphql/schema.graphql dist/graphql/schema.graphql",
     "test": "vitest run"
   },
   "dependencies": {
+    "@graphql-tools/schema": "^10.0.25",
     "apollo-server": "^3.13.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
