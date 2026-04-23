@@ -5,10 +5,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri:
-    process.env.NODE_ENV === "production"
-      ? process.env.REACT_APP_GRAPHQL_ENDPOINT
-      : "http://localhost:5000/",
+  uri: import.meta.env.VITE_GRAPHQL_ENDPOINT ?? "http://localhost:5000/",
 });
 
 const authLink = setContext(() => {

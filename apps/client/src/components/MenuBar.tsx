@@ -12,7 +12,7 @@ export default function MenuBar() {
 
   const pathname = window.location.pathname;
 
-  const path = "/" ? "home" : pathname.substring(1);
+  const path = pathname === "/" ? "home" : pathname.substring(1);
 
   const [state, setState] = useState({ activeItem: path });
   const { activeItem } = state;

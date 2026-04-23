@@ -97,7 +97,7 @@ docker compose up --build
 
 The client is served at `http://localhost:3000`, and the GraphQL API is exposed at `http://localhost:5000`.
 
-For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `REACT_APP_GRAPHQL_ENDPOINT` as a build argument.
+For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
 
 For live local development with bind-mounted source files:
 
@@ -106,6 +106,14 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
 The default `docker-compose.yml` is image-based, so source changes require a rebuild. The dev override runs the client and server dev watchers inside Docker and mounts `apps/client` and `apps/server` into the containers.
+
+The dev override also exposes friendly local hostnames through an Nginx proxy:
+
+```
+127.0.0.1 hiworld.local server.hiworld.local
+```
+
+After adding those entries to your host machine's hosts file, use `http://hiworld.local` for the client and `http://server.hiworld.local` for the GraphQL server.
 
 ## Features Pipeline
 
