@@ -1,4 +1,4 @@
-FROM node:24-alpine AS build
+FROM node:24-alpine AS deps
 
 WORKDIR /repo
 RUN corepack enable
@@ -10,6 +10,8 @@ ENV REACT_APP_GRAPHQL_ENDPOINT=$REACT_APP_GRAPHQL_ENDPOINT
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/client/package.json apps/client/package.json
 RUN pnpm install --frozen-lockfile --filter @hiworld/client
+
+FROM deps AS build
 
 COPY apps/client apps/client
 RUN pnpm --filter @hiworld/client build

@@ -99,6 +99,14 @@ The client is served at `http://localhost:3000`, and the GraphQL API is exposed 
 
 For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. The client image accepts `REACT_APP_GRAPHQL_ENDPOINT` as a build argument.
 
+For live local development with bind-mounted source files:
+
+```
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+The default `docker-compose.yml` is image-based, so source changes require a rebuild. The dev override runs the client and server dev watchers inside Docker and mounts `apps/client` and `apps/server` into the containers.
+
 ## Features Pipeline
 
 - [x] User registration and authentication

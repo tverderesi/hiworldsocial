@@ -1,4 +1,4 @@
-FROM node:24-alpine AS build
+FROM node:24-alpine AS deps
 
 WORKDIR /repo
 RUN corepack enable
@@ -7,6 +7,8 @@ RUN corepack prepare pnpm@9.15.1 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/server/package.json apps/server/package.json
 RUN pnpm install --frozen-lockfile --filter @hiworld/server --ignore-scripts
+
+FROM deps AS build
 
 COPY apps/server apps/server
 RUN pnpm --filter @hiworld/server build
