@@ -8,7 +8,7 @@
     "dev": "tsx watch --clear-screen=false index.ts",
     "start": "node dist/index.js",
     "codegen": "graphql-codegen --config codegen.ts",
-    "build": "pnpm codegen && tsc -p tsconfig.json && cp graphql/schema.graphql dist/graphql/schema.graphql",
+    "build": "tsc -p tsconfig.json && cp graphql/schema.graphql dist/graphql/schema.graphql",
     "test": "vitest run"
   },
   "dependencies": {
