@@ -2,14 +2,13 @@ FROM node:24-alpine AS deps
 
 WORKDIR /repo
 RUN corepack enable
-RUN corepack prepare pnpm@9.15.1 --activate
 
 ARG VITE_GRAPHQL_ENDPOINT=http://localhost:5000/
 ENV VITE_GRAPHQL_ENDPOINT=$VITE_GRAPHQL_ENDPOINT
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/client/package.json apps/client/package.json
-RUN pnpm install --frozen-lockfile --filter @hiworld/client
+RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
 
