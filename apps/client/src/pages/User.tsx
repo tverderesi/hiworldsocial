@@ -79,7 +79,7 @@ export default function Profile({ username, setProfileState }) {
                   as={Link}
                   to="/profile/editprofile"
                   primary
-                  onClick={(e) => {
+                  onClick={() => {
                     setProfileState(false);
                   }}
                 >

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Popup } from "semantic-ui-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -13,14 +12,12 @@ export function LikeButton({
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
-    if (
-      user &&
-      likes.find((like: { username: any }) => like.username === user.username)
-    ) {
-      setLiked(true);
-    } else {
-      setLiked(false);
-    }
+    setLiked(
+      Boolean(
+        user &&
+          likes.find((like: { username: any }) => like.username === user.username)
+      )
+    );
   }, [likes, user]);
 
   const likePost = (e: React.SyntheticEvent) => {
