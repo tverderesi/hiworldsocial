@@ -10,6 +10,7 @@ export interface AuthUser {
   email: string;
   createdAt: string;
   profilePicture: string;
+  token?: string | null;
 }
 
 interface AuthContextValue {
@@ -63,6 +64,7 @@ function AuthProvider({ children }: PropsWithChildren): JSX.Element {
     }
 
     if (!loading) {
+      window.localStorage.removeItem("authToken");
       dispatch({ type: "LOGOUT" });
     }
   }, [data, loading]);
@@ -71,9 +73,14 @@ function AuthProvider({ children }: PropsWithChildren): JSX.Element {
     authLoading: loading,
     user: state.user,
     login: (userData: AuthUser) => {
+      if (userData.token) {
+        window.localStorage.setItem("authToken", userData.token);
+      }
+
       dispatch({ type: "LOGIN", payload: userData });
     },
     logout: () => {
+      window.localStorage.removeItem("authToken");
       dispatch({ type: "LOGOUT" });
     },
   };

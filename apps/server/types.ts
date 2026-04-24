@@ -24,6 +24,7 @@ export interface PublicUser {
   email: string;
   createdAt: string;
   profilePicture: string;
+  token?: string | null;
 }
 
 export interface UserShape {

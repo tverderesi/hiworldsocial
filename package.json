@@ -26,7 +26,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,mjs,cjs,ts,tsx}": "eslint --fix --max-warnings=0"
+    "*.{js,mjs,cjs,ts,tsx}": "eslint --fix --max-warnings=0 --no-warn-ignored"
   },
   "author": "tverderesi",
   "license": "ISC",

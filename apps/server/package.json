@@ -10,7 +10,7 @@
     "db:setup": "tsx scripts/setup-db.ts",
     "codegen": "graphql-codegen --config codegen.ts",
     "export-schema": "tsx scripts/export-schema.ts",
-    "build": "sh -c 'esbuild index.ts --bundle --platform=node --target=node24 --format=cjs --sourcemap --outfile=dist/index.cjs && mkdir -p dist/graphql && cp graphql/schema.graphql dist/graphql/schema.graphql'",
+    "build": "esbuild index.ts --bundle --platform=node --target=node24 --format=cjs --packages=external --outfile=dist/index.cjs && mkdir -p dist/graphql && cp graphql/schema.graphql dist/graphql/schema.graphql",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "lint": "eslint . --ext .ts --max-warnings=0"

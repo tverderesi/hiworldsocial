@@ -7,7 +7,6 @@ import type {
   UserDocument,
 } from "../types";
 
-const SESSION_COOKIE_NAME = "session";
 const SESSION_DURATION_SECONDS = 60 * 60;
 
 function readHeader(
@@ -23,36 +22,15 @@ function readHeader(
   return value;
 }
 
-export function parseCookies(
-  cookieHeader: string | undefined
-): Record<string, string> {
-  if (!cookieHeader) {
-    return {};
-  }
-
-  return cookieHeader.split(";").reduce<Record<string, string>>((cookies, part) => {
-    const [rawName, ...rawValue] = part.trim().split("=");
-
-    if (!rawName || rawValue.length === 0) {
-      return cookies;
-    }
-
-    cookies[rawName] = decodeURIComponent(rawValue.join("="));
-    return cookies;
-  }, {});
-}
-
 export function getSessionToken(context: GraphQLContext): string | null {
   const authHeader = readHeader(context.req?.headers, "authorization");
+  const [scheme, token] = authHeader?.split(" ") ?? [];
 
-  if (authHeader?.startsWith("Bearer ")) {
-    return authHeader.slice("Bearer ".length);
+  if (scheme?.toLowerCase() === "bearer" && token) {
+    return token;
   }
 
-  const cookieHeader = readHeader(context.req?.headers, "cookie");
-  const cookies = parseCookies(cookieHeader);
-
-  return cookies[SESSION_COOKIE_NAME] ?? null;
+  return null;
 }
 
 export function generateToken(user: UserDocument): string {
@@ -68,36 +46,15 @@ export function generateToken(user: UserDocument): string {
   });
 }
 
-function serializeCookie(value: string, maxAge: number): string {
-  const parts = [
-    `${SESSION_COOKIE_NAME}=${encodeURIComponent(value)}`,
-    "Path=/",
-    "HttpOnly",
-    "SameSite=Lax",
-    `Max-Age=${maxAge}`,
-  ];
-
-  if (process.env.NODE_ENV === "production") {
-    parts.push("Secure");
-  }
-
-  return parts.join("; ");
-}
-
-export function setSessionCookie(context: GraphQLContext, token: string) {
-  context.res?.setHeader("Set-Cookie", serializeCookie(token, SESSION_DURATION_SECONDS));
-}
-
-export function clearSessionCookie(context: GraphQLContext) {
-  context.res?.setHeader("Set-Cookie", serializeCookie("", 0));
-}
-
 export function toPublicUser(user: UserDocument | PublicUser): PublicUser {
+  const token = "token" in user ? user.token : undefined;
+
   return {
     id: user.id,
     username: user.username,
     email: user.email,
     createdAt: user.createdAt,
     profilePicture: user.profilePicture,
+    token,
   };
 }
