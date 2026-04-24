@@ -30,6 +30,6 @@ export function createApolloServer() {
 
     ...(isDevelopment ? { playground: true } : {}),
 
-    context: ({ req }): GraphQLContext => ({ req }),
+    context: ({ req, res }): GraphQLContext => ({ req, res }),
   });
 }
