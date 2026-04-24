@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import mongoose from "mongoose";
 
-import { createApolloServer, getAllowedOrigins } from "./server.js";
+import { createApolloServer } from "./server.js";
 
 config({ quiet: true });
 
@@ -19,10 +19,6 @@ console.log("MongoDB connected.");
 
 const server = createApolloServer();
 const { url } = await server.listen({
-  port: PORT,
-  cors: {
-    origin: getAllowedOrigins(),
-    credentials: true,
-  },
+  port: PORT
 });
 console.log(`Server running at ${url}`);
