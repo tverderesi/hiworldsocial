@@ -7,9 +7,10 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 3000,
+    allowedHosts: [".hiworld.social"],
     hmr: {
-      host: process.env.VITE_HMR_HOST,
-      clientPort: Number(process.env.VITE_HMR_CLIENT_PORT) || undefined,
+      host: process.env.VITE_HMR_HOST || "hiworld.social",
+      clientPort: Number(process.env.VITE_HMR_CLIENT_PORT || 80),
     },
   },
   preview: {
