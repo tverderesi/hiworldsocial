@@ -1,74 +1,31 @@
 import { useQuery } from "@apollo/client/react";
 import { useContext } from "react";
-import { Card, Container, Grid, Transition } from "semantic-ui-react";
 import Ad from "../components/Ad";
 import NewPost from "../components/NewPost";
 import Post from "../components/Post";
 import { AuthContext } from "../context/auth";
 import { FETCH_POSTS_QUERY } from "../util/GraphQL";
 import { Outlet } from "react-router-dom";
+import { Card, CardContent } from "../components/ui/card";
 
 function Home() {
-  const { loading, data } = useQuery<any>(FETCH_POSTS_QUERY); //can't destructure here or else TS will scream
+  const { loading, data } = useQuery<any>(FETCH_POSTS_QUERY);
   const posts = data?.getPosts;
   const { user } = useContext(AuthContext);
 
   return (
-    <Container>
-      <Grid columns={3} stackable>
-        <Grid.Row style={{ margin: "1rem 0" }}>
-          <h1 className="page-title">Recent Posts</h1>
-        </Grid.Row>
-        <Outlet />
-        <Grid.Row>
-          <Grid.Column style={{ marginBottom: "2rem" }}>
-            {user ? <NewPost /> : <Ad />}
-          </Grid.Column>
-
-          {loading ? (
-            <Grid.Column style={{ marginBottom: "2rem" }}>
-              <Card
-                fluid
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  height: "100%",
-                  justiyContent: "center",
-                  alignItems: "center",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  textAlign: "center",
-                  verticalAlign: "center",
-                }}
-              >
-                <h2 style={{ width: "100%" }}>
-                  Loading posts
-                  <img
-                    src="spinner.svg"
-                    alt=""
-                    height={24}
-                    style={{
-                      position: "relative",
-                      top: ".25rem",
-                      left: "1rem",
-                    }}
-                  />
-                </h2>
-              </Card>
-            </Grid.Column>
-          ) : (
-            posts &&
-            posts.map((post: any) => (
-              <Transition.Group key={post.id}>
-                <Grid.Column style={{ marginBottom: "2rem" }} key={post.id}>
-                  <Post post={post} />
-                </Grid.Column>
-              </Transition.Group>
-            ))
-          )}
-        </Grid.Row>
-      </Grid>
-    </Container>
+    <div className="page-shell" style={{ marginTop: "1rem" }}>
+      <h1 className="page-title">Recent Posts</h1>
+      <Outlet />
+      <div className="grid-3" style={{ alignItems: "start", marginTop: "1rem" }}>
+        <div>{user ? <NewPost /> : <Ad />}</div>
+        {loading ? (
+          <Card><CardContent><h2>Loading posts <img src="spinner.svg" alt="" height={24} style={{ position: "relative", top: ".25rem", left: "1rem" }} /></h2></CardContent></Card>
+        ) : (
+          posts && posts.map((post: any) => <Post post={post} key={post.id} />)
+        )}
+      </div>
+    </div>
   );
 }
 

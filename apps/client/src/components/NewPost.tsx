@@ -1,97 +1,44 @@
-import { useMutation } from '@apollo/client/react';
-import { Button, Form, Card } from 'semantic-ui-react';
-
-import { CREATE_POST_MUTATION, FETCH_POSTS_QUERY } from '../util/GraphQL';
-import { getGraphQLErrorMessage } from '../util/errors';
-import { useForm } from '../util/hooks';
+import { useMutation } from "@apollo/client/react";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Textarea } from "./ui/textarea";
+import { CREATE_POST_MUTATION, FETCH_POSTS_QUERY } from "../util/GraphQL";
+import { getGraphQLErrorMessage } from "../util/errors";
+import { useForm } from "../util/hooks";
 
 const MAX_POST_BODY_LENGTH = 512;
 
 export default function NewPost() {
-  const { onChange, onSubmit, values } = useForm(createPostCallback, {
-    body: '',
-  });
-
+  const { onChange, onSubmit, values } = useForm(createPostCallback, { body: "" });
   const [createPost, { error }] = useMutation<any>(CREATE_POST_MUTATION, {
     variables: values,
     update(proxy, result) {
-      console.log(result);
       const data: any = proxy.readQuery({ query: FETCH_POSTS_QUERY });
       const resultData = result.data as { createPost: any };
-      proxy.writeQuery({
-        query: FETCH_POSTS_QUERY,
-        data: { getPosts: [resultData.createPost, ...data.getPosts] },
-      });
-      values.body = '';
+      proxy.writeQuery({ query: FETCH_POSTS_QUERY, data: { getPosts: [resultData.createPost, ...data.getPosts] } });
+      values.body = "";
     },
   });
 
-  function createPostCallback() {
-    createPost();
-  }
+  function createPostCallback() { createPost(); }
 
   return (
-    <>
-      <Form onSubmit={onSubmit}>
-        <Card
-          fluid
-          style={{ height: '100%' }}
-        >
-          <Card.Content color='black'>
-            <Card.Header>
-              <h3>New Post</h3>
-              {error && (
-                <p
-                  className='ui error'
-                  style={{
-                    fontSize: '1rem',
-                    color: '#9f3a38',
-                    fontWeight: '400',
-                  }}
-                >
-                  {getGraphQLErrorMessage(error)}!
-                </p>
-              )}
-            </Card.Header>
-
-            <Card.Description style={{ marginTop: '1rem' }}>
-              <Form.Field>
-                <Form.TextArea
-                  placeholder='Say hi to the World!'
-                  name='body'
-                  onChange={onChange}
-                  value={values.body}
-                  maxLength={MAX_POST_BODY_LENGTH}
-                  error={error ? true : false}
-                />
-                <div
-                  style={{
-                    marginTop: '0.5rem',
-                    textAlign: 'right',
-                    fontSize: '0.9rem',
-                    color: values.body.length >= MAX_POST_BODY_LENGTH ? '#9f3a38' : '#6b6b6b',
-                  }}
-                >
-                  {values.body.length}/{MAX_POST_BODY_LENGTH}
-                </div>
-              </Form.Field>
-            </Card.Description>
-          </Card.Content>
-
-          <Card.Content
-            extra
-            textAlign='right'
-            style={{ display: 'flex', justifyContent: 'end' }}
-          >
-            <Button
-              type='submit'
-              color='purple'
-            >
-              Send
-            </Button>
-          </Card.Content>
-        </Card>
-      </Form>
-    </>
+    <form onSubmit={onSubmit}>
+      <Card>
+        <CardHeader>
+          <h3>New Post</h3>
+          {error && <p className="error-text">{getGraphQLErrorMessage(error)}!</p>}
+        </CardHeader>
+        <CardContent>
+          <Textarea placeholder="Say hi to the World!" name="body" onChange={onChange} value={values.body} maxLength={MAX_POST_BODY_LENGTH} />
+          <div style={{ marginTop: ".5rem", textAlign: "right", fontSize: ".9rem", color: values.body.length >= MAX_POST_BODY_LENGTH ? "#9f3a38" : "#6b6b6b" }}>
+            {values.body.length}/{MAX_POST_BODY_LENGTH}
+          </div>
+        </CardContent>
+        <CardFooter style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button type="submit">Send</Button>
+        </CardFooter>
+      </Card>
+    </form>
   );
 }

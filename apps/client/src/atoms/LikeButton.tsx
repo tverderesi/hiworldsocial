@@ -1,96 +1,23 @@
-import { Button, Popup } from "semantic-ui-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
 import { LIKE_POST } from "../util/GraphQL";
+import { Button } from "../components/ui/button";
 
-export function LikeButton({
-  post: { id, likeCount, likes },
-  user,
-  showLabel = true,
-}) {
+export function LikeButton({ post: { id, likeCount, likes }, user, showLabel = true }) {
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
-    setLiked(
-      Boolean(
-        user &&
-          likes.find((like: { username: any }) => like.username === user.username)
-      )
-    );
+    setLiked(Boolean(user && likes.find((like: { username: any }) => like.username === user.username)));
   }, [likes, user]);
 
-  const likePost = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    likePostMutation();
-  };
+  const [likePostMutation] = useMutation<any>(LIKE_POST, { variables: { PostId: id } });
 
-  const [likePostMutation] = useMutation<any>(LIKE_POST, {
-    variables: { PostId: id },
-  });
-  //I'm deeply ashamed the folowwing block of code exists
-  return (
-    <>
-      {user && showLabel && (
-        <Popup
-          content="Like Post"
-          inverted
-          trigger={
-            <Button
-              basic={!liked ? true : false}
-              color="red"
-              icon="heart"
-              label={{
-                color: "red",
-                content: likeCount,
-              }}
-              onClick={likePost}
-            />
-          }
-        />
-      )}
-      {!user && showLabel && (
-        <Popup
-          content="Like Post"
-          inverted
-          trigger={
-            <Button
-              as={Link}
-              to={"/login"}
-              basic
-              color="red"
-              icon="heart"
-              label={{
-                color: "red",
-                content: likeCount,
-              }}
-            />
-          }
-        />
-      )}
-      {user && !showLabel && (
-        <Popup
-          content="Like Post"
-          inverted
-          trigger={
-            <Button
-              basic={!liked ? true : false}
-              color="red"
-              icon="heart"
-              onClick={likePost}
-            />
-          }
-        />
-      )}
-      {!user && !showLabel && (
-        <Popup
-          content="Like Post"
-          inverted
-          trigger={
-            <Button as={Link} to={"/login"} basic color="red" icon="heart" />
-          }
-        />
-      )}
-    </>
+  const button = (
+    <Button variant={liked ? "destructive" : "outline"} onClick={(e) => { e.preventDefault(); if (user) likePostMutation(); }} title="Like Post">
+      ❤️
+    </Button>
   );
+
+  return user ? <div style={{ display: "inline-flex", gap: ".35rem", alignItems: "center" }}>{button}{showLabel ? <span>{likeCount}</span> : null}</div> : <Link to="/login" style={{ display: "inline-flex", gap: ".35rem", alignItems: "center" }}>{button}{showLabel ? <span>{likeCount}</span> : null}</Link>;
 }
