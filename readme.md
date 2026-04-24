@@ -64,7 +64,7 @@ To enable real email delivery through Resend, set these server env vars:
 ```
 RESEND_API_KEY=re_xxxxxxxxx
 RESEND_FROM_EMAIL=onboarding@resend.dev
-PASSWORD_RESET_URL_BASE=http://hiworld.local
+PASSWORD_RESET_URL_BASE=http://hiworld.social
 EMAIL_TRANSPORT=resend
 ```
 
@@ -99,15 +99,41 @@ pnpm --filter @hiworld/server start
 
 ## Docker
 
-Build and run the full stack, including MongoDB:
+Docker is for local development only in this repository. The single `docker-compose.yml` runs MongoDB, the Node server, the Vite client, Mailpit, and an Nginx dev proxy that acts as the only browser entry point.
+
+1. Add the local hostnames to your host machine's hosts file:
+
+```
+127.0.0.1 hiworld.social server.hiworld.social mail.hiworld.social
+```
+
+2. Start the dev stack:
 
 ```
 docker compose up --build
 ```
 
-The client is served at `http://localhost:3000`, and the GraphQL API is exposed at `http://localhost:5000`.
+The dev server startup runs `pnpm db:setup` automatically after MongoDB becomes healthy, so the required collections are created without a separate manual step.
 
-For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. Locally, password reset emails default to `http://hiworld.local`; in production, set `PASSWORD_RESET_URL_BASE=https://hiworldsocial.vercel.app` so reset emails link back to the live app. Posting is rate-limited on the server with `POST_RATE_LIMIT_MAX_POSTS` and `POST_RATE_LIMIT_WINDOW_SECONDS`, which default to `5` posts per `60` seconds. The client image accepts `VITE_GRAPHQL_ENDPOINT` as a build argument.
+3. Open the app:
+
+```
+http://hiworld.social
+```
+
+4. Open Apollo Sandbox in dev mode:
+
+```
+http://server.hiworld.social
+```
+
+5. Open Mailpit to inspect locally sent emails:
+
+```
+http://mail.hiworld.social
+```
+
+For production, set a strong `SECRET_KEY` through `.env` or your deployment environment. Locally, password reset emails default to `http://hiworld.social`; in production, set `PASSWORD_RESET_URL_BASE=https://hiworldsocial.vercel.app` so reset emails link back to the live app. Posting is rate-limited on the server with `POST_RATE_LIMIT_MAX_POSTS` and `POST_RATE_LIMIT_WINDOW_SECONDS`, which default to `5` posts per `60` seconds. Docker dev routes GraphQL through `http://hiworld.social/graphql`, uses `EMAIL_TRANSPORT=smtp`, and sends email to Mailpit at `mailpit:1025`.
 
 The server owns the executable GraphQL schema. When the schema changes, refresh the client-facing schema artifact with:
 
@@ -116,44 +142,6 @@ pnpm schema:export
 ```
 
 CI runs `pnpm schema:check` to ensure `apps/client/src/graphql/schema.graphql` stays in sync with the server schema.
-
-### Dev Mode
-
-Dev mode runs the client and server watchers inside Docker with bind-mounted source files, so most source edits do not need an image rebuild.
-
-1. Add the local hostnames to your host machine's hosts file:
-
-```
-127.0.0.1 hiworld.local server.hiworld.local mail.hiworld.local
-```
-
-2. Start the dev stack:
-
-```
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-```
-
-The dev server startup runs `pnpm db:setup` automatically after MongoDB becomes healthy, so the required collections are created without a separate manual step.
-
-3. Open the app:
-
-```
-http://hiworld.local
-```
-
-4. Open Apollo Sandbox in dev mode:
-
-```
-http://server.hiworld.local
-```
-
-5. Open Mailpit to inspect locally sent emails:
-
-```
-http://mail.hiworld.local
-```
-
-The dev override uses an Nginx proxy for `hiworld.local`, `server.hiworld.local`, and `mail.hiworld.local`, runs Mailpit for local email capture, bind mounts `apps/client` and `apps/server`, and stores container dependencies in named volumes. The server uses `EMAIL_TRANSPORT=smtp` in dev so forgot-password emails go to Mailpit instead of calling Resend. The default `docker-compose.yml` is image-based, so source changes there require a rebuild.
 
 ## Features Pipeline
 

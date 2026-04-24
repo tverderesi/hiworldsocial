@@ -86,7 +86,7 @@ function getPasswordResetBaseUrl(): string {
     process.env.PASSWORD_RESET_URL_BASE ??
     process.env.CLIENT_URL ??
     process.env.APP_URL ??
-    "http://hiworld.local"
+    "http://hiworld.social"
   );
 }
 
