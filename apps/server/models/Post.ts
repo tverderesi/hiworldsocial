@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import type { PostShape } from "../types.js";
+import type { PostShape } from "../types";
 
 const postSchema = new Schema<PostShape>({
   body: String,

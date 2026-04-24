@@ -5,7 +5,7 @@ import type {
   PublicUser,
   TokenUser,
   UserDocument,
-} from "../types.js";
+} from "../types";
 
 const SESSION_COOKIE_NAME = "session";
 const SESSION_DURATION_SECONDS = 60 * 60;

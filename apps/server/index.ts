@@ -1,11 +1,11 @@
 import { config } from "dotenv";
 import mongoose from "mongoose";
 
-import { createApolloServer } from "./server.js";
+import { createApolloApp } from "./server";
 
 config({ quiet: true });
 
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT || 5000);
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGODB;
 
 if (!MONGODB_URI) {
@@ -17,8 +17,10 @@ mongoose.set("strictQuery", false);
 await mongoose.connect(MONGODB_URI);
 console.log("MongoDB connected.");
 
-const server = createApolloServer();
-const { url } = await server.listen({
-  port: PORT
+const { httpServer } = await createApolloApp();
+
+await new Promise<void>((resolve) => {
+  httpServer.listen({ port: PORT }, () => resolve());
 });
-console.log(`Server running at ${url}`);
+
+console.log(`Server running at http://localhost:${PORT}/graphql`);

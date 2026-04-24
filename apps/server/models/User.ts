@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import type { UserShape } from "../types.js";
+import type { UserShape } from "../types";
 
 const userSchema = new Schema<UserShape>({
   username: String,

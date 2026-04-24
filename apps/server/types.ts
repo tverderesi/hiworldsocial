@@ -1,12 +1,9 @@
+import type { Request, Response } from "express";
 import type { HydratedDocument, Types } from "mongoose";
 
 export interface GraphQLContext {
-  req?: {
-    headers?: Record<string, string | string[] | undefined>;
-  };
-  res?: {
-    setHeader: (name: string, value: string | string[]) => void;
-  };
+  req?: Request;
+  res?: Response;
 }
 
 export interface ValidationResult {

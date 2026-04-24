@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server";
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes } from "node:crypto";
 import "dotenv/config";
@@ -8,19 +7,20 @@ import {
   generateToken,
   setSessionCookie,
   toPublicUser,
-} from "../../lib/auth.js";
-import User from "../../models/User.js";
-import { sendEmail } from "../../lib/email.js";
-import { checkRateLimit } from "../../lib/rateLimit.js";
+} from "../../lib/auth";
+import { createUserInputError } from "../../lib/graphqlErrors";
+import { sendEmail } from "../../lib/email";
+import { checkRateLimit } from "../../lib/rateLimit";
+import User from "../../models/User";
+import type { GraphQLContext, UserDocument } from "../../types";
 import {
   validateEmail,
   validateLoginInput,
   validatePassword,
   validateRegisterInput,
   validateUsername,
-} from "../../utils/validators.js";
-import checkAuth from "../../utils/checkAuth.js";
-import type { GraphQLContext, UserDocument } from "../../types.js";
+} from "../../utils/validators";
+import checkAuth from "../../utils/checkAuth";
 
 interface LoginArgs {
   username: string;
@@ -129,19 +129,19 @@ const usersResolvers = {
       const user = await User.findOne({ username });
 
       if (!valid) {
-        throw new UserInputError("Wrong credentials.", { errors });
+        throw createUserInputError("Wrong credentials.", { errors });
       }
 
       if (!user) {
         errors.general = "User not found!";
-        throw new UserInputError("User not found.", { errors });
+        throw createUserInputError("User not found.", { errors });
       }
 
       const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
         errors.general = "Wrong credentials.";
-        throw new UserInputError("Wrong credentials.", { errors });
+        throw createUserInputError("Wrong credentials.", { errors });
       }
 
       const token = generateToken(user);
@@ -239,7 +239,7 @@ const usersResolvers = {
       { token, password, confirmPassword }: ResetPasswordArgs
     ) {
       if (password !== confirmPassword) {
-        throw new UserInputError("Passwords do not match.", {
+        throw createUserInputError("Passwords do not match.", {
           errors: {
             confirmPassword: "Passwords must match!",
           },
@@ -249,7 +249,7 @@ const usersResolvers = {
       const { valid, errors } = validatePassword(password);
 
       if (!valid) {
-        throw new UserInputError("Errors", { errors });
+        throw createUserInputError("Errors", { errors });
       }
 
       const user = await User.findOne({
@@ -261,7 +261,7 @@ const usersResolvers = {
         !user.passwordResetExpiresAt ||
         new Date(user.passwordResetExpiresAt).getTime() < Date.now()
       ) {
-        throw new UserInputError("Reset link is invalid or expired.", {
+        throw createUserInputError("Reset link is invalid or expired.", {
           errors: {
             token: "Reset link is invalid or expired.",
           },
@@ -302,13 +302,13 @@ const usersResolvers = {
       );
 
       if (!valid) {
-        throw new UserInputError("Errors", { errors });
+        throw createUserInputError("Errors", { errors });
       }
 
       const user = await User.findOne({ username });
 
       if (user) {
-        throw new UserInputError("Username is taken.", {
+        throw createUserInputError("Username is taken.", {
           errors: {
             username: "This username is taken!",
           },
@@ -318,7 +318,7 @@ const usersResolvers = {
       const uniqueEmail = await User.findOne({ email });
 
       if (uniqueEmail) {
-        throw new UserInputError("Email is already registered.", {
+        throw createUserInputError("Email is already registered.", {
           errors: {
             email: "This email is already registered.",
           },
@@ -359,7 +359,7 @@ const usersResolvers = {
       const user = await User.findOne({ username: oldUsername });
 
       if (!user) {
-        throw new UserInputError("User not found.", {
+        throw createUserInputError("User not found.", {
           errors: {
             username: "User not found.",
           },
@@ -369,7 +369,7 @@ const usersResolvers = {
       const match = await bcrypt.compare(oldPassword, user.password);
 
       if (!match) {
-        throw new UserInputError("Wrong credentials.", {
+        throw createUserInputError("Wrong credentials.", {
           errors: {
             password: "Wrong credentials.",
           },
@@ -381,13 +381,13 @@ const usersResolvers = {
           validateUsername(newUsername);
 
         if (!usernameValid) {
-          throw new UserInputError("Errors", { errors: usernameErrors });
+          throw createUserInputError("Errors", { errors: usernameErrors });
         }
 
         const existingUser = await User.findOne({ username: newUsername });
 
         if (existingUser && existingUser.email !== email) {
-          throw new UserInputError("Username is taken.", {
+          throw createUserInputError("Username is taken.", {
             errors: {
               username: "Username is taken.",
             },
@@ -401,13 +401,13 @@ const usersResolvers = {
         const { valid: emailValid, errors: emailErrors } = validateEmail(email);
 
         if (!emailValid) {
-          throw new UserInputError("Errors", { errors: emailErrors });
+          throw createUserInputError("Errors", { errors: emailErrors });
         }
 
         const existingEmail = await User.findOne({ email });
 
         if (existingEmail && existingEmail.username !== user.username) {
-          throw new UserInputError("Email is already registered.", {
+          throw createUserInputError("Email is already registered.", {
             errors: {
               email: "This email is already registered to another account.",
             },
@@ -422,11 +422,11 @@ const usersResolvers = {
           validatePassword(oldPassword);
 
         if (!passwordValid) {
-          throw new UserInputError("Errors", { errors: passwordErrors });
+          throw createUserInputError("Errors", { errors: passwordErrors });
         }
 
         if (newPassword !== confirmPassword) {
-          throw new UserInputError("Passwords do not match.", {
+          throw createUserInputError("Passwords do not match.", {
             errors: {
               confirmPassword: "Passwords do not match.",
             },
@@ -437,7 +437,7 @@ const usersResolvers = {
           validatePassword(newPassword);
 
         if (!newPasswordValid) {
-          throw new UserInputError("Errors", { errors: newPasswordErrors });
+          throw createUserInputError("Errors", { errors: newPasswordErrors });
         }
 
         user.password = await bcrypt.hash(newPassword, 12);

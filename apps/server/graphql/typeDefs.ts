@@ -1,11 +1,15 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { gql } from "apollo-server";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const schema = readFileSync(join(__dirname, "schema.graphql"), "utf8");
-const typeDefs = gql(schema);
+const schemaPathCandidates = [
+  join(__dirname, "schema.graphql"),
+  join(__dirname, "graphql", "schema.graphql"),
+];
+const schemaPath =
+  schemaPathCandidates.find((candidate) => existsSync(candidate)) ??
+  schemaPathCandidates[0];
+const typeDefs = readFileSync(schemaPath, "utf8");
 
 export default typeDefs;

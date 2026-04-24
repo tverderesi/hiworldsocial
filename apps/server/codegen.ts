@@ -6,10 +6,10 @@ const config: CodegenConfig = {
     "graphql/generated.ts": {
       plugins: ["typescript", "typescript-resolvers"],
       config: {
-        contextType: "../types.js#GraphQLContext",
+        contextType: "../types#GraphQLContext",
         mappers: {
-          Post: "../types.js#PostDocument",
-          User: "../types.js#UserResolverResult",
+          Post: "../types#PostDocument",
+          User: "../types#UserResolverResult",
         },
       },
     },

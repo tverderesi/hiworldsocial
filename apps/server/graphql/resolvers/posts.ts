@@ -1,10 +1,12 @@
-import { AuthenticationError, UserInputError } from "apollo-server";
-
-import Post from "../../models/Post.js";
-import checkAuth from "../../utils/checkAuth.js";
-import { enforcePostRateLimit } from "../../utils/postRateLimit.js";
-import { validatePostBody } from "../../utils/validators.js";
-import type { GraphQLContext, PostLike } from "../../types.js";
+import {
+  createAuthenticationError,
+  createUserInputError,
+} from "../../lib/graphqlErrors";
+import Post from "../../models/Post";
+import type { GraphQLContext, PostLike } from "../../types";
+import checkAuth from "../../utils/checkAuth";
+import { enforcePostRateLimit } from "../../utils/postRateLimit";
+import { validatePostBody } from "../../utils/validators";
 
 interface PostArgs {
   postId: string;
@@ -53,7 +55,7 @@ const postsResolvers = {
       const { valid, errors } = validatePostBody(body);
 
       if (!valid) {
-        throw new UserInputError("Invalid post body.", { errors });
+        throw createUserInputError("Invalid post body.", { errors });
       }
 
       await enforcePostRateLimit(user.id);
@@ -76,11 +78,11 @@ const postsResolvers = {
         const post = await Post.findById(postId);
 
         if (!post) {
-          throw new UserInputError("Post not found.");
+          throw createUserInputError("Post not found.");
         }
 
         if (user.username !== post.username) {
-          throw new AuthenticationError(
+          throw createAuthenticationError(
             "You can't delete posts from another user!"
           );
         }
@@ -98,7 +100,7 @@ const postsResolvers = {
       const post = await Post.findById(postId);
 
       if (!post) {
-        throw new UserInputError("Post doesn't exist.");
+        throw createUserInputError("Post doesn't exist.");
       }
 
       if (post.likes.find((like: PostLike) => like.username === username)) {
