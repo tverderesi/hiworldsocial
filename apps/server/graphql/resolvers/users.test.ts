@@ -93,6 +93,7 @@ describe("user resolvers", () => {
             email
             profilePicture
             createdAt
+            token
           }
         }
       `,
@@ -117,6 +118,7 @@ describe("user resolvers", () => {
       email: "alice@example.com",
       profilePicture: "ade",
       createdAt: "2026-04-23T00:00:00.000Z",
+      token: "signed-token",
     });
     expect(hashMock).toHaveBeenCalledWith("Password1!", 12);
     expect(findOneMock).toHaveBeenNthCalledWith(1, { username: "alice" });
@@ -189,6 +191,7 @@ describe("user resolvers", () => {
             id
             username
             email
+            token
           }
         }
       `,
@@ -206,6 +209,7 @@ describe("user resolvers", () => {
       id: "user-1",
       username: "alice",
       email: "alice@example.com",
+      token: "signed-token",
     });
     expect(compareMock).toHaveBeenCalledWith("Password1!", "hashed-password");
   });

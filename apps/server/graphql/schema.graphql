@@ -62,6 +62,7 @@ type User {
   email: String!
   createdAt: String!
   profilePicture: String!
+  token: String
 }
 
 type Mutation {

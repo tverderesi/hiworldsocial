@@ -3,9 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import "dotenv/config";
 
 import {
-  clearSessionCookie,
   generateToken,
-  setSessionCookie,
   toPublicUser,
 } from "../../lib/auth";
 import { createUserInputError } from "../../lib/graphqlErrors";
@@ -122,8 +120,7 @@ const usersResolvers = {
   Mutation: {
     async login(
       _: unknown,
-      { username, password }: LoginArgs,
-      context: GraphQLContext
+      { username, password }: LoginArgs
     ) {
       const { errors, valid } = validateLoginInput(username, password);
       const user = await User.findOne({ username });
@@ -145,13 +142,11 @@ const usersResolvers = {
       }
 
       const token = generateToken(user);
-      setSessionCookie(context, token);
 
-      return toPublicUser(user);
+      return { ...toPublicUser(user), token };
     },
 
-    logout(_: unknown, __: unknown, context: GraphQLContext) {
-      clearSessionCookie(context);
+    logout() {
       return true;
     },
 
@@ -291,8 +286,7 @@ const usersResolvers = {
           confirmPassword,
           profilePicture,
         },
-      }: RegisterArgs,
-      context: GraphQLContext
+      }: RegisterArgs
     ) {
       const { valid, errors } = validateRegisterInput(
         username,
@@ -336,9 +330,8 @@ const usersResolvers = {
 
       const res = await newUser.save();
       const token = generateToken(res);
-      setSessionCookie(context, token);
 
-      return toPublicUser(res);
+      return { ...toPublicUser(res), token };
     },
 
     async updateUser(
@@ -353,8 +346,7 @@ const usersResolvers = {
           confirmPassword,
           profilePicture,
         },
-      }: UpdateProfileArgs,
-      context: GraphQLContext
+      }: UpdateProfileArgs
     ) {
       const user = await User.findOne({ username: oldUsername });
 
@@ -449,9 +441,8 @@ const usersResolvers = {
 
       const res = await user.save();
       const token = generateToken(res);
-      setSessionCookie(context, token);
 
-      return toPublicUser(res);
+      return { ...toPublicUser(res), token };
     },
   },
 
@@ -484,13 +475,11 @@ const usersResolvers = {
         const user = await User.findOne({ username });
 
         if (!user) {
-          clearSessionCookie(context);
           return null;
         }
 
         return toPublicUser(user);
       } catch {
-        clearSessionCookie(context);
         return null;
       }
     },

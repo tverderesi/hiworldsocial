@@ -65,6 +65,7 @@ export const LOGIN_USER = gql`
       username
       createdAt
       profilePicture
+      token
     }
   }
 `;
@@ -103,6 +104,7 @@ export const REGISTER_USER = gql`
       email
       createdAt
       profilePicture
+      token
     }
   }
 `;
@@ -228,6 +230,7 @@ export const UPDATE_USER_MUTATION = gql`
       email
       createdAt
       profilePicture
+      token
     }
   }
 `;

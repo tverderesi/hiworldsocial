@@ -75,5 +75,6 @@ type User {
   email: String!
   id: ID!
   profilePicture: String!
+  token: String
   username: String!
 }
