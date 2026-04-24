@@ -1,11 +1,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const entryDir = process.argv[1] ? dirname(process.argv[1]) : process.cwd();
 const schemaPathCandidates = [
-  join(__dirname, "schema.graphql"),
-  join(__dirname, "graphql", "schema.graphql"),
+  join(process.cwd(), "graphql", "schema.graphql"),
+  join(process.cwd(), "apps", "server", "graphql", "schema.graphql"),
+  join(process.cwd(), "dist", "graphql", "schema.graphql"),
+  join(entryDir, "graphql", "schema.graphql"),
+  join(entryDir, "..", "graphql", "schema.graphql"),
 ];
 const schemaPath =
   schemaPathCandidates.find((candidate) => existsSync(candidate)) ??
