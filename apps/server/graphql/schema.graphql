@@ -43,19 +43,23 @@ input UpdateProfileInput {
   profilePicture: String!
 }
 
+type PasswordResetResponse {
+  success: Boolean!
+  message: String!
+}
+
 type Query {
   getPosts: [Post]
   getPost(postId: ID!): Post
   getUser(username: String!): User
   getUsers: [User]
+  me: User
 }
 
 type User {
   id: ID!
   username: String!
-  password: String!
   email: String!
-  token: String!
   createdAt: String!
   profilePicture: String!
 }
@@ -63,6 +67,13 @@ type User {
 type Mutation {
   register(registerInput: RegisterInput!): User!
   login(username: String!, password: String!): User!
+  logout: Boolean!
+  requestPasswordReset(email: String!): PasswordResetResponse!
+  resetPassword(
+    token: String!
+    password: String!
+    confirmPassword: String!
+  ): PasswordResetResponse!
   createPost(body: String!): Post!
   deletePost(postId: ID!): String!
   createComment(postId: String!, body: String!): Post!

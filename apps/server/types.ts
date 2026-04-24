@@ -1,10 +1,11 @@
 import type { HydratedDocument, Types } from "mongoose";
 
 export interface GraphQLContext {
-  req: {
-    headers: {
-      authorization?: string;
-    };
+  req?: {
+    headers?: Record<string, string | string[] | undefined>;
+  };
+  res?: {
+    setHeader: (name: string, value: string | string[]) => void;
   };
 }
 
@@ -20,19 +21,30 @@ export interface TokenUser {
   profilePicture: string;
 }
 
+export interface PublicUser {
+  id: string;
+  username: string;
+  email: string;
+  createdAt: string;
+  profilePicture: string;
+}
+
 export interface UserShape {
   username: string;
   password: string;
   email: string;
   createdAt: string;
   profilePicture: string;
+  passwordResetTokenHash?: string | null;
+  passwordResetExpiresAt?: string | null;
+  passwordResetRequestedAt?: string | null;
+  passwordResetRequestCount?: number;
 }
 
 export type UserDocument = HydratedDocument<UserShape>;
 
-export type AuthUserPayload = UserShape & {
+export type AuthUserPayload = PublicUser & {
   id: string;
-  token: string;
   _id?: Types.ObjectId;
   __v?: number;
 };

@@ -1,9 +1,17 @@
 import { UserInputError } from "apollo-server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { createHash, randomBytes } from "node:crypto";
 import "dotenv/config";
 
+import {
+  clearSessionCookie,
+  generateToken,
+  setSessionCookie,
+  toPublicUser,
+} from "../../lib/auth.js";
 import User from "../../models/User.js";
+import { sendEmail } from "../../lib/email.js";
+import { checkRateLimit } from "../../lib/rateLimit.js";
 import {
   validateEmail,
   validateLoginInput,
@@ -11,7 +19,8 @@ import {
   validateRegisterInput,
   validateUsername,
 } from "../../utils/validators.js";
-import type { TokenUser, UserDocument } from "../../types.js";
+import checkAuth from "../../utils/checkAuth.js";
+import type { GraphQLContext, UserDocument } from "../../types.js";
 
 interface LoginArgs {
   username: string;
@@ -48,16 +57,60 @@ interface UserArgs {
   username: string;
 }
 
-function generateToken(user: UserDocument): string {
-  const payload: TokenUser = {
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    profilePicture: user.profilePicture,
-  };
+interface PasswordResetRequestArgs {
+  email: string;
+}
 
-  return jwt.sign(payload, process.env.SECRET_KEY as string, {
-    expiresIn: "1h",
+interface ResetPasswordArgs {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
+const PASSWORD_RESET_TTL_MS = 1000 * 60 * 30;
+const PASSWORD_RESET_ACCOUNT_WINDOW_MS = 1000 * 60 * 15;
+const PASSWORD_RESET_ACCOUNT_MAX_REQUESTS = 3;
+const PASSWORD_RESET_IP_WINDOW_MS = 1000 * 60 * 15;
+const PASSWORD_RESET_IP_MAX_REQUESTS = 5;
+const PASSWORD_RESET_SUCCESS_MESSAGE =
+  "If an account exists for that email, a password reset link has been sent.";
+const PASSWORD_RESET_COMPLETED_MESSAGE =
+  "Your password has been reset. You can now log in with the new password.";
+
+function hashResetToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function getPasswordResetBaseUrl(): string {
+  return (
+    process.env.PASSWORD_RESET_URL_BASE ??
+    process.env.CLIENT_URL ??
+    process.env.APP_URL ??
+    "http://hiworld.local"
+  );
+}
+
+function getClientAddress(context: GraphQLContext): string {
+  const forwardedFor = context.req?.headers?.["x-forwarded-for"];
+  const candidate = Array.isArray(forwardedFor)
+    ? forwardedFor[0]
+    : forwardedFor;
+
+  return candidate?.split(",")[0]?.trim() || "unknown";
+}
+
+async function sendPasswordResetEmail(email: string, token: string) {
+  const resetUrl = new URL("/reset-password", getPasswordResetBaseUrl());
+  resetUrl.searchParams.set("token", token);
+
+  await sendEmail({
+    to: email,
+    subject: "Reset your Hey World password",
+    html: `
+      <p>You requested a password reset for your Hey World account.</p>
+      <p><a href="${resetUrl.toString()}">Reset your password</a></p>
+      <p>This link expires in 30 minutes. If you did not request this, you can ignore this email.</p>
+    `,
   });
 }
 
@@ -67,7 +120,11 @@ function toError(error: unknown): Error {
 
 const usersResolvers = {
   Mutation: {
-    async login(_: unknown, { username, password }: LoginArgs) {
+    async login(
+      _: unknown,
+      { username, password }: LoginArgs,
+      context: GraphQLContext
+    ) {
       const { errors, valid } = validateLoginInput(username, password);
       const user = await User.findOne({ username });
 
@@ -88,11 +145,139 @@ const usersResolvers = {
       }
 
       const token = generateToken(user);
+      setSessionCookie(context, token);
+
+      return toPublicUser(user);
+    },
+
+    async logout(_: unknown, __: unknown, context: GraphQLContext) {
+      clearSessionCookie(context);
+      return true;
+    },
+
+    async requestPasswordReset(
+      _: unknown,
+      { email }: PasswordResetRequestArgs,
+      context: GraphQLContext
+    ) {
+      const normalizedEmail = email.trim().toLowerCase();
+      const { valid } = validateEmail(normalizedEmail);
+
+      if (!checkRateLimit({
+        key: `password-reset-ip:${getClientAddress(context)}`,
+        windowMs: PASSWORD_RESET_IP_WINDOW_MS,
+        maxRequests: PASSWORD_RESET_IP_MAX_REQUESTS,
+      })) {
+        return {
+          success: true,
+          message: PASSWORD_RESET_SUCCESS_MESSAGE,
+        };
+      }
+
+      if (!valid) {
+        return {
+          success: true,
+          message: PASSWORD_RESET_SUCCESS_MESSAGE,
+        };
+      }
+
+      const user = await User.findOne({ email: normalizedEmail });
+
+      if (!user) {
+        return {
+          success: true,
+          message: PASSWORD_RESET_SUCCESS_MESSAGE,
+        };
+      }
+
+      const requestedAt = user.passwordResetRequestedAt
+        ? new Date(user.passwordResetRequestedAt).getTime()
+        : 0;
+      const withinWindow =
+        requestedAt > 0 && Date.now() - requestedAt < PASSWORD_RESET_ACCOUNT_WINDOW_MS;
+      const requestCount = withinWindow ? user.passwordResetRequestCount ?? 0 : 0;
+
+      if (requestCount >= PASSWORD_RESET_ACCOUNT_MAX_REQUESTS) {
+        return {
+          success: true,
+          message: PASSWORD_RESET_SUCCESS_MESSAGE,
+        };
+      }
+
+      const previousResetTokenHash = user.passwordResetTokenHash ?? null;
+      const previousResetExpiresAt = user.passwordResetExpiresAt ?? null;
+      const previousResetRequestedAt = user.passwordResetRequestedAt ?? null;
+      const previousResetRequestCount = user.passwordResetRequestCount ?? 0;
+      const token = randomBytes(32).toString("hex");
+      user.passwordResetTokenHash = hashResetToken(token);
+      user.passwordResetExpiresAt = new Date(
+        Date.now() + PASSWORD_RESET_TTL_MS
+      ).toISOString();
+      user.passwordResetRequestedAt = new Date().toISOString();
+      user.passwordResetRequestCount = requestCount + 1;
+      await user.save();
+
+      try {
+        await sendPasswordResetEmail(normalizedEmail, token);
+      } catch (error) {
+        user.passwordResetTokenHash = previousResetTokenHash;
+        user.passwordResetExpiresAt = previousResetExpiresAt;
+        user.passwordResetRequestedAt = previousResetRequestedAt;
+        user.passwordResetRequestCount = previousResetRequestCount;
+        await user.save();
+        console.error("Password reset email delivery failed", toError(error));
+      }
 
       return {
-        ...user.toObject(),
-        id: user.id,
-        token,
+        success: true,
+        message: PASSWORD_RESET_SUCCESS_MESSAGE,
+      };
+    },
+
+    async resetPassword(
+      _: unknown,
+      { token, password, confirmPassword }: ResetPasswordArgs
+    ) {
+      if (password !== confirmPassword) {
+        throw new UserInputError("Passwords do not match.", {
+          errors: {
+            confirmPassword: "Passwords must match!",
+          },
+        });
+      }
+
+      const { valid, errors } = validatePassword(password);
+
+      if (!valid) {
+        throw new UserInputError("Errors", { errors });
+      }
+
+      const user = await User.findOne({
+        passwordResetTokenHash: hashResetToken(token),
+      });
+
+      if (
+        !user ||
+        !user.passwordResetExpiresAt ||
+        new Date(user.passwordResetExpiresAt).getTime() < Date.now()
+      ) {
+        throw new UserInputError("Reset link is invalid or expired.", {
+          errors: {
+            token: "Reset link is invalid or expired.",
+          },
+        });
+      }
+
+      user.password = await bcrypt.hash(password, 12);
+      user.passwordResetTokenHash = null;
+      user.passwordResetExpiresAt = null;
+      user.passwordResetRequestedAt = null;
+      user.passwordResetRequestCount = 0;
+      await user.save();
+
+      return {
+        success: true,
+        message: PASSWORD_RESET_COMPLETED_MESSAGE,
       };
     },
 
@@ -106,7 +291,8 @@ const usersResolvers = {
           confirmPassword,
           profilePicture,
         },
-      }: RegisterArgs
+      }: RegisterArgs,
+      context: GraphQLContext
     ) {
       const { valid, errors } = validateRegisterInput(
         username,
@@ -150,12 +336,9 @@ const usersResolvers = {
 
       const res = await newUser.save();
       const token = generateToken(res);
+      setSessionCookie(context, token);
 
-      return {
-        ...res.toObject(),
-        id: res.id,
-        token,
-      };
+      return toPublicUser(res);
     },
 
     async updateUser(
@@ -170,7 +353,8 @@ const usersResolvers = {
           confirmPassword,
           profilePicture,
         },
-      }: UpdateProfileArgs
+      }: UpdateProfileArgs,
+      context: GraphQLContext
     ) {
       const user = await User.findOne({ username: oldUsername });
 
@@ -265,12 +449,9 @@ const usersResolvers = {
 
       const res = await user.save();
       const token = generateToken(res);
+      setSessionCookie(context, token);
 
-      return {
-        ...res.toObject(),
-        id: res.id,
-        token,
-      };
+      return toPublicUser(res);
     },
   },
 
@@ -294,6 +475,23 @@ const usersResolvers = {
         return await User.find();
       } catch (error) {
         throw toError(error);
+      }
+    },
+
+    async me(_: unknown, __: unknown, context: GraphQLContext) {
+      try {
+        const { username } = checkAuth(context);
+        const user = await User.findOne({ username });
+
+        if (!user) {
+          clearSessionCookie(context);
+          return null;
+        }
+
+        return toPublicUser(user);
+      } catch {
+        clearSessionCookie(context);
+        return null;
       }
     },
   },

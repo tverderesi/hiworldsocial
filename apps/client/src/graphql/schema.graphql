@@ -20,8 +20,16 @@ type Mutation {
   deletePost(postId: ID!): String!
   likePost(postId: ID!): Post!
   login(password: String!, username: String!): User!
+  logout: Boolean!
   register(registerInput: RegisterInput!): User!
+  requestPasswordReset(email: String!): PasswordResetResponse!
+  resetPassword(confirmPassword: String!, password: String!, token: String!): PasswordResetResponse!
   updateUser(updateProfileInput: UpdateProfileInput!): User!
+}
+
+type PasswordResetResponse {
+  message: String!
+  success: Boolean!
 }
 
 type Post {
@@ -41,6 +49,7 @@ type Query {
   getPosts: [Post]
   getUser(username: String!): User
   getUsers: [User]
+  me: User
 }
 
 input RegisterInput {
@@ -65,8 +74,6 @@ type User {
   createdAt: String!
   email: String!
   id: ID!
-  password: String!
   profilePicture: String!
-  token: String!
   username: String!
 }
