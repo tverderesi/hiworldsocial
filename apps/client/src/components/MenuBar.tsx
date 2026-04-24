@@ -1,13 +1,17 @@
 import { useState, useContext } from "react";
+import { useApolloClient } from "@apollo/client/react";
+import { useMutation } from "@apollo/client/react";
 import { Link } from "react-router-dom";
 
 import { Image, Menu, MenuItemProps } from "semantic-ui-react";
 import { AuthContext } from "../context/auth";
+import { LOGOUT_USER, ME_QUERY } from "../util/GraphQL";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { useDisplayProfile } from "../util/hooks";
 import Profile from "../pages/User";
 
 export default function MenuBar() {
+  const client = useApolloClient();
   const { user, logout }: { user: any; logout: any } = useContext(AuthContext);
 
   const pathname = window.location.pathname;
@@ -18,6 +22,19 @@ export default function MenuBar() {
   const { activeItem } = state;
 
   const { onClick, setShowProfile, showProfile } = useDisplayProfile(false);
+  const [logoutUser] = useMutation(LOGOUT_USER, {
+    onCompleted: async () => {
+      logout();
+      await client.clearStore();
+      client.writeQuery({
+        query: ME_QUERY,
+        data: { me: null },
+      });
+    },
+    onError: () => {
+      logout();
+    },
+  });
 
   const handleItemClick = (
     e: React.SyntheticEvent<any, any>,
@@ -57,7 +74,9 @@ export default function MenuBar() {
         />
         <Menu.Item
           name="logout"
-          onClick={logout}
+          onClick={() => {
+            void logoutUser();
+          }}
           as={Link}
           to="/login"
           style={{

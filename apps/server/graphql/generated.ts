@@ -42,7 +42,10 @@ export type Mutation = {
   deletePost: Scalars['String']['output'];
   likePost: Post;
   login: User;
+  logout: Scalars['Boolean']['output'];
   register: User;
+  requestPasswordReset: PasswordResetResponse;
+  resetPassword: PasswordResetResponse;
   updateUser: User;
 };
 
@@ -85,8 +88,26 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationRequestPasswordResetArgs = {
+  email: Scalars['String']['input'];
+};
+
+
+export type MutationResetPasswordArgs = {
+  confirmPassword: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateUserArgs = {
   updateProfileInput: UpdateProfileInput;
+};
+
+export type PasswordResetResponse = {
+  __typename?: 'PasswordResetResponse';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type Post = {
@@ -108,6 +129,7 @@ export type Query = {
   getPosts?: Maybe<Array<Maybe<Post>>>;
   getUser?: Maybe<User>;
   getUsers?: Maybe<Array<Maybe<User>>>;
+  me?: Maybe<User>;
 };
 
 
@@ -143,9 +165,7 @@ export type User = {
   createdAt: Scalars['String']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  password: Scalars['String']['output'];
   profilePicture: Scalars['String']['output'];
-  token: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -228,6 +248,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Like: ResolverTypeWrapper<Like>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  PasswordResetResponse: ResolverTypeWrapper<PasswordResetResponse>;
   Post: ResolverTypeWrapper<PostDocument>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RegisterInput: RegisterInput;
@@ -244,6 +265,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Like: Like;
   Mutation: Record<PropertyKey, never>;
+  PasswordResetResponse: PasswordResetResponse;
   Post: PostDocument;
   Query: Record<PropertyKey, never>;
   RegisterInput: RegisterInput;
@@ -274,8 +296,16 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   deletePost?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'postId'>>;
   likePost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationLikePostArgs, 'postId'>>;
   login?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'password' | 'username'>>;
+  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   register?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'registerInput'>>;
+  requestPasswordReset?: Resolver<ResolversTypes['PasswordResetResponse'], ParentType, ContextType, RequireFields<MutationRequestPasswordResetArgs, 'email'>>;
+  resetPassword?: Resolver<ResolversTypes['PasswordResetResponse'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'confirmPassword' | 'password' | 'token'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'updateProfileInput'>>;
+};
+
+export type PasswordResetResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['PasswordResetResponse'] = ResolversParentTypes['PasswordResetResponse']> = {
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
 export type PostResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
@@ -295,15 +325,14 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getPosts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'username'>>;
   getUsers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profilePicture?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -311,6 +340,7 @@ export type Resolvers<ContextType = GraphQLContext> = {
   Comment?: CommentResolvers<ContextType>;
   Like?: LikeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PasswordResetResponse?: PasswordResetResponseResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

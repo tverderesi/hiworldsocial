@@ -1,56 +1,84 @@
-import { jwtDecode } from "jwt-decode";
-import { createContext, useReducer } from "react";
+import type { PropsWithChildren } from "react";
+import { createContext, useEffect, useReducer } from "react";
+import { useQuery } from "@apollo/client/react";
 
-const initialState = {
+import { ME_QUERY } from "../util/GraphQL";
+
+export interface AuthUser {
+  id: string;
+  username: string;
+  email: string;
+  createdAt: string;
+  profilePicture: string;
+}
+
+interface AuthContextValue {
+  authLoading: boolean;
+  user: AuthUser | null;
+  login: (userData: AuthUser) => void;
+  logout: () => void;
+}
+
+interface AuthState {
+  user: AuthUser | null;
+}
+
+type AuthAction =
+  | { type: "LOGIN"; payload: AuthUser }
+  | { type: "LOGOUT" };
+
+const initialState: AuthState = {
   user: null,
 };
 
-const jwtToken = localStorage.getItem("jwtToken");
-if (jwtToken) {
-  const decodedToken: any = jwtDecode(jwtToken);
-
-  if ((decodedToken.exp as number) * 1000 < Date.now()) {
-    localStorage.removeItem("jwtToken");
-  } else {
-    initialState.user = decodedToken;
-  }
-}
-
-const AuthContext = createContext({
-  user: initialState,
-  login: (userData: any) => {},
-  logout: () => {},
+const AuthContext = createContext<AuthContextValue>({
+  authLoading: true,
+  user: null,
+  login: () => undefined,
+  logout: () => undefined,
 });
 
-function authReducer(state: any, action: { type: any; payload?: any }) {
+function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
-    default:
-      return state;
     case "LOGIN":
       return { ...state, user: action.payload };
     case "LOGOUT":
       return { ...state, user: null };
+    default:
+      return state;
   }
 }
 
-function AuthProvider(props: any): JSX.Element {
+function AuthProvider({ children }: PropsWithChildren): JSX.Element {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const { data, loading } = useQuery<{ me: AuthUser | null }>(ME_QUERY, {
+    fetchPolicy: "network-only",
+    errorPolicy: "ignore",
+  });
 
-  const login = (userData: any) => {
-    localStorage.setItem("jwtToken", userData.token);
-    dispatch({ type: "LOGIN", payload: userData });
+  useEffect(() => {
+    if (data?.me) {
+      dispatch({ type: "LOGIN", payload: data.me });
+      return;
+    }
+
+    if (!loading) {
+      dispatch({ type: "LOGOUT" });
+    }
+  }, [data, loading]);
+
+  const value: AuthContextValue = {
+    authLoading: loading,
+    user: state.user,
+    login: (userData: AuthUser) => {
+      dispatch({ type: "LOGIN", payload: userData });
+    },
+    logout: () => {
+      dispatch({ type: "LOGOUT" });
+    },
   };
 
-  const logout = () => {
-    localStorage.removeItem("jwtToken");
-    dispatch({ type: "LOGOUT" });
-  };
-  return (
-    <AuthContext.Provider
-      value={{ user: state.user, login, logout }}
-      {...props}
-    />
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export { AuthContext, AuthProvider };

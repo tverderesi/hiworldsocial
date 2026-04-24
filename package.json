@@ -14,6 +14,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "start": "turbo run start",
+    "db:setup": "pnpm --filter @hiworld/server db:setup",
     "schema:export": "pnpm --filter @hiworld/server export-schema",
     "schema:check": "pnpm schema:export && git diff --exit-code -- apps/client/src/graphql/schema.graphql",
     "test": "turbo run test",

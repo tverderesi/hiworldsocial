@@ -29,7 +29,6 @@ export function EditProfile() {
 
   const [changeUser, { loading }] = useMutation<any>(UPDATE_USER_MUTATION, {
     update(_, { data: { updateUser: userData } }) {
-      context.logout();
       context.login(userData);
 
       navigate("/", { replace: true });

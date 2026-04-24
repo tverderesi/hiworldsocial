@@ -6,6 +6,7 @@ const saveMock = vi.fn();
 const hashMock = vi.fn();
 const compareMock = vi.fn();
 const signMock = vi.fn();
+const sendEmailMock = vi.fn();
 
 vi.mock("../../models/User.js", () => {
   function UserMock(data: Record<string, unknown>) {
@@ -35,9 +36,18 @@ vi.mock("jsonwebtoken", () => ({
   },
 }));
 
+vi.mock("../../lib/email.js", () => ({
+  sendEmail: sendEmailMock,
+}));
+
 describe("user resolvers", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    findOneMock.mockReset();
+    saveMock.mockReset();
+    hashMock.mockReset();
+    compareMock.mockReset();
+    signMock.mockReset();
+    sendEmailMock.mockReset();
     process.env.SECRET_KEY = "test-secret";
   });
 
@@ -77,7 +87,7 @@ describe("user resolvers", () => {
             username
             email
             profilePicture
-            token
+            createdAt
           }
         }
       `,
@@ -100,7 +110,7 @@ describe("user resolvers", () => {
       username: "alice",
       email: "alice@example.com",
       profilePicture: "ade",
-      token: "signed-token",
+      createdAt: "2026-04-23T00:00:00.000Z",
     });
     expect(hashMock).toHaveBeenCalledWith("Password1!", 12);
     expect(findOneMock).toHaveBeenNthCalledWith(1, { username: "alice" });
@@ -169,8 +179,9 @@ describe("user resolvers", () => {
       query: `
         mutation Login($username: String!, $password: String!) {
           login(username: $username, password: $password) {
+            id
             username
-            token
+            email
           }
         }
       `,
@@ -184,9 +195,136 @@ describe("user resolvers", () => {
 
     expect(response.errors).toBeUndefined();
     expect(response.data?.login).toEqual({
+      id: "user-1",
       username: "alice",
-      token: "signed-token",
+      email: "alice@example.com",
     });
     expect(compareMock).toHaveBeenCalledWith("Password1!", "hashed-password");
+  });
+
+  it("returns the same password reset response for unknown emails", async () => {
+    findOneMock.mockResolvedValue(null);
+
+    const { createApolloServer } = await import("../../server.js");
+    const server = createApolloServer();
+
+    const response = await server.executeOperation({
+      query: `
+        mutation RequestPasswordReset($email: String!) {
+          requestPasswordReset(email: $email) {
+            success
+            message
+          }
+        }
+      `,
+      variables: {
+        email: "missing@example.com",
+      },
+      http: {
+        headers: new Headers({
+          "x-forwarded-for": "203.0.113.10",
+        }),
+      },
+    });
+
+    await server.stop();
+
+    expect(response.errors).toBeUndefined();
+    expect(response.data?.requestPasswordReset).toEqual({
+      success: true,
+      message:
+        "If an account exists for that email, a password reset link has been sent.",
+    });
+    expect(sendEmailMock).not.toHaveBeenCalled();
+  });
+
+  it("sends a password reset email for existing users without exposing that fact", async () => {
+    const saveUserMock = vi.fn().mockResolvedValue(undefined);
+    findOneMock.mockResolvedValue({
+      email: "alice@example.com",
+      passwordResetRequestedAt: null,
+      passwordResetRequestCount: 0,
+      save: saveUserMock,
+    });
+    sendEmailMock.mockResolvedValue({ id: "email-1" });
+
+    const { createApolloServer } = await import("../../server.js");
+    const server = createApolloServer();
+
+    const response = await server.executeOperation({
+      query: `
+        mutation RequestPasswordReset($email: String!) {
+          requestPasswordReset(email: $email) {
+            success
+            message
+          }
+        }
+      `,
+      variables: {
+        email: "alice@example.com",
+      },
+      http: {
+        headers: new Headers({
+          "x-forwarded-for": "203.0.113.11",
+        }),
+      },
+    });
+
+    await server.stop();
+
+    expect(response.errors).toBeUndefined();
+    expect(response.data?.requestPasswordReset).toEqual({
+      success: true,
+      message:
+        "If an account exists for that email, a password reset link has been sent.",
+    });
+    expect(sendEmailMock).toHaveBeenCalledTimes(1);
+    expect(saveUserMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("resets a password when presented with a valid token", async () => {
+    const saveUserMock = vi.fn().mockResolvedValue(undefined);
+    hashMock.mockResolvedValue("hashed-new-password");
+    findOneMock.mockResolvedValue({
+      passwordResetExpiresAt: "3026-04-23T00:00:00.000Z",
+      save: saveUserMock,
+    });
+
+    const { createApolloServer } = await import("../../server.js");
+    const server = createApolloServer();
+
+    const response = await server.executeOperation({
+      query: `
+        mutation ResetPassword(
+          $token: String!
+          $password: String!
+          $confirmPassword: String!
+        ) {
+          resetPassword(
+            token: $token
+            password: $password
+            confirmPassword: $confirmPassword
+          ) {
+            success
+            message
+          }
+        }
+      `,
+      variables: {
+        token: "valid-token",
+        password: "Password1!",
+        confirmPassword: "Password1!",
+      },
+    });
+
+    await server.stop();
+
+    expect(response.errors).toBeUndefined();
+    expect(response.data?.resetPassword).toEqual({
+      success: true,
+      message: "Your password has been reset. You can now log in with the new password.",
+    });
+    expect(hashMock).toHaveBeenCalledWith("Password1!", 12);
+    expect(saveUserMock).toHaveBeenCalledTimes(1);
   });
 });
