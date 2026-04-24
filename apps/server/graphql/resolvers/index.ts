@@ -1,8 +1,8 @@
-import commentsResolvers from "./comments.js";
-import type { Resolvers } from "../generated.js";
-import postsResolvers from "./posts.js";
-import usersResolvers from "./users.js";
-import type { PostDocument } from "../../types.js";
+import type { PostDocument } from "../../types";
+import type { Resolvers } from "../generated";
+import commentsResolvers from "./comments";
+import postsResolvers from "./posts";
+import usersResolvers from "./users";
 
 const resolvers: Resolvers = {
   Post: {

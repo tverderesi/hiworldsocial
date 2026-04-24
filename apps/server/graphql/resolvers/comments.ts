@@ -1,8 +1,13 @@
-import { AuthenticationError, UserInputError } from "apollo-server";
-
-import Post from "../../models/Post.js";
-import checkAuth from "../../utils/checkAuth.js";
-import type { GraphQLContext, PostComment } from "../../types.js";
+import {
+  createAuthenticationError,
+  createUserInputError,
+} from "../../lib/graphqlErrors";
+import Post from "../../models/Post";
+import {
+  GraphQLContext,
+  PostComment,
+} from "../../types";
+import checkAuth from "../../utils/checkAuth";
 
 interface CreateCommentArgs {
   postId: string;
@@ -26,13 +31,13 @@ const commentsResolvers = {
 
       switch (true) {
         case body.trim() === "":
-          throw new UserInputError("Empty comment.", {
+          throw createUserInputError("Empty comment.", {
             errors: { body: "Comment body must not be empty." },
           });
         case !username:
           throw new Error(`user not found. ${username}`);
         case !post:
-          throw new UserInputError("Post not found!");
+          throw createUserInputError("Post not found!");
         default:
           post.comments.unshift({
             body,
@@ -55,7 +60,7 @@ const commentsResolvers = {
       const post = await Post.findById(postId);
 
       if (!post) {
-        throw new UserInputError("Post not found!");
+        throw createUserInputError("Post not found!");
       }
 
       const commentIdx = post.comments.findIndex(
@@ -64,9 +69,9 @@ const commentsResolvers = {
 
       switch (true) {
         case commentIdx === -1:
-          throw new UserInputError("Comment not found!");
+          throw createUserInputError("Comment not found!");
         case post.comments[commentIdx]?.username !== username:
-          throw new AuthenticationError(
+          throw createAuthenticationError(
             "Action not allowed. Comment wasn't made by the authenticated user."
           );
         default:

@@ -8,7 +8,7 @@ const compareMock = vi.fn();
 const signMock = vi.fn();
 const sendEmailMock = vi.fn();
 
-vi.mock("../../models/User.js", () => {
+vi.mock("../../models/User", () => {
   function UserMock(data: Record<string, unknown>) {
     return {
       ...data,
@@ -36,9 +36,14 @@ vi.mock("jsonwebtoken", () => ({
   },
 }));
 
-vi.mock("../../lib/email.js", () => ({
+vi.mock("../../lib/email", () => ({
   sendEmail: sendEmailMock,
 }));
+
+function getSingleResult(response: any) {
+  expect(response.body.kind).toBe("single");
+  return response.body.singleResult;
+}
 
 describe("user resolvers", () => {
   beforeEach(() => {
@@ -76,7 +81,7 @@ describe("user resolvers", () => {
 
     saveMock.mockResolvedValue(savedUser);
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -103,9 +108,10 @@ describe("user resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.errors).toBeUndefined();
-    expect(response.data?.register).toEqual({
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.register).toEqual({
       id: "user-1",
       username: "alice",
       email: "alice@example.com",
@@ -120,7 +126,7 @@ describe("user resolvers", () => {
   it("rejects duplicate usernames during registration", async () => {
     findOneMock.mockResolvedValueOnce({ username: "alice" });
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -143,10 +149,11 @@ describe("user resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.data).toBeNull();
-    expect(response.errors).toHaveLength(1);
-    expect((response.errors?.[0] as GraphQLError).extensions?.errors).toMatchObject({
+    expect(result.data).toBeNull();
+    expect(result.errors).toHaveLength(1);
+    expect((result.errors?.[0] as GraphQLError).extensions?.errors).toMatchObject({
       username: "This username is taken!",
     });
   });
@@ -172,7 +179,7 @@ describe("user resolvers", () => {
       },
     });
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -192,9 +199,10 @@ describe("user resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.errors).toBeUndefined();
-    expect(response.data?.login).toEqual({
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.login).toEqual({
       id: "user-1",
       username: "alice",
       email: "alice@example.com",
@@ -205,7 +213,7 @@ describe("user resolvers", () => {
   it("returns the same password reset response for unknown emails", async () => {
     findOneMock.mockResolvedValue(null);
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -228,9 +236,10 @@ describe("user resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.errors).toBeUndefined();
-    expect(response.data?.requestPasswordReset).toEqual({
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.requestPasswordReset).toEqual({
       success: true,
       message:
         "If an account exists for that email, a password reset link has been sent.",
@@ -248,7 +257,7 @@ describe("user resolvers", () => {
     });
     sendEmailMock.mockResolvedValue({ id: "email-1" });
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -271,9 +280,10 @@ describe("user resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.errors).toBeUndefined();
-    expect(response.data?.requestPasswordReset).toEqual({
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.requestPasswordReset).toEqual({
       success: true,
       message:
         "If an account exists for that email, a password reset link has been sent.",
@@ -290,7 +300,7 @@ describe("user resolvers", () => {
       save: saveUserMock,
     });
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -318,9 +328,10 @@ describe("user resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.errors).toBeUndefined();
-    expect(response.data?.resetPassword).toEqual({
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.resetPassword).toEqual({
       success: true,
       message: "Your password has been reset. You can now log in with the new password.",
     });

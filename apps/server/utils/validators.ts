@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { ValidationResult } from "../types.js";
+import type { ValidationResult } from "../types";
 
 const emailPattern =
   /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i;

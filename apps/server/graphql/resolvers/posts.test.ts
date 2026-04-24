@@ -6,7 +6,7 @@ const findOneMock = vi.fn();
 const saveMock = vi.fn();
 const checkAuthMock = vi.fn();
 
-vi.mock("../../models/Post.js", () => {
+vi.mock("../../models/Post", () => {
   function PostMock(data: Record<string, unknown>) {
     return {
       ...data,
@@ -24,9 +24,14 @@ vi.mock("../../models/Post.js", () => {
   };
 });
 
-vi.mock("../../utils/checkAuth.js", () => ({
+vi.mock("../../utils/checkAuth", () => ({
   default: checkAuthMock,
 }));
+
+function getSingleResult(response: any) {
+  expect(response.body.kind).toBe("single");
+  return response.body.singleResult;
+}
 
 describe("post resolvers", () => {
   beforeEach(() => {
@@ -56,7 +61,7 @@ describe("post resolvers", () => {
       username: "alice",
     });
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -75,9 +80,10 @@ describe("post resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.errors).toBeUndefined();
-    expect(response.data?.createPost).toEqual({
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.createPost).toEqual({
       id: "post-1",
       body: "hello world",
       username: "alice",
@@ -99,7 +105,7 @@ describe("post resolvers", () => {
       }),
     });
 
-    const { createApolloServer } = await import("../../server.js");
+    const { createApolloServer } = await import("../../server");
     const server = createApolloServer();
 
     const response = await server.executeOperation({
@@ -116,13 +122,14 @@ describe("post resolvers", () => {
     });
 
     await server.stop();
+    const result = getSingleResult(response);
 
-    expect(response.data).toBeNull();
-    expect(response.errors).toHaveLength(1);
-    expect((response.errors?.[0] as GraphQLError).message).toBe(
+    expect(result.data).toBeNull();
+    expect(result.errors).toHaveLength(1);
+    expect((result.errors?.[0] as GraphQLError).message).toBe(
       "Rate limit exceeded. You can create up to 2 posts every 60 seconds. Try again in 30 seconds."
     );
-    expect((response.errors?.[0] as GraphQLError).extensions).toMatchObject({
+    expect((result.errors?.[0] as GraphQLError).extensions).toMatchObject({
       code: "TOO_MANY_REQUESTS",
       errors: {
         rateLimit:

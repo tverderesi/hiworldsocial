@@ -19,7 +19,7 @@
     "schema:check": "pnpm schema:export && git diff --exit-code -- apps/client/src/graphql/schema.graphql",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "server": "pnpm --filter @hiworld/server dev",
+    "server": "pnpm --dir apps/server dev",
     "client": "pnpm --filter @hiworld/client dev"
   },
   "author": "tverderesi",

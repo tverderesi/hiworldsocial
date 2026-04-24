@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { lexicographicSortSchema, printSchema } from "graphql";
 
-import schema from "../graphql/schema.js";
+import schema from "../graphql/schema";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outputPath = join(

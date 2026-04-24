@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: apps/server/Dockerfile
       target: deps
-    command: sh -c "pnpm db:setup && pnpm --filter @hiworld/server codegen && pnpm --filter @hiworld/server dev"
+    command: sh -c "pnpm db:setup && pnpm --filter @hiworld/server codegen && pnpm --dir /repo/apps/server dev"
     restart: unless-stopped
     environment:
       NODE_ENV: development

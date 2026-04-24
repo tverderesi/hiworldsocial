@@ -1,6 +1,5 @@
-import { ApolloError } from "apollo-server";
-
-import Post from "../models/Post.js";
+import { createGraphQLError } from "../lib/graphqlErrors";
+import Post from "../models/Post";
 
 const DEFAULT_POST_RATE_LIMIT_MAX_POSTS = 5;
 const DEFAULT_POST_RATE_LIMIT_WINDOW_SECONDS = 60;
@@ -62,7 +61,7 @@ export async function enforcePostRateLimit(userId: string) {
 
   const message = `Rate limit exceeded. You can create up to ${maxPosts} posts every ${windowSeconds} seconds. Try again in ${retryAfterSeconds} seconds.`;
 
-  throw new ApolloError(message, "TOO_MANY_REQUESTS", {
+  throw createGraphQLError(message, "TOO_MANY_REQUESTS", {
     errors: {
       rateLimit: message,
     },

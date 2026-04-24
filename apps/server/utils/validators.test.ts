@@ -8,7 +8,7 @@ import {
   validatePostBody,
   validateRegisterInput,
   validateUsername,
-} from "./validators.js";
+} from "./validators";
 
 describe("validators", () => {
   it("validates a correct registration payload", () => {

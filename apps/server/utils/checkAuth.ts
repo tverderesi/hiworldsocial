@@ -1,20 +1,20 @@
-import { AuthenticationError } from "apollo-server";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
-import { getSessionToken } from "../lib/auth.js";
-import type { GraphQLContext, TokenUser } from "../types.js";
+import { getSessionToken } from "../lib/auth";
+import { createAuthenticationError } from "../lib/graphqlErrors";
+import type { GraphQLContext, TokenUser } from "../types";
 
 export default function checkAuth(context: GraphQLContext): TokenUser {
   const token = getSessionToken(context);
 
   if (!token) {
-    throw new AuthenticationError("Authentication required.");
+    throw createAuthenticationError("Authentication required.");
   }
 
   try {
     return jwt.verify(token, process.env.SECRET_KEY as string) as TokenUser;
   } catch {
-    throw new AuthenticationError("Invalid/Expired token");
+    throw createAuthenticationError("Invalid/Expired token");
   }
 }
