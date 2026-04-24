@@ -19,12 +19,25 @@
     "schema:check": "pnpm schema:export && git diff --exit-code -- apps/client/src/graphql/schema.graphql",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
     "server": "pnpm --dir apps/server dev",
-    "client": "pnpm --filter @hiworld/client dev"
+    "client": "pnpm --filter @hiworld/client dev",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx}": "eslint --fix --max-warnings=0"
   },
   "author": "tverderesi",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.2",
+    "typescript-eslint": "^8.46.2",
     "turbo": "^2.9.6"
   }
 }

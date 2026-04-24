@@ -27,7 +27,9 @@
     "start": "vite --host 0.0.0.0",
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings=0",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "browserslist": [
     ">0.2%",

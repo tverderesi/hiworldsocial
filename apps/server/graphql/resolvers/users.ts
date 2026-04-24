@@ -12,7 +12,7 @@ import { createUserInputError } from "../../lib/graphqlErrors";
 import { sendEmail } from "../../lib/email";
 import { checkRateLimit } from "../../lib/rateLimit";
 import User from "../../models/User";
-import type { GraphQLContext, UserDocument } from "../../types";
+import type { GraphQLContext } from "../../types";
 import {
   validateEmail,
   validateLoginInput,
@@ -150,7 +150,7 @@ const usersResolvers = {
       return toPublicUser(user);
     },
 
-    async logout(_: unknown, __: unknown, context: GraphQLContext) {
+    logout(_: unknown, __: unknown, context: GraphQLContext) {
       clearSessionCookie(context);
       return true;
     },
