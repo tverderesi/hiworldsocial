@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.25",
-    "@apollo/server": "^5.2.0",
+    "@apollo/server": "^4.13.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
@@ -25,10 +25,9 @@
     "graphql": "^16.13.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0",
-    "nodemailer": "^7.0.6",
+    "nodemailer": "^6.10.1",
     "resend": "^4.8.0",
-    "zod": "^4.1.12",
-    "@as-integrations/express5": "^1.1.2"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^6.3.1",
@@ -41,6 +40,7 @@
     "esbuild": "^0.25.11",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@types/nodemailer": "^6.4.21"
   }
 }
