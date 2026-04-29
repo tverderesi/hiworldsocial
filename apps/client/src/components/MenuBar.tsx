@@ -1,10 +1,10 @@
-import { useState, useContext, type ChangeEvent } from "react";
+import { useState, useContext } from "react";
 import { useApolloClient } from "@apollo/client/react";
 import { useMutation } from "@apollo/client/react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { Image, Menu, MenuItemProps } from "semantic-ui-react";
+import { Dropdown, Image, Menu, MenuItemProps, type DropdownProps } from "semantic-ui-react";
 import { AuthContext } from "../context/auth";
 import { LOGOUT_USER, ME_QUERY, UPDATE_PREFERRED_LANGUAGE } from "../util/GraphQL";
 import { getPictureURL } from "../util/profilePictureDictionary";
@@ -41,9 +41,13 @@ export default function MenuBar() {
   const [updatePreferredLanguage] = useMutation<any>(UPDATE_PREFERRED_LANGUAGE, {
     onCompleted: ({ updatePreferredLanguage: userData }) => login(userData),
   });
+  const languageOptions = [
+    { key: "en", text: t("languages.en"), value: "en" },
+    { key: "pt", text: t("languages.pt"), value: "pt" },
+  ];
 
-  function onLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
-    const preferredLanguage = event.target.value as SupportedLanguage;
+  function onLanguageChange(_: React.SyntheticEvent<HTMLElement>, data: DropdownProps) {
+    const preferredLanguage = data.value as SupportedLanguage;
     setPreferredLanguage(preferredLanguage);
     if (user) {
       void updatePreferredLanguage({ variables: { preferredLanguage } });
@@ -69,10 +73,14 @@ export default function MenuBar() {
         <Menu.Item>
           <label style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
             <span>{t("languages.label")}</span>
-            <select aria-label={t("languages.label")} value={i18n.language.startsWith("pt") ? "pt" : "en"} onChange={onLanguageChange}>
-              <option value="en">{t("languages.en")}</option>
-              <option value="pt">{t("languages.pt")}</option>
-            </select>
+            <Dropdown
+              aria-label={t("languages.label")}
+              compact
+              onChange={onLanguageChange}
+              options={languageOptions}
+              selection
+              value={i18n.language.startsWith("pt") ? "pt" : "en"}
+            />
           </label>
         </Menu.Item>
         <Menu.Item
@@ -130,10 +138,14 @@ export default function MenuBar() {
         <Menu.Item>
           <label style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
             <span>{t("languages.label")}</span>
-            <select aria-label={t("languages.label")} value={i18n.language.startsWith("pt") ? "pt" : "en"} onChange={onLanguageChange}>
-              <option value="en">{t("languages.en")}</option>
-              <option value="pt">{t("languages.pt")}</option>
-            </select>
+            <Dropdown
+              aria-label={t("languages.label")}
+              compact
+              onChange={onLanguageChange}
+              options={languageOptions}
+              selection
+              value={i18n.language.startsWith("pt") ? "pt" : "en"}
+            />
           </label>
         </Menu.Item>
         <Menu.Item

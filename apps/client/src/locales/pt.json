@@ -1,0 +1,97 @@
+{
+  "actions": {
+    "addComment": "Adicionar comentário",
+    "backToLogin": "Voltar ao login",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "commentOnPost": "Comentar na publicação",
+    "editProfile": "Editar perfil",
+    "goToLogin": "Ir para o login",
+    "likePost": "Curtir publicação",
+    "login": "entrar",
+    "logout": "sair",
+    "register": "cadastrar",
+    "resetPassword": "Redefinir senha",
+    "saveChanges": "Salvar alterações",
+    "send": "Enviar",
+    "sendResetLink": "Enviar link de redefinição"
+  },
+  "comments": {
+    "count_one": "{{count}} Comentário",
+    "count_other": "{{count}} Comentários"
+  },
+  "common": {
+    "email": "E-mail",
+    "error": "Erro: {{message}}",
+    "loading": "Carregando...",
+    "password": "Senha",
+    "username": "Nome de usuário"
+  },
+  "dialogs": {
+    "deleteComment": "Excluir comentário",
+    "deletePost": "Excluir publicação",
+    "destructiveDescription": "Esta ação não pode ser desfeita."
+  },
+  "forgotPassword": {
+    "checkEmail": "Verifique seu e-mail",
+    "description": "Informe seu e-mail e, se existir uma conta, você receberá um link para redefinir a senha.",
+    "title": "Esqueci minha senha"
+  },
+  "home": {
+    "loadingPosts": "Carregando publicações",
+    "recentPosts": "Publicações recentes"
+  },
+  "languages": {
+    "en": "Inglês",
+    "label": "Idioma",
+    "pt": "Português"
+  },
+  "likes": {
+    "and": "e",
+    "likedBy": "{{names}} curtiram isto.",
+    "likedThisPlural": "curtiram isto.",
+    "likedThisSingular": "curtiu isto.",
+    "nobody": "Ninguém curtiu isto",
+    "others_one": "{{count}} outra pessoa",
+    "others_other": "{{count}} outras pessoas",
+    "you": "Você",
+    "youLiked": "Você curtiu isto."
+  },
+  "newComment": {
+    "error": "Não foi possível adicionar o comentário.",
+    "placeholder": "Adicione seu comentário"
+  },
+  "newPost": {
+    "errorSuffix": "!",
+    "placeholder": "Diga oi ao mundo!",
+    "title": "Nova publicação"
+  },
+  "profile": {
+    "joined": "Entrou {{time}}",
+    "selectAvatar": "Selecione um avatar",
+    "selectNewAvatar": "Selecione um novo avatar"
+  },
+  "profileForm": {
+    "confirmNewPassword": "Confirmar nova senha",
+    "newPassword": "Nova senha",
+    "newUsername": "Novo nome de usuário (deixe em branco se não quiser alterar)",
+    "oldPassword": "Senha atual",
+    "title": "Editar perfil"
+  },
+  "register": {
+    "confirmPassword": "Confirmar senha",
+    "title": "Cadastro"
+  },
+  "resetPassword": {
+    "invalidToken": "O link de redefinição é inválido ou expirou.",
+    "passwordUpdated": "Senha atualizada",
+    "title": "Redefinir senha"
+  },
+  "singlePost": {
+    "loading": "Carregando publicação",
+    "notFound": "Erro! Nenhuma publicação foi encontrada."
+  },
+  "welcome": {
+    "ad": "Veja o que nossos usuários estão falando agora!"
+  }
+}

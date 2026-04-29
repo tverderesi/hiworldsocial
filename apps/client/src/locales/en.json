@@ -1,0 +1,97 @@
+{
+  "actions": {
+    "addComment": "Add Comment",
+    "backToLogin": "Back to login",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "commentOnPost": "Comment on post",
+    "editProfile": "Edit Profile",
+    "goToLogin": "Go to login",
+    "likePost": "Like Post",
+    "login": "login",
+    "logout": "logout",
+    "register": "register",
+    "resetPassword": "Reset Password",
+    "saveChanges": "Save Changes",
+    "send": "Send",
+    "sendResetLink": "Send Reset Link"
+  },
+  "comments": {
+    "count_one": "{{count}} Comment",
+    "count_other": "{{count}} Comments"
+  },
+  "common": {
+    "email": "E-mail",
+    "error": "Error: {{message}}",
+    "loading": "Loading...",
+    "password": "Password",
+    "username": "Username"
+  },
+  "dialogs": {
+    "deleteComment": "Delete comment",
+    "deletePost": "Delete post",
+    "destructiveDescription": "This action cannot be undone."
+  },
+  "forgotPassword": {
+    "checkEmail": "Check your email",
+    "description": "Enter your email address and, if an account exists, you'll receive a password reset link.",
+    "title": "Forgot Password"
+  },
+  "home": {
+    "loadingPosts": "Loading posts",
+    "recentPosts": "Recent Posts"
+  },
+  "languages": {
+    "en": "English",
+    "label": "Language",
+    "pt": "Portuguese"
+  },
+  "likes": {
+    "and": "and",
+    "likedBy": "{{names}} liked this.",
+    "likedThisPlural": "liked this.",
+    "likedThisSingular": "liked this.",
+    "nobody": "Nobody Liked This",
+    "others_one": "{{count}} other person",
+    "others_other": "{{count}} other people",
+    "you": "You",
+    "youLiked": "You liked this."
+  },
+  "newComment": {
+    "error": "Could not add comment.",
+    "placeholder": "Add your comment"
+  },
+  "newPost": {
+    "errorSuffix": "!",
+    "placeholder": "Say hi to the World!",
+    "title": "New Post"
+  },
+  "profile": {
+    "joined": "Joined {{time}}",
+    "selectAvatar": "Select an Avatar",
+    "selectNewAvatar": "Select a new Avatar"
+  },
+  "profileForm": {
+    "confirmNewPassword": "Confirm New Password",
+    "newPassword": "New Password",
+    "newUsername": "New Username (Leave Blank if you don't want to change it)",
+    "oldPassword": "Old Password",
+    "title": "Edit Profile"
+  },
+  "register": {
+    "confirmPassword": "Confirm Password",
+    "title": "Register"
+  },
+  "resetPassword": {
+    "invalidToken": "Reset link is invalid or expired.",
+    "passwordUpdated": "Password updated",
+    "title": "Reset Password"
+  },
+  "singlePost": {
+    "loading": "Loading post",
+    "notFound": "Error! No post could be found."
+  },
+  "welcome": {
+    "ad": "See what our users are talking about right now!"
+  }
+}

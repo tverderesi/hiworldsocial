@@ -1,5 +1,5 @@
-import { useState, useContext, type ChangeEvent } from "react";
-import { Form, Button, Container, Grid, Loader } from "semantic-ui-react";
+import { useState, useContext } from "react";
+import { Form, Button, Container, Dropdown, Grid, Loader, type DropdownProps } from "semantic-ui-react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "../util/hooks";
 import { useMutation } from "@apollo/client/react";
@@ -47,9 +47,20 @@ export function EditProfile() {
     changeUser();
   }
 
-  function onLanguageChange(e: ChangeEvent<HTMLSelectElement>) {
-    onChange(e);
-    setPreferredLanguage(e.target.value as SupportedLanguage);
+  const languageOptions = [
+    { key: "en", text: t("languages.en"), value: "en" },
+    { key: "pt", text: t("languages.pt"), value: "pt" },
+  ];
+
+  function onLanguageChange(_: React.SyntheticEvent<HTMLElement>, data: DropdownProps) {
+    const preferredLanguage = data.value as SupportedLanguage;
+    onChange({
+      target: {
+        name: "preferredLanguage",
+        value: preferredLanguage,
+      },
+    });
+    setPreferredLanguage(preferredLanguage);
   }
 
   return loading ? (
@@ -118,10 +129,13 @@ export function EditProfile() {
         </Form.Field>
         <Form.Field>
           <label>{t("languages.label")}</label>
-          <select name="preferredLanguage" value={values.preferredLanguage} onChange={onLanguageChange}>
-            <option value="en">{t("languages.en")}</option>
-            <option value="pt">{t("languages.pt")}</option>
-          </select>
+          <Dropdown
+            name="preferredLanguage"
+            onChange={onLanguageChange}
+            options={languageOptions}
+            selection
+            value={values.preferredLanguage}
+          />
         </Form.Field>
         <ProfilePictureSelector values={values} update />
         <Grid.Row
