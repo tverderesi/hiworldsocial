@@ -1,18 +1,21 @@
-import { useState, useContext } from "react";
+import { useState, useContext, type ChangeEvent } from "react";
 import { useApolloClient } from "@apollo/client/react";
 import { useMutation } from "@apollo/client/react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { Image, Menu, MenuItemProps } from "semantic-ui-react";
 import { AuthContext } from "../context/auth";
-import { LOGOUT_USER, ME_QUERY } from "../util/GraphQL";
+import { LOGOUT_USER, ME_QUERY, UPDATE_PREFERRED_LANGUAGE } from "../util/GraphQL";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { useDisplayProfile } from "../util/hooks";
 import Profile from "../pages/User";
+import { setPreferredLanguage, type SupportedLanguage } from "../i18n";
 
 export default function MenuBar() {
+  const { i18n, t } = useTranslation();
   const client = useApolloClient();
-  const { user, logout }: { user: any; logout: any } = useContext(AuthContext);
+  const { user, login, logout }: { user: any; login: any; logout: any } = useContext(AuthContext);
 
   const pathname = window.location.pathname;
 
@@ -35,6 +38,17 @@ export default function MenuBar() {
       logout();
     },
   });
+  const [updatePreferredLanguage] = useMutation<any>(UPDATE_PREFERRED_LANGUAGE, {
+    onCompleted: ({ updatePreferredLanguage: userData }) => login(userData),
+  });
+
+  function onLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
+    const preferredLanguage = event.target.value as SupportedLanguage;
+    setPreferredLanguage(preferredLanguage);
+    if (user) {
+      void updatePreferredLanguage({ variables: { preferredLanguage } });
+    }
+  }
 
   const handleItemClick = (
     e: React.SyntheticEvent<any, any>,
@@ -52,6 +66,15 @@ export default function MenuBar() {
         </Link>
       </Menu.Item>
       <Menu.Menu position="right">
+        <Menu.Item>
+          <label style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+            <span>{t("languages.label")}</span>
+            <select aria-label={t("languages.label")} value={i18n.language.startsWith("pt") ? "pt" : "en"} onChange={onLanguageChange}>
+              <option value="en">{t("languages.en")}</option>
+              <option value="pt">{t("languages.pt")}</option>
+            </select>
+          </label>
+        </Menu.Item>
         <Menu.Item
           onClick={onClick}
           style={{
@@ -73,7 +96,7 @@ export default function MenuBar() {
           }
         />
         <Menu.Item
-          name="logout"
+          name={t("actions.logout")}
           onClick={() => {
             void logoutUser();
           }}
@@ -104,8 +127,18 @@ export default function MenuBar() {
       </Menu.Item>
 
       <Menu.Menu position="right">
+        <Menu.Item>
+          <label style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+            <span>{t("languages.label")}</span>
+            <select aria-label={t("languages.label")} value={i18n.language.startsWith("pt") ? "pt" : "en"} onChange={onLanguageChange}>
+              <option value="en">{t("languages.en")}</option>
+              <option value="pt">{t("languages.pt")}</option>
+            </select>
+          </label>
+        </Menu.Item>
         <Menu.Item
           name="login"
+          content={t("actions.login")}
           active={activeItem === "login"}
           onClick={handleItemClick}
           as={Link}
@@ -114,6 +147,7 @@ export default function MenuBar() {
         />
         <Menu.Item
           name="register"
+          content={t("actions.register")}
           active={activeItem === "register"}
           onClick={handleItemClick}
           as={Link}

@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client/react';
 import { Button, Form, Card } from 'semantic-ui-react';
+import { useTranslation } from 'react-i18next';
 
 import { CREATE_POST_MUTATION, FETCH_POSTS_QUERY } from '../util/GraphQL';
 import { getGraphQLErrorMessage } from '../util/errors';
@@ -8,6 +9,7 @@ import { useForm } from '../util/hooks';
 const MAX_POST_BODY_LENGTH = 512;
 
 export default function NewPost() {
+  const { t } = useTranslation();
   const { onChange, onSubmit, values } = useForm(createPostCallback, {
     body: '',
   });
@@ -39,7 +41,7 @@ export default function NewPost() {
         >
           <Card.Content color='black'>
             <Card.Header>
-              <h3>New Post</h3>
+              <h3>{t("newPost.title")}</h3>
               {error && (
                 <p
                   className='ui error'
@@ -49,7 +51,7 @@ export default function NewPost() {
                     fontWeight: '400',
                   }}
                 >
-                  {getGraphQLErrorMessage(error)}!
+                  {getGraphQLErrorMessage(error)}{t("newPost.errorSuffix")}
                 </p>
               )}
             </Card.Header>
@@ -57,7 +59,7 @@ export default function NewPost() {
             <Card.Description style={{ marginTop: '1rem' }}>
               <Form.Field>
                 <Form.TextArea
-                  placeholder='Say hi to the World!'
+                  placeholder={t("newPost.placeholder")}
                   name='body'
                   onChange={onChange}
                   value={values.body}
@@ -87,7 +89,7 @@ export default function NewPost() {
               type='submit'
               color='purple'
             >
-              Send
+              {t("actions.send")}
             </Button>
           </Card.Content>
         </Card>

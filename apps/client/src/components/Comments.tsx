@@ -1,14 +1,16 @@
 import moment from "moment";
 import { Comment, Header } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 import { DeleteButton } from "../atoms/DeleteButton";
 import { DELETE_COMMENT_MUTATION } from "../util/GraphQL";
 import NewComment from "./NewComment";
 import { getPictureURL } from "../util/profilePictureDictionary";
 export default function Comments({ comments, commentCount, id, user }) {
+  const { t } = useTranslation();
   return (
     <Comment.Group>
       <Header as="h3" dividing>
-        {commentCount} Comments
+        {t("comments.count", { count: commentCount })}
       </Header>
 
       {comments.map((comment: any, index: number) => (

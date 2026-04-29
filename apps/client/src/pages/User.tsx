@@ -8,6 +8,7 @@ import {
   GridColumn,
   Button,
 } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 import { GET_USER_QUERY } from "../util/GraphQL";
 import { AuthContext } from "../context/auth";
 import { Link } from "react-router-dom";
@@ -15,13 +16,14 @@ import moment from "moment";
 import { getPictureURL } from "../util/profilePictureDictionary";
 
 export default function Profile({ username, setProfileState }) {
+  const { t } = useTranslation();
   const { user } = useContext(AuthContext) as any;
   const { loading, error, data } = useQuery<any>(GET_USER_QUERY, {
     variables: { username: username },
   });
 
   if (loading) return <Loader active />;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>{t("common.error", { message: error.message })}</p>;
 
   const { createdAt, profilePicture } = data.getUser;
   const isAuthUser = user?.username === username;
@@ -68,7 +70,7 @@ export default function Profile({ username, setProfileState }) {
               <Card.Header>{username}</Card.Header>
               <Card.Meta>
                 <span className="date">
-                  Joined {moment(createdAt).fromNow()}
+                  {t("profile.joined", { time: moment(createdAt).fromNow() })}
                 </span>
               </Card.Meta>
             </Card.Content>
@@ -83,7 +85,7 @@ export default function Profile({ username, setProfileState }) {
                     setProfileState(false);
                   }}
                 >
-                  Edit Profile
+                  {t("actions.editProfile")}
                 </Button>
               </Card.Content>
             )}

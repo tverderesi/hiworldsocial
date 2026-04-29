@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
 import { Button, Form, Message } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 
 import { REQUEST_PASSWORD_RESET } from "../util/GraphQL";
 import { getGraphQLErrors } from "../util/errors";
 import { useForm } from "../util/hooks";
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
   const [errors, setErrors] = useState({}) as any;
   const [successMessage, setSuccessMessage] = useState("");
   const { onChange, onSubmit, values } = useForm(onRequestReset, { email: "" });
@@ -43,11 +45,10 @@ export default function ForgotPassword() {
         className="page-title"
         style={{ marginBottom: "1em", marginTop: "1em" }}
       >
-        Forgot Password
+        {t("forgotPassword.title")}
       </h1>
       <p style={{ maxWidth: 480, textAlign: "center", marginBottom: "1.5em" }}>
-        Enter your email address and, if an account exists, you&apos;ll receive
-        a password reset link.
+        {t("forgotPassword.description")}
       </p>
       <Form
         onSubmit={onSubmit}
@@ -56,20 +57,20 @@ export default function ForgotPassword() {
         className={loading ? "loading" : ""}
       >
         <Form.Input
-          label="E-mail"
-          placeholder="E-mail"
+          label={t("common.email")}
+          placeholder={t("common.email")}
           name="email"
           value={values.email}
           onChange={onChange}
           error={errors?.email ? true : false}
         />
         <Button type="submit" primary>
-          Send Reset Link
+          {t("actions.sendResetLink")}
         </Button>
       </Form>
       {successMessage && (
         <Message positive style={{ marginTop: "1.5em", maxWidth: 480 }}>
-          <Message.Header>Check your email</Message.Header>
+          <Message.Header>{t("forgotPassword.checkEmail")}</Message.Header>
           <p>{successMessage}</p>
         </Message>
       )}
@@ -83,7 +84,7 @@ export default function ForgotPassword() {
         </div>
       )}
       <p style={{ marginTop: "1.5em" }}>
-        <Link to="/login">Back to login</Link>
+        <Link to="/login">{t("actions.backToLogin")}</Link>
       </p>
     </div>
   );

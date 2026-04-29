@@ -46,6 +46,7 @@ export type Mutation = {
   register: User;
   requestPasswordReset: PasswordResetResponse;
   resetPassword: PasswordResetResponse;
+  updatePreferredLanguage: User;
   updateUser: User;
 };
 
@@ -97,6 +98,11 @@ export type MutationResetPasswordArgs = {
   confirmPassword: Scalars['String']['input'];
   password: Scalars['String']['input'];
   token: Scalars['String']['input'];
+};
+
+
+export type MutationUpdatePreferredLanguageArgs = {
+  preferredLanguage: Scalars['String']['input'];
 };
 
 
@@ -157,6 +163,7 @@ export type UpdateProfileInput = {
   newUsername: Scalars['String']['input'];
   oldPassword: Scalars['String']['input'];
   oldUsername: Scalars['String']['input'];
+  preferredLanguage?: InputMaybe<Scalars['String']['input']>;
   profilePicture: Scalars['String']['input'];
 };
 
@@ -165,6 +172,7 @@ export type User = {
   createdAt: Scalars['String']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  preferredLanguage?: Maybe<Scalars['String']['output']>;
   profilePicture: Scalars['String']['output'];
   token?: Maybe<Scalars['String']['output']>;
   username: Scalars['String']['output'];
@@ -301,6 +309,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   register?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'registerInput'>>;
   requestPasswordReset?: Resolver<ResolversTypes['PasswordResetResponse'], ParentType, ContextType, RequireFields<MutationRequestPasswordResetArgs, 'email'>>;
   resetPassword?: Resolver<ResolversTypes['PasswordResetResponse'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'confirmPassword' | 'password' | 'token'>>;
+  updatePreferredLanguage?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdatePreferredLanguageArgs, 'preferredLanguage'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'updateProfileInput'>>;
 };
 
@@ -333,6 +342,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  preferredLanguage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   profilePicture?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -347,3 +357,4 @@ export type Resolvers<ContextType = GraphQLContext> = {
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
+

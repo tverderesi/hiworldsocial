@@ -2,6 +2,7 @@ import { Form, Grid, Button } from "semantic-ui-react";
 import { useState, useContext } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { useForm } from "../util/hooks";
 import { AuthContext } from "../context/auth";
@@ -11,6 +12,7 @@ import { getGraphQLErrors } from "../util/errors";
 import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
 
 function Register() {
+  const { t } = useTranslation();
   const context = useContext(AuthContext);
   const navigate = useNavigate();
   const [errors, setErrors] = useState({}) as any;
@@ -55,7 +57,7 @@ function Register() {
         className="page-title"
         style={{ marginBottom: "2em", marginTop: "1em" }}
       >
-        Register
+        {t("register.title")}
       </h1>
       {Object.keys(errors)?.length > 0 && (
         <div className="ui error message">
@@ -79,16 +81,16 @@ function Register() {
       >
         <div>
           <Form.Input
-            label="Username"
-            placeholder="Username"
+            label={t("common.username")}
+            placeholder={t("common.username")}
             name="username"
             value={values.username}
             onChange={onChange}
             error={errors?.username ? true : false}
           />
           <Form.Input
-            label="E-mail"
-            placeholder="E-mail"
+            label={t("common.email")}
+            placeholder={t("common.email")}
             name="email"
             value={values.email}
             onChange={onChange}
@@ -96,8 +98,8 @@ function Register() {
           />
           <Form.Input
             type="password"
-            label="Password"
-            placeholder="Password"
+            label={t("common.password")}
+            placeholder={t("common.password")}
             name="password"
             value={values.password}
             onChange={onChange}
@@ -105,8 +107,8 @@ function Register() {
           />
           <Form.Input
             type="password"
-            label="Confirm Password"
-            placeholder="Confirm Password"
+            label={t("register.confirmPassword")}
+            placeholder={t("register.confirmPassword")}
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={onChange}
@@ -123,7 +125,7 @@ function Register() {
           }}
         >
           <Button type="submit" color="purple" size="big">
-            Register
+            {t("register.title")}
           </Button>
         </Grid.Row>
       </Form>

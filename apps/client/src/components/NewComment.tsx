@@ -1,11 +1,13 @@
 import { useMutation } from "@apollo/client/react";
 
 import { Button, Form } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 
 import { CREATE_COMMENT_MUTATION } from "../util/GraphQL";
 import { useForm } from "../util/hooks";
 
 export default function NewComment({ id }) {
+  const { t } = useTranslation();
   const { onChange, onSubmit, values } = useForm(createCommentCallback, {
     body: "",
   });
@@ -32,12 +34,12 @@ export default function NewComment({ id }) {
               color: "#9f3a38",
               fontWeight: "400",
             }}
-          ></p>
+          >{t("newComment.error")}</p>
         )}
 
         <Form.Field>
           <Form.TextArea
-            placeholder="Add your comment"
+            placeholder={t("newComment.placeholder")}
             name="body"
             onChange={onChange}
             value={values.body}
@@ -46,7 +48,7 @@ export default function NewComment({ id }) {
         </Form.Field>
 
         <Button
-          content="Add Comment"
+          content={t("actions.addComment")}
           labelPosition="left"
           icon="edit"
           color="purple"

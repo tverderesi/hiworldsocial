@@ -1,9 +1,11 @@
 import { Grid, GridColumn, Image } from "semantic-ui-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { profilePictureDictionary } from "../util/profilePictureDictionary";
 
 export function ProfilePictureSelector({ values, update = false }) {
+  const { t } = useTranslation();
   const [selectedPicture, setSelectedPicture] = useState(values.profilePicture);
   const [loadingPic, setLoadingPic] = useState(true);
 
@@ -32,7 +34,7 @@ export function ProfilePictureSelector({ values, update = false }) {
             textAlign: "center",
           }}
         >
-          {`  Select ${update ? "a new" : "an"} Avatar`}
+          {t(update ? "profile.selectNewAvatar" : "profile.selectAvatar")}
         </h2>
       </Grid.Row>
       <Grid.Row>

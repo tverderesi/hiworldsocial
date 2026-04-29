@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
 import { LIKE_POST } from "../util/GraphQL";
+import { useTranslation } from "react-i18next";
 
 export function LikeButton({
   post: { id, likeCount, likes },
   user,
   showLabel = true,
 }) {
+  const { t } = useTranslation();
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export function LikeButton({
     <>
       {user && showLabel && (
         <Popup
-          content="Like Post"
+          content={t("actions.likePost")}
           inverted
           trigger={
             <Button
@@ -51,7 +53,7 @@ export function LikeButton({
       )}
       {!user && showLabel && (
         <Popup
-          content="Like Post"
+          content={t("actions.likePost")}
           inverted
           trigger={
             <Button
@@ -70,7 +72,7 @@ export function LikeButton({
       )}
       {user && !showLabel && (
         <Popup
-          content="Like Post"
+          content={t("actions.likePost")}
           inverted
           trigger={
             <Button
@@ -84,7 +86,7 @@ export function LikeButton({
       )}
       {!user && !showLabel && (
         <Popup
-          content="Like Post"
+          content={t("actions.likePost")}
           inverted
           trigger={
             <Button as={Link} to={"/login"} basic color="red" icon="heart" />
