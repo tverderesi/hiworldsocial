@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client/react";
 import moment from "moment";
-import { useParams } from "react-router-dom";
+import { useParams, Link, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import spinner from "../atoms/3-dots-bounce.svg";
-import { Grid, Container, Card } from "semantic-ui-react";
 import { LikeButton } from "../atoms/LikeButton";
 import Comments from "../components/Comments";
 import { DELETE_POST, GET_POST } from "../util/GraphQL";
@@ -13,154 +12,41 @@ import { LikeLine } from "../atoms/LikeLine";
 import { DeleteButton } from "../atoms/DeleteButton";
 import { getPictureURL } from "../util/profilePictureDictionary";
 import { LikePictures } from "../atoms/LikePictures";
-import { Link, Outlet } from "react-router-dom";
+import { Card, CardContent } from "../components/ui/card";
 
 export default function SinglePost() {
   const { t } = useTranslation();
   const { user } = useContext(AuthContext) as any;
-
   const { id } = useParams();
-
   const { loading, data } = useQuery<any>(GET_POST, { variables: { postId: id } });
   const post = data?.getPost;
 
-  //   body,
-  // const {
-  //   createdAt,
-  //   username,
-  //   comments,
-  //   likes,
-  //   likeCount,
-  //   commentCount,
-  // } = post;
-
   return (
-    <Container
-      style={{
-        margin: "5vh auto ",
-      }}
-    >
+    <div className="page-shell" style={{ margin: "5vh auto" }}>
       <Outlet />
-      {loading ? (
-        <h2
-          style={{ width: "100%", display: "flex", justifyContent: "center" }}
-        >
-          {t("singlePost.loading")}{" "}
-          <img
-            src={spinner}
-            style={{ position: "relative", top: ".5rem", left: ".5rem" }}
-            alt="..."
-          />
-        </h2>
-      ) : (
-        <Card fluid={true}>
-          {!post && (
-            <h2
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                padding: "3rem",
-              }}
-            >
-              {t("singlePost.notFound")}
-            </h2>
-          )}
+      {loading ? <h2 style={{ width: "100%", display: "flex", justifyContent: "center" }}>{t("singlePost.loading")} <img src={spinner} style={{ position: "relative", top: ".5rem", left: ".5rem" }} alt="..." /></h2> : (
+        <Card>
+          {!post && <h2 style={{ width: "100%", display: "flex", justifyContent: "center", padding: "3rem" }}>{t("singlePost.notFound")}</h2>}
           {post && (
-            <Grid
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "start",
-                padding: "3%",
-              }}
-            >
-              <Grid.Row
-                as={Card.Content}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginLeft: "3rem",
-                  marginRight: "3rem",
-                  borderBottom: "1px solid rgba(34,36,38,.15)",
-                  margin: "0 1rem",
-                }}
-              >
-                <Grid.Column
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "0",
-                    width: "auto",
-                  }}
-                >
-                  <Link to={`/posts/${id}/profile/${post.username}`}>
-                    <img
-                      src={getPictureURL(post.profilePicture) as any}
-                      alt={post.username}
-                      className="BigPicture"
-                      style={{ borderRadius: "50%" }}
-                    />
-                  </Link>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      marginLeft: "1rem",
-                    }}
-                  >
-                    <Card.Header className="ui title">
-                      {post.username}
-                    </Card.Header>
-                    <Card.Meta>{moment(post.createdAt).fromNow()}</Card.Meta>
-                  </div>
-                </Grid.Column>
-                <Grid.Column
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    backgroudColor: "none",
-                    padding: "0",
-                    width: "auto",
-                  }}
-                >
-                  <LikeButton post={post} user={user} showLabel={false} />
-                  <DeleteButton
-                    user={user}
-                    username={post.username}
-                    mutation={DELETE_POST}
-                    postId={id}
-                    basic
-                  />
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row style={{ marginTop: "2rem" }} fluid>
-                <Grid.Column
-                  className="ui bottom left popup fakepopup transition visible post-style"
-                  computer={8}
-                  mobile={16}
-                >
-                  <div className="content">{post.body}</div>
-                </Grid.Column>
-                <Grid.Column computer={8} mobile={16}>
-                  <Grid.Row style={{ display: "flex", alignItems: "center" }}>
-                    <LikePictures post={post} />
-                    <LikeLine post={post} user={user} />
-                  </Grid.Row>
-                  <Comments
-                    commentCount={post.commentCount}
-                    comments={post.comments}
-                    id={id}
-                    user={user}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+            <CardContent>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(34,36,38,.15)", paddingBottom: "1rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                  <Link to={`/posts/${id}/profile/${post.username}`}><img src={getPictureURL(post.profilePicture) as any} alt={post.username} className="avatar" style={{ width: "70px", height: "70px" }} /></Link>
+                  <div><h3 style={{ margin: 0 }}>{post.username}</h3><div>{moment(post.createdAt).fromNow()}</div></div>
+                </div>
+                <div style={{ display: "flex", gap: ".5rem" }}><LikeButton post={post} user={user} showLabel={false} /><DeleteButton user={user} username={post.username} mutation={DELETE_POST} postId={id} basic /></div>
+              </div>
+              <div className="grid-2" style={{ marginTop: "2rem" }}>
+                <div className="post-style">{post.body}</div>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center" }}><LikePictures post={post} /><LikeLine post={post} user={user} /></div>
+                  <Comments commentCount={post.commentCount} comments={post.comments} id={id} user={user} />
+                </div>
+              </div>
+            </CardContent>
           )}
         </Card>
       )}
-    </Container>
+    </div>
   );
 }

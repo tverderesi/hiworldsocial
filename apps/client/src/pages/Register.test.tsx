@@ -75,7 +75,7 @@ describe('Register page', () => {
     await user.type(screen.getByPlaceholderText('E-mail'), 'alice@example.com');
     await user.type(screen.getByPlaceholderText('Password'), 'Password1!');
     await user.type(screen.getByPlaceholderText('Confirm Password'), 'Password1!');
-    await user.click(screen.getByRole('button', { name: 'Register' }));
+    await user.click(screen.getByRole('button', { name: 'register' }));
 
     await waitFor(() => {
       expect(login).toHaveBeenCalledWith(
@@ -126,7 +126,7 @@ describe('Register page', () => {
     await user.type(screen.getByPlaceholderText('E-mail'), 'alice@example.com');
     await user.type(screen.getByPlaceholderText('Password'), 'Password1!');
     await user.type(screen.getByPlaceholderText('Confirm Password'), 'Password1!');
-    await user.click(screen.getByRole('button', { name: 'Register' }));
+    await user.click(screen.getByRole('button', { name: 'register' }));
 
     expect(await screen.findByText('This username is taken!')).toBeTruthy();
   });
