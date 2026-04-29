@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import moment from "moment";
 import { useParams, Link, Outlet } from "react-router-dom";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import spinner from "../atoms/3-dots-bounce.svg";
 import { LikeButton } from "../atoms/LikeButton";
 import Comments from "../components/Comments";
@@ -14,6 +15,7 @@ import { LikePictures } from "../atoms/LikePictures";
 import { Card, CardContent } from "../components/ui/card";
 
 export default function SinglePost() {
+  const { t } = useTranslation();
   const { user } = useContext(AuthContext) as any;
   const { id } = useParams();
   const { loading, data } = useQuery<any>(GET_POST, { variables: { postId: id } });
@@ -22,9 +24,9 @@ export default function SinglePost() {
   return (
     <div className="page-shell" style={{ margin: "5vh auto" }}>
       <Outlet />
-      {loading ? <h2 style={{ width: "100%", display: "flex", justifyContent: "center" }}>Loading post <img src={spinner} style={{ position: "relative", top: ".5rem", left: ".5rem" }} alt="..." /></h2> : (
+      {loading ? <h2 style={{ width: "100%", display: "flex", justifyContent: "center" }}>{t("singlePost.loading")} <img src={spinner} style={{ position: "relative", top: ".5rem", left: ".5rem" }} alt="..." /></h2> : (
         <Card>
-          {!post && <h2 style={{ width: "100%", display: "flex", justifyContent: "center", padding: "3rem" }}>Error! No post could be found.</h2>}
+          {!post && <h2 style={{ width: "100%", display: "flex", justifyContent: "center", padding: "3rem" }}>{t("singlePost.notFound")}</h2>}
           {post && (
             <CardContent>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(34,36,38,.15)", paddingBottom: "1rem" }}>

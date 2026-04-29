@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
+import { useTranslation } from "react-i18next";
 import { LIKE_POST } from "../util/GraphQL";
 import { Button } from "../components/ui/button";
 
 export function LikeButton({ post: { id, likeCount, likes }, user, showLabel = true }) {
+  const { t } = useTranslation();
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
@@ -14,7 +16,7 @@ export function LikeButton({ post: { id, likeCount, likes }, user, showLabel = t
   const [likePostMutation] = useMutation<any>(LIKE_POST, { variables: { PostId: id } });
 
   const button = (
-    <Button variant={liked ? "destructive" : "outline"} onClick={(e) => { e.preventDefault(); if (user) likePostMutation(); }} title="Like Post">
+    <Button variant={liked ? "destructive" : "outline"} onClick={(e) => { e.preventDefault(); if (user) likePostMutation(); }} title={t("actions.likePost")}>
       ❤️
     </Button>
   );

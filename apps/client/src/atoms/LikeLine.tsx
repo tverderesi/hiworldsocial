@@ -1,19 +1,21 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export function LikeLine({ post: { likes }, user }) {
+  const { t } = useTranslation();
   const likeLength = likes?.length;
+  const displayName = (username: string) => username === user?.username ? t("likes.you") : username;
+
   if (likes) {
     switch (true) {
       case likeLength === 1:
         if (likes[0].username === user?.username) {
-          return <p>You liked this.</p>;
+          return <p>{t("likes.youLiked")}</p>;
         } else {
           return (
             <p>
-              <Link to={`/profile/${likes[0].username}`}>
-                {`${likes[0].username}`}
-              </Link>{" "}
-              liked this.
+              <Link to={`/profile/${likes[0].username}`}>{likes[0].username}</Link>{" "}
+              {t("likes.likedThisSingular")}
             </p>
           );
         }
@@ -21,20 +23,14 @@ export function LikeLine({ post: { likes }, user }) {
       case likeLength === 2:
         return (
           <p>
-            <strong>{`${
-              likes[1].username === user?.username ? "You" : likes[1].username
-            }`}</strong>{" "}
-            and{" "}
+            <strong>{displayName(likes[1].username)}</strong>{" "}
+            {t("likes.and")}{" "}
             <strong>
               <Link to={`/profile/${likes[0].username}`}>
-                {`${
-                  likes[0].username === user?.username
-                    ? "You"
-                    : likes[0].username
-                }`}
+                {displayName(likes[0].username)}
               </Link>
             </strong>{" "}
-            liked this.
+            {t("likes.likedThisPlural")}
           </p>
         );
 
@@ -43,34 +39,22 @@ export function LikeLine({ post: { likes }, user }) {
           <p>
             <strong>
               <Link to={`/profile/${likes[2].username}`}>
-                {`${
-                  likes[2].username === user?.username
-                    ? "You"
-                    : likes[2].username
-                }`}
+                {displayName(likes[2].username)}
               </Link>
             </strong>
             ,{" "}
             <strong>
               <Link to={`/profile/${likes[1].username}`}>
-                {`${
-                  likes[1].username === user?.username
-                    ? "You"
-                    : likes[1].username
-                }`}
+                {displayName(likes[1].username)}
               </Link>
             </strong>{" "}
-            and{" "}
+            {t("likes.and")}{" "}
             <strong>
               <Link to={`/profile/${likes[0].username}`}>
-                {`${
-                  likes[0].username === user?.username
-                    ? "You"
-                    : likes[0].username
-                }`}
+                {displayName(likes[0].username)}
               </Link>
             </strong>{" "}
-            liked this.
+            {t("likes.likedThisPlural")}
           </p>
         );
 
@@ -79,42 +63,28 @@ export function LikeLine({ post: { likes }, user }) {
           <p>
             <strong>
               <Link to={`/profile/${likes[2].username}`}>
-                {`${
-                  likes[2].username === user?.username
-                    ? "You"
-                    : likes[2].username
-                }`}
+                {displayName(likes[2].username)}
               </Link>
             </strong>
             ,
             <strong>
               {" "}
               <Link to={`/profile/${likes[1].username}`}>
-                {`${
-                  likes[1].username === user?.username
-                    ? "You"
-                    : likes[1].username
-                }`}
+                {displayName(likes[1].username)}
               </Link>
             </strong>
             ,{" "}
             <strong>
               <Link to={`/profile/${likes[0].username}`}>
-                {`${
-                  likes[0].username === user?.username
-                    ? "You"
-                    : likes[0].username
-                }`}
+                {displayName(likes[0].username)}
               </Link>
             </strong>
-            {` and ${likeLength - 3} more  ${
-              likeLength - 3 === 1 ? "person" : "people"
-            } liked this.`}
+            {` ${t("likes.and")} ${t("likes.others", { count: likeLength - 3 })} ${t("likes.likedThisPlural")}`}
           </p>
         );
 
       default:
-        return <p>Nobody Liked This</p>;
+        return <p>{t("likes.nobody")}</p>;
     }
   } else return <></>;
 }

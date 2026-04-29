@@ -1,13 +1,15 @@
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 import { DeleteButton } from "../atoms/DeleteButton";
 import { DELETE_COMMENT_MUTATION } from "../util/GraphQL";
 import NewComment from "./NewComment";
 import { getPictureURL } from "../util/profilePictureDictionary";
 
 export default function Comments({ comments, commentCount, id, user }) {
+  const { t } = useTranslation();
   return (
     <div>
-      <h3 style={{ borderBottom: "1px solid rgba(34,36,38,.15)", paddingBottom: ".5rem" }}>{commentCount} Comments</h3>
+      <h3 style={{ borderBottom: "1px solid rgba(34,36,38,.15)", paddingBottom: ".5rem" }}>{t("comments.count", { count: commentCount })}</h3>
       <div style={{ display: "grid", gap: "1rem" }}>
         {comments.map((comment: any, index: number) => (
           <article key={index} style={{ position: "relative", paddingRight: "3rem" }}>

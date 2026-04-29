@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { useMutation } from "@apollo/client/react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useForm } from "../util/hooks";
 import { AuthContext } from "../context/auth";
 import { LOGIN_USER } from "../util/GraphQL";
@@ -9,6 +10,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 
 export default function Login() {
+  const { t } = useTranslation();
   const context = useContext(AuthContext);
   const navigate = useNavigate();
   const [errors, setErrors] = useState({}) as any;
@@ -24,13 +26,13 @@ export default function Login() {
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
-      <h1 className="page-title" style={{ marginBottom: "2em", marginTop: "1em" }}>Login</h1>
+      <h1 className="page-title" style={{ marginBottom: "2em", marginTop: "1em" }}>{t("actions.login")}</h1>
       <form onSubmit={onSubmit} noValidate style={{ width: "50%" }}>
-        <div className="form-field"><label className="form-label">Username</label><Input placeholder="Username" name="username" value={values.username} onChange={onChange} /></div>
-        <div className="form-field"><label className="form-label">Password</label><Input type="password" placeholder="Password" name="password" value={values.password} onChange={onChange} /></div>
-        <Button type="submit" disabled={loading}>login</Button>
+        <div className="form-field"><label className="form-label">{t("common.username")}</label><Input placeholder={t("common.username")} name="username" value={values.username} onChange={onChange} /></div>
+        <div className="form-field"><label className="form-label">{t("common.password")}</label><Input type="password" placeholder={t("common.password")} name="password" value={values.password} onChange={onChange} /></div>
+        <Button type="submit" disabled={loading}>{t("actions.login")}</Button>
       </form>
-      <p style={{ marginTop: "1em" }}><Link to="/forgot-password">Forgot your password?</Link></p>
+      <p style={{ marginTop: "1em" }}><Link to="/forgot-password">{t("forgotPassword.title")}</Link></p>
       {errors && Object.keys(errors).length > 0 && <div className="error-message"><ul>{Object.values(errors).map((value: any) => <li key={value}>{value}</li>)}</ul></div>}
     </div>
   );

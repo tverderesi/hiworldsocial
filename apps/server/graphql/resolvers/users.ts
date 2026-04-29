@@ -47,6 +47,7 @@ interface UpdateProfileInput {
   newPassword?: string;
   confirmPassword?: string;
   profilePicture?: string;
+  preferredLanguage?: string | null;
 }
 
 interface UpdateProfileArgs {
@@ -67,6 +68,10 @@ interface ResetPasswordArgs {
   confirmPassword: string;
 }
 
+interface UpdatePreferredLanguageArgs {
+  preferredLanguage: string;
+}
+
 const PASSWORD_RESET_TTL_MS = 1000 * 60 * 30;
 const PASSWORD_RESET_ACCOUNT_WINDOW_MS = 1000 * 60 * 15;
 const PASSWORD_RESET_ACCOUNT_MAX_REQUESTS = 3;
@@ -76,6 +81,7 @@ const PASSWORD_RESET_SUCCESS_MESSAGE =
   "If an account exists for that email, a password reset link has been sent.";
 const PASSWORD_RESET_COMPLETED_MESSAGE =
   "Your password has been reset. You can now log in with the new password.";
+const SUPPORTED_LANGUAGES = new Set(["en", "pt"]);
 
 function hashResetToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
@@ -352,6 +358,7 @@ const usersResolvers = {
           newPassword,
           confirmPassword,
           profilePicture,
+          preferredLanguage,
         },
       }: UpdateProfileArgs,
       context: GraphQLContext
@@ -447,9 +454,51 @@ const usersResolvers = {
         user.profilePicture = profilePicture;
       }
 
+      if (preferredLanguage !== undefined && preferredLanguage !== null) {
+        if (!SUPPORTED_LANGUAGES.has(preferredLanguage)) {
+          throw createUserInputError("Unsupported language.", {
+            errors: {
+              preferredLanguage: "Unsupported language.",
+            },
+          });
+        }
+
+        user.preferredLanguage = preferredLanguage;
+      }
+
       const res = await user.save();
       const token = generateToken(res);
       setSessionCookie(context, token);
+
+      return toPublicUser(res);
+    },
+
+    async updatePreferredLanguage(
+      _: unknown,
+      { preferredLanguage }: UpdatePreferredLanguageArgs,
+      context: GraphQLContext
+    ) {
+      if (!SUPPORTED_LANGUAGES.has(preferredLanguage)) {
+        throw createUserInputError("Unsupported language.", {
+          errors: {
+            preferredLanguage: "Unsupported language.",
+          },
+        });
+      }
+
+      const { username } = checkAuth(context);
+      const user = await User.findOne({ username });
+
+      if (!user) {
+        throw createUserInputError("User not found.", {
+          errors: {
+            username: "User not found.",
+          },
+        });
+      }
+
+      user.preferredLanguage = preferredLanguage;
+      const res = await user.save();
 
       return toPublicUser(res);
     },

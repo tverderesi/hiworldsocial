@@ -24,6 +24,7 @@ export interface PublicUser {
   email: string;
   createdAt: string;
   profilePicture: string;
+  preferredLanguage?: string | null;
 }
 
 export interface UserShape {
@@ -32,6 +33,7 @@ export interface UserShape {
   email: string;
   createdAt: string;
   profilePicture: string;
+  preferredLanguage?: string | null;
   passwordResetTokenHash?: string | null;
   passwordResetExpiresAt?: string | null;
   passwordResetRequestedAt?: string | null;

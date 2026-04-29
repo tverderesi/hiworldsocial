@@ -1,4 +1,5 @@
 import { useMutation } from "@apollo/client/react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Textarea } from "./ui/textarea";
@@ -9,6 +10,7 @@ import { useForm } from "../util/hooks";
 const MAX_POST_BODY_LENGTH = 512;
 
 export default function NewPost() {
+  const { t } = useTranslation();
   const { onChange, onSubmit, values } = useForm(createPostCallback, { body: "" });
   const [createPost, { error }] = useMutation<any>(CREATE_POST_MUTATION, {
     variables: values,
@@ -26,17 +28,17 @@ export default function NewPost() {
     <form onSubmit={onSubmit}>
       <Card>
         <CardHeader>
-          <h3>New Post</h3>
-          {error && <p className="error-text">{getGraphQLErrorMessage(error)}!</p>}
+          <h3>{t("newPost.title")}</h3>
+          {error && <p className="error-text">{getGraphQLErrorMessage(error)}{t("newPost.errorSuffix")}</p>}
         </CardHeader>
         <CardContent>
-          <Textarea placeholder="Say hi to the World!" name="body" onChange={onChange} value={values.body} maxLength={MAX_POST_BODY_LENGTH} />
+          <Textarea placeholder={t("newPost.placeholder")} name="body" onChange={onChange} value={values.body} maxLength={MAX_POST_BODY_LENGTH} />
           <div style={{ marginTop: ".5rem", textAlign: "right", fontSize: ".9rem", color: values.body.length >= MAX_POST_BODY_LENGTH ? "#9f3a38" : "#6b6b6b" }}>
             {values.body.length}/{MAX_POST_BODY_LENGTH}
           </div>
         </CardContent>
         <CardFooter style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button type="submit">Send</Button>
+          <Button type="submit">{t("actions.send")}</Button>
         </CardFooter>
       </Card>
     </form>

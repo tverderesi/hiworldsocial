@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getPictureURL, profilePictureDictionary } from "../util/profilePictureDictionary";
 
 export function ProfilePictureSelector({ values, update = false }) {
+  const { t } = useTranslation();
   const [selectedPicture, setSelectedPicture] = useState(values.profilePicture);
   const [loadingPic, setLoadingPic] = useState(true);
 
@@ -13,7 +15,7 @@ export function ProfilePictureSelector({ values, update = false }) {
 
   return (
     <div style={{ marginTop: "2rem", width: "100%" }}>
-      <h2 style={{ marginBottom: "2em", marginTop: "1em", width: "100%", textAlign: "center" }}>{`Select ${update ? "a new" : "an"} Avatar`}</h2>
+      <h2 style={{ marginBottom: "2em", marginTop: "1em", width: "100%", textAlign: "center" }}>{t(update ? "profile.selectNewAvatar" : "profile.selectAvatar")}</h2>
       <div className="grid-3">
         {profilePictureDictionary.map((item) => (
           <div key={item.name} style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem" }}>

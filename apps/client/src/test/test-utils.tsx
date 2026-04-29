@@ -7,6 +7,7 @@ import {
 } from "@apollo/client/testing/react";
 
 import { AuthContext } from "../context/auth";
+import "../i18n";
 
 interface RenderOptions {
   mocks?: MockedResponse[];

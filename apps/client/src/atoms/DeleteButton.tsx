@@ -1,10 +1,12 @@
 import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FETCH_POSTS_QUERY } from "../util/GraphQL";
 import { Button } from "../components/ui/button";
 import { ConfirmDialog } from "../components/ui/dialog";
 
 export function DeleteButton({ user, username, postId, commentId, callback, mutation, basic = false }: any): JSX.Element {
+  const { t } = useTranslation();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [deleteCommentorPostMutation] = useMutation<any>(mutation, {
@@ -24,13 +26,13 @@ export function DeleteButton({ user, username, postId, commentId, callback, muta
 
   return (
     <>
-      <Button variant={basic ? "ghost" : "outline"} onClick={() => setConfirmOpen(true)} title={commentId ? "Delete comment" : "Delete post"}>
+      <Button variant={basic ? "ghost" : "outline"} onClick={() => setConfirmOpen(true)} title={commentId ? t("dialogs.deleteComment") : t("dialogs.deletePost")}>
         {commentId ? "✕" : "🗑"}
       </Button>
       <ConfirmDialog
         open={confirmOpen}
-        title={commentId ? "Delete comment" : "Delete post"}
-        description="This action cannot be undone."
+        title={commentId ? t("dialogs.deleteComment") : t("dialogs.deletePost")}
+        description={t("dialogs.destructiveDescription")}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => void deleteCommentorPostMutation()}
       />

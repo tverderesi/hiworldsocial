@@ -3,6 +3,7 @@ import { createContext, useEffect, useReducer } from "react";
 import { useQuery } from "@apollo/client/react";
 
 import { ME_QUERY } from "../util/GraphQL";
+import { setPreferredLanguage, type SupportedLanguage } from "../i18n";
 
 export interface AuthUser {
   id: string;
@@ -10,6 +11,7 @@ export interface AuthUser {
   email: string;
   createdAt: string;
   profilePicture: string;
+  preferredLanguage?: SupportedLanguage | null;
 }
 
 interface AuthContextValue {
@@ -59,6 +61,9 @@ function AuthProvider({ children }: PropsWithChildren): JSX.Element {
   useEffect(() => {
     if (data?.me) {
       dispatch({ type: "LOGIN", payload: data.me });
+      if (data.me.preferredLanguage) {
+        setPreferredLanguage(data.me.preferredLanguage);
+      }
       return;
     }
 
@@ -72,6 +77,9 @@ function AuthProvider({ children }: PropsWithChildren): JSX.Element {
     user: state.user,
     login: (userData: AuthUser) => {
       dispatch({ type: "LOGIN", payload: userData });
+      if (userData.preferredLanguage) {
+        setPreferredLanguage(userData.preferredLanguage);
+      }
     },
     logout: () => {
       dispatch({ type: "LOGOUT" });

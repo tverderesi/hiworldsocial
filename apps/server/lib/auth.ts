@@ -99,5 +99,6 @@ export function toPublicUser(user: UserDocument | PublicUser): PublicUser {
     email: user.email,
     createdAt: user.createdAt,
     profilePicture: user.profilePicture,
+    preferredLanguage: user.preferredLanguage ?? null,
   };
 }
