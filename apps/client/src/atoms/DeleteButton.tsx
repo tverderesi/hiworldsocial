@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import { Button, Popup, Confirm } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 import { FETCH_POSTS_QUERY } from "../util/GraphQL";
 
 export function DeleteButton({
@@ -20,7 +21,9 @@ export function DeleteButton({
   mutation: any;
   basic?: boolean;
 }): JSX.Element {
+  const { t } = useTranslation();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const deleteLabel = commentId ? t("dialogs.deleteComment") : t("dialogs.deletePost");
 
   const [deleteCommentorPostMutation] = useMutation<any>(mutation, {
     update(proxy) {
@@ -44,10 +47,10 @@ export function DeleteButton({
 
   return (
     <>
-      <MyPopup content={commentId ? "Delete comment" : "Delete post"}>
+      <MyPopup content={deleteLabel}>
         {user && user.username === username && (
           <Popup
-            content={commentId ? "Delete comment" : "Delete post"}
+            content={deleteLabel}
             inverted
             trigger={
               <div style={{ width: "40px" }}>
@@ -69,6 +72,9 @@ export function DeleteButton({
       </MyPopup>
       <Confirm
         open={confirmOpen}
+        cancelButton={t("actions.cancel")}
+        confirmButton={t("actions.confirm")}
+        content={t("dialogs.destructiveDescription")}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={(e: React.SyntheticEvent) => {
           e.preventDefault();

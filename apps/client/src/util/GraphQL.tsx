@@ -65,6 +65,7 @@ export const LOGIN_USER = gql`
       username
       createdAt
       profilePicture
+      preferredLanguage
       token
     }
   }
@@ -104,6 +105,7 @@ export const REGISTER_USER = gql`
       email
       createdAt
       profilePicture
+      preferredLanguage
       token
     }
   }
@@ -218,6 +220,7 @@ export const GET_USER_QUERY = gql`
       email
       createdAt
       profilePicture
+      preferredLanguage
     }
   }
 `;
@@ -230,6 +233,21 @@ export const UPDATE_USER_MUTATION = gql`
       email
       createdAt
       profilePicture
+      preferredLanguage
+      token
+    }
+  }
+`;
+
+export const UPDATE_PREFERRED_LANGUAGE = gql`
+  mutation UpdatePreferredLanguage($preferredLanguage: String!) {
+    updatePreferredLanguage(preferredLanguage: $preferredLanguage) {
+      id
+      username
+      email
+      createdAt
+      profilePicture
+      preferredLanguage
       token
     }
   }
@@ -243,6 +261,7 @@ export const ME_QUERY = gql`
       email
       createdAt
       profilePicture
+      preferredLanguage
     }
   }
 `;

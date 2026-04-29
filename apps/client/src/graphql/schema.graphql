@@ -24,6 +24,7 @@ type Mutation {
   register(registerInput: RegisterInput!): User!
   requestPasswordReset(email: String!): PasswordResetResponse!
   resetPassword(confirmPassword: String!, password: String!, token: String!): PasswordResetResponse!
+  updatePreferredLanguage(preferredLanguage: String!): User!
   updateUser(updateProfileInput: UpdateProfileInput!): User!
 }
 
@@ -67,6 +68,7 @@ input UpdateProfileInput {
   newUsername: String!
   oldPassword: String!
   oldUsername: String!
+  preferredLanguage: String
   profilePicture: String!
 }
 
@@ -74,6 +76,7 @@ type User {
   createdAt: String!
   email: String!
   id: ID!
+  preferredLanguage: String
   profilePicture: String!
   token: String
   username: String!

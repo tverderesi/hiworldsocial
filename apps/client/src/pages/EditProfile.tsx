@@ -1,5 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, type ChangeEvent } from "react";
 import { Form, Button, Container, Grid, Loader } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "../util/hooks";
 import { useMutation } from "@apollo/client/react";
 import { UPDATE_USER_MUTATION } from "../util/GraphQL";
@@ -7,8 +8,10 @@ import { getGraphQLErrors } from "../util/errors";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth";
 import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
+import { setPreferredLanguage, type SupportedLanguage } from "../i18n";
 
 export function EditProfile() {
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   const context = useContext(AuthContext) as any;
   const user = context.user;
@@ -21,6 +24,7 @@ export function EditProfile() {
     newPassword: "",
     confirmPassword: "",
     profilePicture: user.profilePicture,
+    preferredLanguage: user.preferredLanguage ?? i18n.language,
   };
 
   const { onChange, onSubmit, values } = useForm(updateUser, initialState);
@@ -43,11 +47,16 @@ export function EditProfile() {
     changeUser();
   }
 
+  function onLanguageChange(e: ChangeEvent<HTMLSelectElement>) {
+    onChange(e);
+    setPreferredLanguage(e.target.value as SupportedLanguage);
+  }
+
   return loading ? (
     <Loader active />
   ) : (
     <Container>
-      <h1>Edit Profile</h1>
+      <h1>{t("profileForm.title")}</h1>
       {Object.keys(errors)?.length > 0 && (
         <div className="ui error message">
           <ul className="list">
@@ -59,55 +68,60 @@ export function EditProfile() {
       )}
       <Form onSubmit={onSubmit}>
         <Form.Field>
-          <label>
-            New Username (Leave Blank if you don't want to change it)
-          </label>
+          <label>{t("profileForm.newUsername")}</label>
           <input
             name="newUsername"
-            placeholder="Username"
+            placeholder={t("common.username")}
             value={values.newUsername}
             onChange={onChange}
           />
         </Form.Field>
 
         <Form.Field>
-          <label>Email</label>
+          <label>{t("common.email")}</label>
           <input
-            placeholder="email"
+            placeholder={t("common.email")}
             name="email"
             value={values.email}
             onChange={onChange}
           />
         </Form.Field>
         <Form.Field>
-          <label>Old Password</label>
+          <label>{t("profileForm.oldPassword")}</label>
           <input
             name="oldPassword"
             type="password"
-            placeholder="Password"
+            placeholder={t("common.password")}
             value={values.oldPassword}
             onChange={onChange}
           />
         </Form.Field>
         <Form.Field>
-          <label>New Password</label>
+          <label>{t("profileForm.newPassword")}</label>
           <input
             name="newPassword"
             type="password"
-            placeholder="Password"
+            placeholder={t("profileForm.newPassword")}
             value={values.newPassword}
             onChange={onChange}
           />
         </Form.Field>
         <Form.Field>
-          <label>Confirm New Password</label>
+          <label>{t("profileForm.confirmNewPassword")}</label>
           <input
             type="password"
-            placeholder="Password"
+            placeholder={t("profileForm.confirmNewPassword")}
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={onChange}
           />
+        </Form.Field>
+        <Form.Field>
+          <label>{t("languages.label")}</label>
+          <select name="preferredLanguage" value={values.preferredLanguage} onChange={onLanguageChange}>
+            <option value="en">{t("languages.en")}</option>
+            <option value="pt">{t("languages.pt")}</option>
+          </select>
         </Form.Field>
         <ProfilePictureSelector values={values} update />
         <Grid.Row
@@ -118,7 +132,7 @@ export function EditProfile() {
           }}
         >
           <Button type="submit" color="purple" size="big" onSubmit={onSubmit}>
-            Save Changes
+            {t("actions.saveChanges")}
           </Button>
         </Grid.Row>
       </Form>

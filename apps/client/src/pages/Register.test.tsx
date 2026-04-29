@@ -60,6 +60,7 @@ describe('Register page', () => {
                 email: 'alice@example.com',
                 createdAt: '2026-04-23T00:00:00.000Z',
                 profilePicture: 'ade',
+                preferredLanguage: null,
                 token: 'signed-token',
                 __typename: 'User',
               },

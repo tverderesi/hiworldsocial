@@ -1,6 +1,8 @@
 import { Card } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 
 export default function Ad() {
+  const { t } = useTranslation();
   return (
     <>
       <Card
@@ -23,7 +25,7 @@ export default function Ad() {
               width: "90%",
             }}
           >
-            See what our users are talking about right now! 🌎
+            {t("welcome.ad")} 🌎
           </Card.Header>
         </Card.Content>
       </Card>

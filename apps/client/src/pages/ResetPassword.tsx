@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
 import { Button, Form, Message } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 
 import { RESET_PASSWORD } from "../util/GraphQL";
 import { getGraphQLErrors } from "../util/errors";
 import { useForm } from "../util/hooks";
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [errors, setErrors] = useState({}) as any;
   const [successMessage, setSuccessMessage] = useState("");
@@ -35,7 +37,7 @@ export default function ResetPassword() {
   function onResetPassword() {
     if (!token) {
       setSuccessMessage("");
-      setErrors({ token: "Reset link is invalid or expired." });
+      setErrors({ token: t("resetPassword.invalidToken") });
       return;
     }
 
@@ -54,7 +56,7 @@ export default function ResetPassword() {
         className="page-title"
         style={{ marginBottom: "1em", marginTop: "1em" }}
       >
-        Reset Password
+        {t("resetPassword.title")}
       </h1>
       <Form
         onSubmit={onSubmit}
@@ -64,8 +66,8 @@ export default function ResetPassword() {
       >
         <Form.Input
           type="password"
-          label="New Password"
-          placeholder="New Password"
+          label={t("profileForm.newPassword")}
+          placeholder={t("profileForm.newPassword")}
           name="password"
           value={values.password}
           onChange={onChange}
@@ -73,23 +75,23 @@ export default function ResetPassword() {
         />
         <Form.Input
           type="password"
-          label="Confirm Password"
-          placeholder="Confirm Password"
+          label={t("register.confirmPassword")}
+          placeholder={t("register.confirmPassword")}
           name="confirmPassword"
           value={values.confirmPassword}
           onChange={onChange}
           error={errors?.confirmPassword ? true : false}
         />
         <Button type="submit" primary>
-          Reset Password
+          {t("actions.resetPassword")}
         </Button>
       </Form>
       {successMessage && (
         <Message positive style={{ marginTop: "1.5em", maxWidth: 480 }}>
-          <Message.Header>Password updated</Message.Header>
+          <Message.Header>{t("resetPassword.passwordUpdated")}</Message.Header>
           <p>{successMessage}</p>
           <p>
-            <Link to="/login">Go to login</Link>
+            <Link to="/login">{t("actions.goToLogin")}</Link>
           </p>
         </Message>
       )}

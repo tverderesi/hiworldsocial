@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client/react";
 import { useContext } from "react";
 import { Card, Container, Grid, Transition } from "semantic-ui-react";
+import { useTranslation } from "react-i18next";
 import Ad from "../components/Ad";
 import NewPost from "../components/NewPost";
 import Post from "../components/Post";
@@ -9,6 +10,7 @@ import { FETCH_POSTS_QUERY } from "../util/GraphQL";
 import { Outlet } from "react-router-dom";
 
 function Home() {
+  const { t } = useTranslation();
   const { loading, data } = useQuery<any>(FETCH_POSTS_QUERY); //can't destructure here or else TS will scream
   const posts = data?.getPosts;
   const { user } = useContext(AuthContext);
@@ -17,7 +19,7 @@ function Home() {
     <Container>
       <Grid columns={3} stackable>
         <Grid.Row style={{ margin: "1rem 0" }}>
-          <h1 className="page-title">Recent Posts</h1>
+          <h1 className="page-title">{t("home.recentPosts")}</h1>
         </Grid.Row>
         <Outlet />
         <Grid.Row>
@@ -42,7 +44,7 @@ function Home() {
                 }}
               >
                 <h2 style={{ width: "100%" }}>
-                  Loading posts
+                  {t("home.loadingPosts")}
                   <img
                     src="spinner.svg"
                     alt=""

@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import spinner from "../atoms/3-dots-bounce.svg";
 import { Grid, Container, Card } from "semantic-ui-react";
 import { LikeButton } from "../atoms/LikeButton";
@@ -15,6 +16,7 @@ import { LikePictures } from "../atoms/LikePictures";
 import { Link, Outlet } from "react-router-dom";
 
 export default function SinglePost() {
+  const { t } = useTranslation();
   const { user } = useContext(AuthContext) as any;
 
   const { id } = useParams();
@@ -43,7 +45,7 @@ export default function SinglePost() {
         <h2
           style={{ width: "100%", display: "flex", justifyContent: "center" }}
         >
-          Loading post{" "}
+          {t("singlePost.loading")}{" "}
           <img
             src={spinner}
             style={{ position: "relative", top: ".5rem", left: ".5rem" }}
@@ -61,7 +63,7 @@ export default function SinglePost() {
                 padding: "3rem",
               }}
             >
-              Error! No post could be found.
+              {t("singlePost.notFound")}
             </h2>
           )}
           {post && (

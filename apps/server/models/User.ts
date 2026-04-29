@@ -8,6 +8,7 @@ const userSchema = new Schema<UserShape>({
   email: String,
   createdAt: String,
   profilePicture: String,
+  preferredLanguage: String,
   passwordResetTokenHash: String,
   passwordResetExpiresAt: String,
   passwordResetRequestedAt: String,
