@@ -1,5 +1,4 @@
-import { useState, useContext } from "react";
-import { Form, Button, Container, Dropdown, Grid, Loader, type DropdownProps } from "semantic-ui-react";
+import { useState, useContext, type ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "../util/hooks";
 import { useMutation } from "@apollo/client/react";
@@ -8,6 +7,8 @@ import { getGraphQLErrors } from "../util/errors";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth";
 import { ProfilePictureSelector } from "../atoms/ProfilePictureSelector";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 import { setPreferredLanguage, type SupportedLanguage } from "../i18n";
 
 export function EditProfile() {
@@ -15,141 +16,44 @@ export function EditProfile() {
   const navigate = useNavigate();
   const context = useContext(AuthContext) as any;
   const user = context.user;
-
-  const initialState: any = {
-    oldUsername: user.username,
-    newUsername: "",
-    email: user.email,
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-    profilePicture: user.profilePicture,
-    preferredLanguage: user.preferredLanguage ?? i18n.language,
-  };
-
+  const initialState: any = { oldUsername: user.username, newUsername: "", email: user.email, oldPassword: "", newPassword: "", confirmPassword: "", profilePicture: user.profilePicture, preferredLanguage: user.preferredLanguage ?? i18n.language };
   const { onChange, onSubmit, values } = useForm(updateUser, initialState);
-
   const [errors, setErrors] = useState({}) as any;
-
   const [changeUser, { loading }] = useMutation<any>(UPDATE_USER_MUTATION, {
-    update(_, { data: { updateUser: userData } }) {
-      context.login(userData);
-
-      navigate("/", { replace: true });
-    },
-    onError(err) {
-      setErrors(getGraphQLErrors(err));
-    },
+    update(_, { data: { updateUser: userData } }) { context.login(userData); navigate("/", { replace: true }); },
+    onError(err) { setErrors(getGraphQLErrors(err)); },
     variables: { updateProfileInput: values },
   });
+  function updateUser() { changeUser(); }
 
-  function updateUser() {
-    changeUser();
-  }
-
-  const languageOptions = [
-    { key: "en", text: t("languages.en"), value: "en" },
-    { key: "pt", text: t("languages.pt"), value: "pt" },
-  ];
-
-  function onLanguageChange(_: React.SyntheticEvent<HTMLElement>, data: DropdownProps) {
-    const preferredLanguage = data.value as SupportedLanguage;
-    onChange({
-      target: {
-        name: "preferredLanguage",
-        value: preferredLanguage,
-      },
-    });
+  function onLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
+    const preferredLanguage = event.target.value as SupportedLanguage;
+    onChange({ target: { name: "preferredLanguage", value: preferredLanguage } });
     setPreferredLanguage(preferredLanguage);
   }
 
-  return loading ? (
-    <Loader active />
-  ) : (
-    <Container>
-      <h1>{t("profileForm.title")}</h1>
-      {Object.keys(errors)?.length > 0 && (
-        <div className="ui error message">
-          <ul className="list">
-            {Object.values(errors).map((value: any) => (
-              <li key={value}>{value}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <Form onSubmit={onSubmit}>
-        <Form.Field>
-          <label>{t("profileForm.newUsername")}</label>
-          <input
-            name="newUsername"
-            placeholder={t("common.username")}
-            value={values.newUsername}
-            onChange={onChange}
-          />
-        </Form.Field>
+  if (loading) return <p style={{ textAlign: "center", marginTop: "2rem" }}>{t("common.loading")}</p>;
 
-        <Form.Field>
-          <label>{t("common.email")}</label>
-          <input
-            placeholder={t("common.email")}
-            name="email"
-            value={values.email}
-            onChange={onChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>{t("profileForm.oldPassword")}</label>
-          <input
-            name="oldPassword"
-            type="password"
-            placeholder={t("common.password")}
-            value={values.oldPassword}
-            onChange={onChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>{t("profileForm.newPassword")}</label>
-          <input
-            name="newPassword"
-            type="password"
-            placeholder={t("profileForm.newPassword")}
-            value={values.newPassword}
-            onChange={onChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>{t("profileForm.confirmNewPassword")}</label>
-          <input
-            type="password"
-            placeholder={t("profileForm.confirmNewPassword")}
-            name="confirmPassword"
-            value={values.confirmPassword}
-            onChange={onChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>{t("languages.label")}</label>
-          <Dropdown
-            name="preferredLanguage"
-            onChange={onLanguageChange}
-            options={languageOptions}
-            selection
-            value={values.preferredLanguage}
-          />
-        </Form.Field>
+  return (
+    <div className="page-shell" style={{ maxWidth: 600 }}>
+      <h1>{t("profileForm.title")}</h1>
+      {Object.keys(errors)?.length > 0 && <div className="error-message"><ul>{Object.values(errors).map((value: any) => <li key={value}>{value}</li>)}</ul></div>}
+      <form onSubmit={onSubmit}>
+        <div className="form-field"><label className="form-label">{t("profileForm.newUsername")}</label><Input name="newUsername" placeholder={t("common.username")} value={values.newUsername} onChange={onChange} /></div>
+        <div className="form-field"><label className="form-label">{t("common.email")}</label><Input placeholder={t("common.email")} name="email" value={values.email} onChange={onChange} /></div>
+        <div className="form-field"><label className="form-label">{t("profileForm.oldPassword")}</label><Input name="oldPassword" type="password" placeholder={t("common.password")} value={values.oldPassword} onChange={onChange} /></div>
+        <div className="form-field"><label className="form-label">{t("profileForm.newPassword")}</label><Input name="newPassword" type="password" placeholder={t("profileForm.newPassword")} value={values.newPassword} onChange={onChange} /></div>
+        <div className="form-field"><label className="form-label">{t("profileForm.confirmNewPassword")}</label><Input type="password" placeholder={t("profileForm.confirmNewPassword")} name="confirmPassword" value={values.confirmPassword} onChange={onChange} /></div>
+        <div className="form-field">
+          <label className="form-label">{t("languages.label")}</label>
+          <select name="preferredLanguage" value={values.preferredLanguage} onChange={onLanguageChange}>
+            <option value="en">{t("languages.en")}</option>
+            <option value="pt">{t("languages.pt")}</option>
+          </select>
+        </div>
         <ProfilePictureSelector values={values} update />
-        <Grid.Row
-          style={{
-            display: "grid",
-            justifyContent: "center",
-            margin: "1rem 0",
-          }}
-        >
-          <Button type="submit" color="purple" size="big" onSubmit={onSubmit}>
-            {t("actions.saveChanges")}
-          </Button>
-        </Grid.Row>
-      </Form>
-    </Container>
+        <div style={{ display: "grid", justifyContent: "center", margin: "1rem 0" }}><Button type="submit">{t("actions.saveChanges")}</Button></div>
+      </form>
+    </div>
   );
 }
